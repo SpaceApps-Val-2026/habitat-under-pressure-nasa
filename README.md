@@ -1,5 +1,7 @@
 # Habitat Under Pressure
 
+![A band on stage in front of the Earth at night, lit by beams from satellites](docs/img/banner.jpg)
+
 **NASA Space Apps Challenge 2026 · València · Challenge #02, “Be An Earth System Trend Detective!”**
 
 Ask a question about any place on Earth and get an answer built from Earth observation data: what is changing
@@ -7,6 +9,8 @@ in the climate, in the land people transform and in the water we depend on. Ever
 from, and every sentence says how far its evidence reaches.
 
 Live demo: <https://hup-711350491618.europe-west1.run.app>
+
+![The cover of the application: a question box next to a globe with reference places](docs/img/cover.png)
 
 ## What it does
 
@@ -22,6 +26,12 @@ Live demo: <https://hup-711350491618.europe-west1.run.app>
    open in a panel with series, maps and sources.
 5. **It is saved.** Every analysis goes to a library with its question, plan, data and method, so anyone can
    open it again and check it.
+
+![The answer to “Is Morella getting warmer?”: 0.30 °C per decade, with its interval, period and source](docs/img/article.png)
+
+*An answer computed by this repository's container with no key and no pre-downloaded data: NASA POWER air
+temperature for Morella, 1981 to 2025. Satellite view: Sentinel-2 cloudless by EOX (contains modified
+Copernicus Sentinel data 2016).*
 
 ## The rules the code enforces
 
@@ -96,6 +106,7 @@ python tools/gate.py
 | `deploy/` | Dockerfile, local Compose file, and files for Google Cloud Run and for a single server |
 | `tests/` | Gold tests against real-data values and the assistant test bench |
 | `tools/` | Environment setup and the quality gate |
+| `docs/img/` | Images of this README |
 | `exploracion/` | Two reference files from the team's real-data probes, read by the trend tests |
 | `.dev/skills/` | One-page project context for AI coding agents |
 
