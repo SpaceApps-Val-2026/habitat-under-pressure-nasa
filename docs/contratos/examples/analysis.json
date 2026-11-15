@@ -1,0 +1,362 @@
+{
+  "contract_version": "1.0",
+  "id": "sagunt-impact-example",
+  "title": {
+    "en": "What changed around the Sagunt gigafactory",
+    "es": "Qué ha cambiado alrededor de la gigafactoría de Sagunt"
+  },
+  "author": "example",
+  "created": "2026-11-14T10:00:00Z",
+  "status": "finished",
+  "plan": {
+    "contract_version": "1.0",
+    "id": "plan-sagunt-impact-example",
+    "request": {
+      "text": "¿Qué ha cambiado alrededor de la gigafactoría de Sagunt?",
+      "language": "es",
+      "level": "media",
+      "origin": "assistant"
+    },
+    "answer": {
+      "level": "with_limits",
+      "limits": [
+        {
+          "en": "Soil moisture is not available for this place: its source needs a downloaded package.",
+          "es": "La humedad del suelo no está disponible para este lugar: su fuente necesita un paquete descargado."
+        }
+      ]
+    },
+    "design": "impact",
+    "zone": {
+      "id": "parc-sagunt-ii",
+      "name": "Parc Sagunt II",
+      "bbox": [
+        -0.35,
+        39.6,
+        -0.15,
+        39.75
+      ],
+      "source": "OpenStreetMap, provisional"
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "variables": [
+      "ndvi",
+      "lst",
+      "soil_moisture"
+    ],
+    "comparison": {
+      "type": "spatial_reference",
+      "reference_km": 3
+    },
+    "catalog_version": "0.2.0",
+    "steps": [
+      {
+        "id": "s1",
+        "type": "ingest",
+        "operation": "read_series",
+        "version": "1.0",
+        "params": {
+          "variable": "ndvi",
+          "max_cloud_pct": 20
+        },
+        "depends_on": [],
+        "sources": [
+          "landsat-c2-l2"
+        ],
+        "data": {
+          "origin": "remote",
+          "estimated_seconds": 90,
+          "estimated_mb": 40
+        }
+      },
+      {
+        "id": "s2",
+        "type": "ingest",
+        "operation": "read_series",
+        "version": "1.0",
+        "params": {
+          "variable": "lst",
+          "max_cloud_pct": 20
+        },
+        "depends_on": [],
+        "sources": [
+          "landsat-c2-l2"
+        ],
+        "data": {
+          "origin": "cache"
+        }
+      },
+      {
+        "id": "s3",
+        "type": "ingest",
+        "operation": "read_series",
+        "version": "1.0",
+        "params": {
+          "variable": "soil_moisture"
+        },
+        "depends_on": [],
+        "sources": [
+          "smap-l3"
+        ],
+        "data": {
+          "origin": "package"
+        }
+      },
+      {
+        "id": "s4",
+        "type": "compute",
+        "operation": "baci_contrast",
+        "version": "1.0",
+        "params": {
+          "variable": "ndvi",
+          "before": [
+            2013,
+            2021
+          ],
+          "after": [
+            2023,
+            2025
+          ],
+          "reference_km": 3
+        },
+        "depends_on": [
+          "s1"
+        ]
+      },
+      {
+        "id": "s5",
+        "type": "compute",
+        "operation": "baci_contrast",
+        "version": "1.0",
+        "params": {
+          "variable": "lst",
+          "before": [
+            2013,
+            2021
+          ],
+          "after": [
+            2023,
+            2025
+          ],
+          "reference_km": 3
+        },
+        "depends_on": [
+          "s2"
+        ]
+      },
+      {
+        "id": "s6",
+        "type": "write",
+        "operation": "write_findings",
+        "version": "1.0",
+        "params": {},
+        "depends_on": [
+          "s4",
+          "s5"
+        ]
+      },
+      {
+        "id": "s7",
+        "type": "review",
+        "operation": "review_findings",
+        "version": "1.0",
+        "params": {},
+        "depends_on": [
+          "s6"
+        ]
+      }
+    ]
+  },
+  "plan_fingerprint": "6aed6ce639357c3edafb9b2a76b8e38b4b1fd14f4d3de2be3bf7d7b19d9047e9",
+  "featured": true,
+  "fingerprint": {
+    "sha256": "ba419243dce8c93fca3ec3d050cd23df3b0ef667bac670c4a3ca6d36db3a2f5b",
+    "catalog_version": "0.2.0",
+    "data": {
+      "landsat-c2-l2": "02"
+    }
+  },
+  "results": [
+    "r-s4-change",
+    "r-s5-change",
+    "r-s3-series"
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "order": 1,
+      "headline": true,
+      "text": {
+        "en": "Since 2023 the site runs {r-s5-change.value} °C hotter than its surroundings, compared with 2013-2021.",
+        "es": "Desde 2023 la parcela está {r-s5-change.value} °C más caliente que su entorno, respecto a 2013-2021."
+      },
+      "results": [
+        "r-s5-change"
+      ],
+      "data_class": "measured",
+      "evidence_level": "E2",
+      "review": {
+        "status": "approved",
+        "by": "reviewer agent"
+      }
+    },
+    {
+      "id": "f2",
+      "order": 2,
+      "text": {
+        "en": "Its summer greenness fell by {r-s4-change.value} NDVI relative to the surroundings.",
+        "es": "Su verde de verano cayó {r-s4-change.value} de NDVI respecto al entorno."
+      },
+      "results": [
+        "r-s4-change"
+      ],
+      "data_class": "measured",
+      "evidence_level": "E2",
+      "review": {
+        "status": "approved",
+        "by": "reviewer agent"
+      }
+    }
+  ],
+  "alerts": [
+    {
+      "rule": "change_outside_band",
+      "severity": "attention",
+      "result": "r-s5-change",
+      "text": {
+        "en": "The change is outside the 2013-2021 band.",
+        "es": "El cambio queda fuera de la banda de 2013-2021."
+      }
+    }
+  ],
+  "story": {
+    "journalistic": [
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s5-change"
+        ],
+        "finding": "f1"
+      },
+      {
+        "block": "EvidenceBadge",
+        "results": [
+          "r-s5-change"
+        ]
+      },
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s4-change"
+        ],
+        "finding": "f2"
+      },
+      {
+        "block": "LimitsBox",
+        "results": [
+          "r-s3-series"
+        ],
+        "text": {
+          "en": "What we could not measure here.",
+          "es": "Lo que no hemos podido medir aquí."
+        }
+      },
+      {
+        "block": "SourcesTable"
+      }
+    ],
+    "institutional": [
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s5-change"
+        ],
+        "finding": "f1"
+      },
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s4-change"
+        ],
+        "finding": "f2"
+      },
+      {
+        "block": "EvidenceBadge",
+        "results": [
+          "r-s5-change",
+          "r-s4-change"
+        ]
+      },
+      {
+        "block": "MethodBox"
+      },
+      {
+        "block": "LimitsBox",
+        "results": [
+          "r-s3-series"
+        ]
+      },
+      {
+        "block": "SourcesTable"
+      }
+    ],
+    "scientific": [
+      {
+        "block": "MethodBox"
+      },
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s5-change"
+        ],
+        "finding": "f1"
+      },
+      {
+        "block": "KeyFigure",
+        "results": [
+          "r-s4-change"
+        ],
+        "finding": "f2"
+      },
+      {
+        "block": "EvidenceBadge",
+        "results": [
+          "r-s5-change",
+          "r-s4-change"
+        ]
+      },
+      {
+        "block": "LimitsBox",
+        "results": [
+          "r-s3-series"
+        ]
+      },
+      {
+        "block": "SourcesTable"
+      }
+    ]
+  },
+  "reports": [
+    {
+      "format": "html",
+      "style": "journalistic",
+      "language": "en",
+      "path": "analyses/sagunt-impact-example/report.journalistic.en.html"
+    },
+    {
+      "format": "pdf",
+      "style": "institutional",
+      "language": "es",
+      "path": "analyses/sagunt-impact-example/report.institutional.es.pdf"
+    }
+  ]
+}

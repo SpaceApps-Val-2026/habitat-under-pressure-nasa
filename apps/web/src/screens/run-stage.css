@@ -1,0 +1,875 @@
+/* The stage while Delfos builds an answer: the question, the plan's progress, the network of
+   informants and the answer taking shape. Colours are theme tokens; the orbit surface is dark in
+   both themes, like the map section of the panel. Movement only happens when an event arrives. */
+
+/* The whole view fits one screen from 1366×768 up: a tight top block, and a stage sized to the height
+   that is left (header, title row, question, bar and folded decisions take about 330 px). */
+.run-stage {
+  --run-room: max(300px, calc(100dvh - 330px));
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.run-stage-question {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.run-stage-kicker {
+  color: var(--muted);
+}
+
+.run-stage-question-text {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.run-stage-progress {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.run-stage-now {
+  min-height: 1.4em;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.run-stage-track {
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.run-stage-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--signal);
+  transition: width 0.5s ease;
+}
+
+/* A request in flight with no count to show: a segment that travels along the track. */
+.run-stage-fill.is-indeterminate {
+  width: 30% !important;
+  animation: run-indeterminate 1.4s ease-in-out infinite;
+}
+
+@keyframes run-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+
+.run-stage-count {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.run-stage-count b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.run-stage-step {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+.run-stage-step progress {
+  width: min(220px, 100%);
+  height: 6px;
+  accent-color: var(--signal);
+}
+
+.run-stage-scene {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.run-stage-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  grid-template-areas: "net wait" "net answer";
+  grid-template-rows: auto 1fr;
+  gap: 16px;
+  align-items: start;
+  min-width: 0;
+}
+
+.run-stage-grid > .run-stage-net {
+  grid-area: net;
+}
+
+.run-stage-grid > .run-waiting {
+  grid-area: wait;
+}
+
+.run-stage-grid > .run-answer {
+  grid-area: answer;
+}
+
+/* What is being waited for now: one row per running step, its bar of elapsed against its usual time. */
+.run-waiting-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.run-waiting-list li {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.run-waiting-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--signal);
+}
+
+.run-waiting-icon .run-ico {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.run-waiting-body {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.run-waiting-name {
+  color: var(--ink);
+  font: 500 14px/1.3 var(--font-sans);
+  overflow-wrap: anywhere;
+}
+
+.run-waiting-check {
+  color: var(--signal);
+}
+
+.run-waiting-track {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.run-waiting-track i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--signal);
+  transition: width 0.5s linear;
+}
+
+.run-waiting-list .is-done {
+  opacity: 0.7;
+}
+
+.run-waiting-hint,
+.run-waiting-next {
+  margin: 0;
+  color: var(--muted);
+  font: 12px/1.4 var(--font-mono);
+}
+
+.run-waiting-next {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.run-stage-time {
+  font-family: var(--font-sans);
+}
+
+.run-stage-card {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  padding: 14px;
+}
+
+.run-stage-card h2 {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The network ------------------------------------------------------------------------------- */
+
+.run-stage-net {
+  min-width: 0;
+  border: 1px solid var(--orbit-line);
+  border-radius: 12px;
+  background: var(--orbit-2);
+  padding: 8px;
+}
+
+.run-stage-net svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: var(--run-room);
+}
+
+/* The answer beside the stage never makes the page taller than the stage; it scrolls inside. */
+.run-stage-grid > .run-stage-card {
+  max-height: calc(var(--run-room) + 18px);
+  overflow: auto;
+}
+
+
+/* The current step: a small mark that turns while the run works; still with reduced motion. */
+.run-stage-now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.run-spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--signal);
+  border-radius: 999px;
+  animation: run-spin 0.9s linear infinite;
+}
+
+@keyframes run-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The list of nodes: the network's text, and the whole network on a phone. */
+.run-stage-list {
+  display: none;
+  gap: 8px;
+  padding: 6px 4px 2px;
+}
+
+.run-stage-list-core {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  color: var(--orbit-ink);
+  font-family: var(--font-display);
+  font-size: 15px;
+}
+
+.run-stage-list-core span {
+  color: var(--orbit-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.run-stage-list ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--orbit-ink);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.run-stage-list li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.run-stage-list .data {
+  color: var(--orbit-focus);
+  font-size: 12px;
+}
+
+.run-stage-reason {
+  grid-column: 2 / -1;
+  color: var(--orbit-muted);
+  font-size: 12px;
+}
+
+.run-stage-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--run-node-color, var(--orbit-focus));
+  border-radius: 999px;
+}
+
+.run-stage-list .is-done .run-stage-dot,
+.run-stage-list .is-active .run-stage-dot {
+  background: var(--run-node-color, var(--orbit-focus));
+}
+
+.run-stage-list .is-idle {
+  color: var(--orbit-muted);
+}
+
+.run-stage-list .is-idle .run-stage-dot {
+  border-color: var(--orbit-line);
+}
+
+.run-stage-list .is-error .run-stage-dot {
+  border-color: var(--amber);
+  background: var(--amber);
+}
+
+.run-stage-list .is-absent {
+  color: var(--orbit-muted);
+}
+
+.run-stage-list .is-absent .run-stage-dot {
+  border-style: dashed;
+  border-color: var(--orbit-muted);
+}
+
+/* Nodes, spokes and Delfos ------------------------------------------------------------------- */
+
+/* One colour per kind of node: data by the theme of what it reads, the rest by what they do. */
+.tone-signal { --run-node-color: var(--orbit-focus); }
+.tone-veg { --run-node-color: var(--veg-4); }
+.tone-climate { --run-node-color: var(--theme-climate); }
+.tone-water { --run-node-color: var(--theme-water); }
+.tone-pressure { --run-node-color: var(--theme-pressure); }
+.tone-compute { --run-node-color: var(--orbit-ink); }
+.tone-review { --run-node-color: var(--green); }
+
+.run-edge {
+  fill: none;
+  stroke: var(--orbit-line);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  transition: stroke 0.4s, opacity 0.4s;
+}
+
+.run-edge.is-done {
+  stroke: var(--run-node-color, var(--orbit-focus));
+  opacity: 0.45;
+}
+
+.run-edge.is-absent {
+  stroke-dasharray: 2 6;
+}
+
+/* Data flowing to Delfos along the spoke of a step that is really running. */
+.run-edge.is-active {
+  stroke: var(--run-node-color, var(--orbit-focus));
+  stroke-width: 2;
+  stroke-dasharray: 3 9;
+  animation: run-flow 0.9s linear infinite;
+}
+
+@keyframes run-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+.run-node .run-ring {
+  fill: var(--orbit);
+  stroke: var(--orbit-line);
+  stroke-width: 1.5;
+  transition: stroke 0.3s, fill 0.3s;
+}
+
+.run-node .run-ico {
+  fill: none;
+  stroke: var(--orbit-muted);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: stroke 0.3s;
+}
+
+.run-node.ring-inner .run-ico {
+  transform: translate(-10px, -10px) scale(0.84);
+}
+
+.run-node-label {
+  fill: var(--orbit-muted);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  transition: fill 0.3s;
+}
+
+.run-node.is-active .run-ring {
+  fill: var(--orbit-2);
+  stroke: var(--run-node-color, var(--orbit-focus));
+  stroke-width: 2;
+}
+
+.run-node.is-done .run-ring {
+  fill: color-mix(in srgb, var(--run-node-color, var(--orbit-focus)) 18%, var(--orbit));
+  stroke: var(--run-node-color, var(--orbit-focus));
+}
+
+.run-node.is-active .run-ico,
+.run-node.is-done .run-ico {
+  stroke: var(--run-node-color, var(--orbit-focus));
+}
+
+.run-node.is-active .run-node-label,
+.run-node.is-done .run-node-label {
+  fill: var(--orbit-ink);
+}
+
+.run-check circle {
+  fill: var(--run-node-color, var(--orbit-focus));
+  stroke: var(--orbit-2);
+  stroke-width: 2;
+}
+
+.run-check path {
+  fill: none;
+  stroke: var(--orbit);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.run-node.is-error .run-ring,
+.run-node.is-error .run-ico {
+  stroke: var(--amber);
+}
+
+.run-node.is-error .run-node-label {
+  fill: var(--amber);
+}
+
+.run-node.is-absent {
+  opacity: 0.6;
+}
+
+.run-node.is-absent .run-ring {
+  stroke: var(--orbit-muted);
+  stroke-dasharray: 4 4;
+}
+
+.run-node .run-halo {
+  fill: none;
+  stroke: var(--run-node-color, var(--orbit-focus));
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.run-node.is-active .run-halo {
+  animation: run-halo 1.4s ease-out infinite;
+}
+
+@keyframes run-halo {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
+.run-pulse {
+  fill: var(--run-node-color, var(--orbit-focus));
+  filter: drop-shadow(0 0 4px var(--run-node-color, var(--orbit-focus)));
+}
+
+.run-glow-in {
+  stop-color: var(--orbit-focus);
+  stop-opacity: 0.32;
+}
+
+.run-glow-out {
+  stop-color: var(--orbit-focus);
+  stop-opacity: 0;
+}
+
+.run-core-glow {
+  opacity: 0.55;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+/* Delfos brightens for a moment when data reaches it. */
+.run-core.is-receiving .run-core-glow {
+  opacity: 1;
+  transform: scale(1.12);
+  transition-duration: 0.15s;
+}
+
+.run-core.is-done .run-core-glow {
+  opacity: 0.85;
+}
+
+.run-core-ring {
+  fill: var(--orbit-2);
+  stroke: var(--orbit-focus);
+  stroke-width: 2;
+}
+
+.run-core-name {
+  fill: var(--orbit-ink);
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.run-core-state {
+  fill: var(--orbit-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+/* The answer taking shape: one card per part, each with its own progress. -------------------- */
+
+.run-stage-build {
+  display: grid;
+  gap: 10px;
+}
+
+.run-card {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--soft);
+  padding: 10px 12px;
+  color: var(--muted);
+  transition: border-color 0.4s, background-color 0.4s, color 0.4s;
+}
+
+.run-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.run-card-label {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.run-card-state {
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.run-card-track {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--line);
+}
+
+.run-card-track i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--line-strong);
+  transition: width 0.5s ease;
+}
+
+.run-card-body {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.run-card-body ul {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.run-card-body .data,
+.run-card-more {
+  color: var(--muted);
+}
+
+.run-card-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+}
+
+.run-card-figure b {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.run-card-figure small {
+  flex-basis: 100%;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.run-card.is-active {
+  border-color: var(--line-strong);
+  background: var(--paper);
+}
+
+.run-card.is-active .run-card-state {
+  color: var(--ink);
+}
+
+.run-card.is-active .run-card-track i {
+  background: var(--signal);
+}
+
+.run-card.is-ready {
+  border-color: var(--signal);
+  background: color-mix(in srgb, var(--signal) 8%, var(--paper));
+}
+
+.run-card.is-ready .run-card-state {
+  color: var(--signal);
+}
+
+.run-card.is-ready .run-card-track i {
+  background: var(--signal);
+}
+
+.run-card.is-warn {
+  border-color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 8%, var(--paper));
+}
+
+.run-card.is-warn .run-card-state {
+  color: var(--amber-ink);
+}
+
+.run-card.is-warn .run-card-track i {
+  background: var(--amber);
+}
+
+/* The event log: the real content, readable at any width. ------------------------------------- */
+
+.run-stage-log {
+  display: grid;
+  gap: 6px;
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.run-stage-log li {
+  display: grid;
+  grid-template-columns: 70px 120px minmax(0, 1fr);
+  gap: 8px;
+  color: var(--muted);
+}
+
+.run-stage-log time {
+  font-variant-numeric: tabular-nums;
+}
+
+.run-log-step {
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.run-log-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  min-width: 0;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.run-log-body .data {
+  color: var(--muted);
+}
+
+/* How Delfos decided: folded by default, one line until opened. */
+.run-stage-decided {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  padding: 8px 12px;
+  color: var(--ink);
+}
+
+.run-stage-decided summary {
+  cursor: pointer;
+}
+
+.run-stage-decided ul {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+  padding-left: 16px;
+  list-style: disc;
+}
+
+/* Rest state and reduced motion: states and colours only, nothing travels. -------------------- */
+
+.run-stage-rest .run-halo,
+.run-stage-rest .run-pulse {
+  animation: none !important;
+  opacity: 0;
+}
+
+.run-stage-rest .run-edge.is-active {
+  animation: none;
+  stroke-dasharray: none;
+}
+
+.run-stage-rest .run-stage-fill,
+.run-stage-rest .run-card,
+.run-stage-rest .run-card-track i,
+.run-stage-rest .run-ring,
+.run-stage-rest .run-ico,
+.run-stage-rest .run-node-label,
+.run-stage-rest .run-core-glow {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .run-waiting-track i {
+    transition: none;
+  }
+
+  /* Still, and still not empty: the whole track striped says «working» without moving. */
+  .run-stage-fill.is-indeterminate {
+    width: 100% !important;
+    animation: none;
+    background: repeating-linear-gradient(135deg, var(--signal-soft) 0 6px, var(--soft) 6px 12px);
+  }
+
+  .run-spinner {
+    animation: none;
+    border-color: var(--signal);
+  }
+
+  .run-node.is-active .run-halo {
+    animation: none;
+  }
+
+  .run-edge.is-active {
+    animation: none;
+    stroke-dasharray: none;
+  }
+
+  .run-pulse {
+    display: none;
+  }
+
+  .run-stage-fill,
+  .run-card,
+  .run-card-track i,
+  .run-ring,
+  .run-ico,
+  .run-node-label,
+  .run-core-glow {
+    transition: none;
+  }
+}
+
+/* Narrow screens: the answer goes under the network; on a phone the network is its list. ----- */
+
+@media (max-width: 1100px) {
+  .run-stage-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "net" "wait" "answer";
+    grid-template-rows: none;
+  }
+}
+
+@media (max-width: 640px) {
+  /* On a phone what is being waited for comes first, above the list of nodes. */
+  .run-stage-grid {
+    grid-template-areas: "wait" "net" "answer";
+  }
+
+  .run-stage-net svg {
+    display: none;
+  }
+
+  .run-stage-list {
+    display: grid;
+  }
+
+  .run-stage-log li {
+    grid-template-columns: 62px minmax(0, 1fr);
+  }
+
+  .run-stage-log .run-log-step {
+    color: var(--muted);
+  }
+
+  .run-stage-log .run-log-body {
+    grid-column: 1 / -1;
+  }
+}

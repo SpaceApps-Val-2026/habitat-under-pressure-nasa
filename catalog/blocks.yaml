@@ -1,0 +1,110 @@
+# blocks: one entry per item. Shape: docs/contratos/catalog.schema.json, property "blocks".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: KeyFigure
+  needs:
+    result_types:
+    - value
+    fields:
+    - interval
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: TrendChart
+  needs:
+    result_types:
+    - series
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: EvidenceBadge
+  needs:
+    fields:
+    - evidence_level
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: NormCard
+  needs:
+    result_types:
+    - value
+  styles:
+  - institutional
+  - scientific
+- id: MethodBox
+  needs: {}
+  styles:
+  - institutional
+  - scientific
+- id: LimitsBox
+  needs: {}
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: SourcesTable
+  needs: {}
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: ScenarioFan
+  needs:
+    result_types:
+    - series
+    operations:
+    - climate_delta
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: UncertaintySplit
+  needs:
+    result_types:
+    - table
+    operations:
+    - uncertainty_split
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: BeforeAfterMap
+  needs:
+    result_types:
+    - layer
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: ScanMatrix
+  needs:
+    result_types:
+    - table
+    operations:
+    - scan_trends
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: ExposureCounter
+  needs:
+    result_types:
+    - value
+    operations:
+    - exposure
+  styles:
+  - journalistic
+  - institutional
+  - scientific
+- id: Hypotheses
+  needs:
+    result_types:
+    - table
+    operations:
+    - lagged_association
+  styles:
+  - journalistic
+  - institutional
+  - scientific

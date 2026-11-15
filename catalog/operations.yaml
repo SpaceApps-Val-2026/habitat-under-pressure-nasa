@@ -1,0 +1,1178 @@
+# operations: one entry per item. Shape: docs/contratos/catalog.schema.json, property "operations".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: read_series
+  version: '1.2'
+  type: ingest
+  visual_type: satellite
+  phrase:
+    en: Reading {n} scenes from {source}
+    es: Leyendo {n} escenas de {source}
+  params:
+    type: object
+    required:
+    - variable
+    properties:
+      variable:
+        type: string
+      read_period:
+        description: Per-step date range for comparing separately read reference and projection series.
+        type: object
+        additionalProperties: false
+        required: [start, end]
+        properties:
+          start: {type: string, format: date}
+          end: {type: string, format: date}
+          months:
+            type: array
+            items: {type: integer, minimum: 1, maximum: 12}
+      max_cloud_pct:
+        type: number
+      aggregate:
+        description: none keeps every date; year gives one value per year
+        enum:
+        - none
+        - year
+        default: none
+      statistic:
+        description: How the values of a year are combined; month_balanced weighs every month the same, for
+          satellite scenes that arrive unevenly by month
+        enum:
+        - mean
+        - sum
+        - median
+        - month_balanced
+        default: mean
+      season:
+        description: Read only the months of this season at the zone (summer is June to September in the north
+          and December to March in the south); a season across the new year counts in the year it ends
+        enum:
+        - summer
+      min_count:
+        description: Values a year needs to count; a shorter year is dropped, never
+          padded
+        type: integer
+        minimum: 1
+        default: 1
+      require_complete_months:
+        description: For annual aggregation, require a valid observation in every selected month of the season
+          (all twelve months when no months are selected).
+        type: boolean
+      hypothesis_power_cell:
+        description: Reduce the two provisional meteorological pairs on their common native POWER cell.
+        const: true
+      area:
+        enum:
+        - zone
+        - reference
+        - ring
+        default: zone
+      reference_km:
+        type: number
+        exclusiveMinimum: 0
+        default: 3
+      reference_inner_km:
+        description: With area reference, read only the outer ring from this distance to reference_km from the edge
+          of the zone (the disc inside is not read); absent, the reference is everything within reference_km.
+        type: number
+        exclusiveMinimum: 0
+      land_only:
+        description: Leave out permanent water (JRC Global Surface Water) in the Landsat zone medians; ignored, and
+          said in a limit, for other sources. Absent means false (no default here, so existing plans keep their
+          fingerprint).
+        type: boolean
+      percentile:
+        description: Percentile of the base period that sets a threshold, for the readers that take one (hot cells);
+          ignored by the others. Absent changes nothing (no default here, so existing plans keep their fingerprint).
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 100
+      base_period:
+        description: Date range whose values set the threshold with percentile, for the readers that take one; its
+          months default to those of the read. Absent changes nothing (no default here).
+        type: object
+        additionalProperties: false
+        required: [start, end]
+        properties:
+          start: {type: string, format: date}
+          end: {type: string, format: date}
+          months:
+            type: array
+            items: {type: integer, minimum: 1, maximum: 12}
+      ring_km:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: number
+          exclusiveMinimum: 0
+        default:
+        - 1
+        - 2
+        - 3
+      ring_index:
+        description: Read only this zero-based annulus from the declared edges.
+        type: integer
+        minimum: 0
+      grid_resolution_m:
+        description: Nominal common pixel size in metres for a paired Landsat reading.
+        type: integer
+        minimum: 1
+      grid_min_years:
+        description: Minimum years for the intended comparison. Skip opening pixels when coverage cannot reach it.
+        type: integer
+        minimum: 1
+  output:
+    type: series
+    data_class: inherit
+  limits:
+  - en: A year with fewer values than required is left out of the series.
+    es: Un año con menos valores de los exigidos queda fuera de la serie.
+  evidence_level: E0
+  diagnostics:
+  - threshold_c
+  - threshold_percentile
+  - threshold_base_start
+  - threshold_base_end
+  - threshold_n_values
+- id: baci_contrast
+  version: '1.1'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Comparing the site with its surroundings, before and after
+    es: Comparando la zona con su entorno, antes y después
+  params:
+    type: object
+    required:
+    - variable
+    - before
+    - after
+    properties:
+      variable:
+        type: string
+      before:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      after:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      reference_km:
+        type: number
+        exclusiveMinimum: 0
+        default: 3
+      min_dates:
+        type: integer
+        default: 3
+        minimum: 3
+      confidence:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.95
+      resamples:
+        type: integer
+        default: 2000
+        minimum: 1
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Coincides in time and place; does not prove cause.
+    es: Coincide en tiempo y lugar; no prueba la causa.
+  evidence_level: E2
+  diagnostics:
+  - n_dates
+  - interval_crosses_zero
+  - pre_trend_control
+- id: write_findings
+  version: '1.0'
+  type: write
+  visual_type: document
+  phrase:
+    en: Writing the findings
+    es: Redactando los hallazgos
+  params:
+    type: object
+  output:
+    type: document
+    data_class: measured
+- id: review_findings
+  version: '1.0'
+  type: review
+  visual_type: document
+  phrase:
+    en: Checking every figure against its result
+    es: Comprobando cada cifra contra su resultado
+  params:
+    type: object
+  output:
+    type: table
+    data_class: measured
+
+- id: anomaly
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating anomaly
+    es: Calculando la anomalía
+  params:
+    type: object
+    properties:
+      baseline:
+        type: object
+        required:
+        - start
+        - end
+        properties:
+          start:
+            type: string
+            format: date
+          end:
+            type: string
+            format: date
+      min_baseline_dates:
+        type: integer
+        minimum: 1
+        default: 1
+    required:
+    - baseline
+  output:
+    type: series
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E0
+  diagnostics:
+  - n_baseline_dates
+- id: trend
+  version: '1.2'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating trend
+    es: Calculando la tendencia
+  params:
+    type: object
+    properties:
+      min_years:
+        type: integer
+        minimum: 3
+        default: 9
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E1
+  diagnostics:
+  - n_years
+  - autocorrelation_lag1
+  - correction
+  - interval_crosses_zero
+- id: scan_trends
+  version: '1.2'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating scan trends
+    es: Calculando el barrido de tendencias
+  params:
+    type: object
+    properties:
+      min_years:
+        type: integer
+        minimum: 3
+        default: 9
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+  output:
+    type: table
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E1
+  diagnostics:
+  - n_tests
+  - n_significant_raw
+  - n_significant_adjusted
+  - correction
+  - n_years
+  - autocorrelation_lag1
+  - interval_crosses_zero
+  - multiple_test_correction
+
+- id: distance_decay
+  version: '1.1'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating distance decay
+    es: Calculando la atenuación con la distancia
+  params:
+    type: object
+    properties:
+      min_dates:
+        type: integer
+        default: 3
+        minimum: 3
+      confidence:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.95
+      resamples:
+        type: integer
+        default: 2000
+        minimum: 1
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+      before:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      after:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      bands_m:
+        type: array
+        items:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: number
+            minimum: 0
+    required:
+    - before
+    - after
+  output:
+    type: table
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E2
+  diagnostics:
+  - n_dates
+  - pre_trend_control
+  - interval_crosses_zero
+- id: break_year
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating break year
+    es: Buscando el año del cambio
+  params:
+    type: object
+    properties:
+      min_dates:
+        type: integer
+        default: 4
+        minimum: 2
+      confidence:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.95
+      resamples:
+        type: integer
+        default: 2000
+        minimum: 1
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E2
+  diagnostics:
+  - n_years
+- id: placebo_test
+  version: '1.1'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating placebo test
+    es: Ejecutando la prueba placebo
+  params:
+    type: object
+    properties:
+      confidence: {type: number, exclusiveMinimum: 0, exclusiveMaximum: 1, default: 0.95}
+      resamples: {type: integer, minimum: 1, default: 2000}
+      before:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      after:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          anyOf:
+          - type: integer
+          - type: string
+            format: date
+      min_dates:
+        type: integer
+        default: 3
+        minimum: 3
+      min_controls:
+        type: integer
+        default: 20
+        minimum: 0
+      control_criteria:
+        type: string
+        minLength: 1
+      false_events:
+        type: array
+        items:
+          type: object
+          required:
+          - before
+          - after
+          properties:
+            before:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                anyOf:
+                - type: integer
+                - type: string
+                  format: date
+            after:
+              type: array
+              minItems: 2
+              maxItems: 2
+              items:
+                anyOf:
+                - type: integer
+                - type: string
+                  format: date
+    required:
+    - before
+    - after
+    - control_criteria
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires comparable observations at the declared spatial support.
+  evidence_level: E2
+  diagnostics:
+  - n_controls
+  - control_criteria
+  - n_false_events
+
+- id: climate_delta
+  version: '1.3'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating climate delta
+    es: Calculando el cambio climático proyectado
+  params:
+    type: object
+    properties:
+      reference_variable:
+        description: Explicitly matched observed indicator with equivalent meaning and units. Defaults to the modeled variable.
+        type: string
+      reference_min_years:
+        description: Minimum contiguous observed years for a shared shortened baseline; a requested reference shorter than this has to be complete. Null requires the full baseline. 17 lets a record that starts in 1998, such as IMERG, use 1998-2014 (Guillem, 14 November).
+        type: [integer, 'null']
+        minimum: 1
+        default: 17
+      reference:
+        type: array
+        minItems: 2
+        maxItems: 2
+        items:
+          type: integer
+        default:
+        - 1995
+        - 2014
+      windows:
+        type: object
+        patternProperties:
+          ^[0-9]{4}$:
+            type: array
+            minItems: 2
+            maxItems: 2
+            items:
+              type: integer
+        additionalProperties: false
+        default:
+          '2030':
+          - 2025
+          - 2034
+          '2040':
+          - 2035
+          - 2044
+          '2050':
+          - 2045
+          - 2054
+      scenario_pairs:
+        type: object
+        additionalProperties:
+          type: string
+        default:
+          ssp1: ssp126
+          ssp2: ssp245
+          ssp3: ssp370
+          ssp5: ssp585
+      population_scenarios:
+        type: array
+        items:
+          type: string
+      min_coverage:
+        type: number
+        exclusiveMinimum: 0
+        maximum: 1
+        default: 1
+  output:
+    type: series
+    data_class: extrapolated
+  limits:
+  - en: Requires comparable inputs and adequate coverage.
+  evidence_level: E0
+  diagnostics:
+  - n_models
+  - models
+- id: uncertainty_split
+  version: '1.1'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating uncertainty split
+    es: Desglosando la incertidumbre
+  params:
+    type: object
+    properties: {}
+  output:
+    type: table
+    data_class: extrapolated
+  limits:
+  - en: Requires comparable inputs and adequate coverage.
+  evidence_level: E0
+  diagnostics:
+  - n_models
+  - models
+- id: project_trend
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating project trend
+    es: Proyectando la tendencia
+  params:
+    type: object
+    properties:
+      variable_kind:
+        const: non_climate
+      horizons:
+        type: array
+        items:
+          type: integer
+        default:
+        - 2030
+        - 2040
+        - 2050
+      min_years:
+        type: integer
+        minimum: 3
+        default: 10
+      confidence:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.95
+    required:
+    - variable_kind
+  output:
+    type: series
+    data_class: extrapolated
+  limits:
+  - en: Requires comparable inputs and adequate coverage.
+  evidence_level: E0
+  diagnostics: []
+
+- id: lagged_association
+  version: '1.2'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Calculating lagged association
+    es: Calculando la asociación con desfase temporal
+  params:
+    type: object
+    properties:
+      weather_hypotheses:
+        description: The two meteorological pairs approved provisionally by Claude at Iban's request.
+        const:
+        - id: summer_rain_and_daily_highs
+          precipitation: precipitation
+          temperature: air_temperature_max
+          season: summer
+          negative: true
+          rationale: Lower summer rain and warmer daily highs can occur together through land-atmosphere coupling.
+          reference: https://doi.org/10.1073/pnas.1204330109
+        - id: annual_rain_and_mean_temperature
+          precipitation: precipitation
+          temperature: air_temperature
+          season: null
+          negative: false
+          rationale: Annual rainfall and annual mean temperature may vary together in either direction.
+      min_years:
+        type: integer
+        minimum: 5
+        default: 15
+      block_years:
+        type: integer
+        minimum: 1
+        default: 3
+      resamples:
+        type: integer
+        minimum: 20
+        default: 999
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+      allow_regional_gaps:
+        description: Allow one gap of up to two consecutive years in the regional control of the same-summer
+          NDVI–LST test with verified complete summers and the default resampling and significance settings.
+        type: boolean
+      regional:
+        type: string
+      from:
+        type: string
+      to:
+        type: string
+      lags:
+        type: array
+        minItems: 1
+        items:
+          type: integer
+          minimum: 0
+        default:
+        - 0
+  output:
+    type: table
+    data_class: inherit
+  limits:
+  - en: Requires comparable inputs and adequate coverage.
+  evidence_level: E3
+  diagnostics:
+  - n_effective
+  - lags_tested
+  - detrended
+  - p_adjusted
+- id: evaluate_chain
+  version: '1.4'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Checking the links in the evidence chain
+    es: Comprobando los eslabones de la cadena de evidencia
+  params:
+    type: object
+    properties:
+      min_years:
+        type: integer
+        minimum: 5
+        default: 15
+      block_years:
+        type: integer
+        minimum: 1
+        default: 3
+      resamples:
+        type: integer
+        minimum: 20
+        default: 999
+      alpha:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.05
+      regional:
+        type: string
+        regional_ring:
+          description: Inner and outer distance from the site for the regional control, in kilometres.
+          type: array
+          minItems: 2
+          maxItems: 2
+          items: {type: number, minimum: 0}
+      chain:
+        type: object
+        required:
+        - id
+        - links
+        properties:
+          id:
+            type: string
+          links:
+            type: array
+            minItems: 1
+            items:
+              type: object
+              required:
+              - from
+              - to
+              - sign
+              - ref
+              properties:
+                from:
+                  type: string
+                to:
+                  type: string
+                sign:
+                  enum:
+                  - +
+                  - '-'
+                ref:
+                  type:
+                  - string
+                  - 'null'
+                lag_years:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: integer
+                    minimum: 0
+    required:
+    - chain
+  output:
+    type: table
+    data_class: inherit
+  limits:
+  - en: Requires comparable inputs and adequate coverage.
+  evidence_level: E5
+  diagnostics: []
+
+- id: rain_extreme
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Comparing equivalent monthly windows
+    es: Comparando periodos mensuales equivalentes
+  params:
+    type: object
+    required:
+    - year
+    - months
+    properties:
+      year:
+        type: integer
+        minimum: 1
+        maximum: 9999
+      months:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+      min_years:
+        type: integer
+        minimum: 1
+        default: 20
+  output:
+    type: value
+    data_class: inherit
+  evidence_level: E0
+  diagnostics:
+  - n_years
+  - rank
+- id: same_date_anomaly
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Comparing equivalent monthly windows
+    es: Comparando periodos mensuales equivalentes
+  params:
+    type: object
+    required:
+    - year
+    - months
+    properties:
+      year:
+        type: integer
+        minimum: 1
+        maximum: 9999
+      months:
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: integer
+          minimum: 1
+          maximum: 12
+      min_years:
+        type: integer
+        minimum: 1
+        default: 20
+  output:
+    type: value
+    data_class: inherit
+  evidence_level: E0
+  diagnostics:
+  - n_years
+- id: return_level
+  version: '1.2'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Fitting the annual maxima
+    es: Ajustando los máximos anuales
+  params:
+    type: object
+    properties:
+      return_periods:
+        description: Years for which the level exceeded on average once in that time is given; a period longer
+          than the record is not estimated.
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          type: integer
+          minimum: 2
+        default: [2, 5, 10, 25]
+      event_year:
+        description: Optional. The year of an episode, set against the years before it, which are also the only
+          ones fitted. With a second input, the daily series of the episode (dates YYYY-MM-DD), the value of the
+          episode is its wettest day; without it, the value of that year in the annual series.
+        type: integer
+        minimum: 1
+        maximum: 9999
+      min_years:
+        type: integer
+        minimum: 3
+        default: 20
+      resamples:
+        type: integer
+        minimum: 99
+        default: 999
+      confidence:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 1
+        default: 0.95
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires one annual series of maxima, and for an episode optionally its daily series; a zone mean is lower
+      than the maximum of its wettest point.
+    es: Necesita una serie anual de máximos y, para un episodio, opcionalmente su serie diaria; la media de una zona
+      es menor que el máximo de su punto más extremo.
+  evidence_level: E0
+  diagnostics:
+  - n_years
+  - location
+  - scale
+  - shape
+  - max_observed
+  - return_period_years
+  - event_year
+  - event_value
+  - event_day
+  - record_level
+
+- id: zone_layer
+  version: '1'
+  type: ingest
+  visual_type: satellite
+  phrase:
+    en: Preparing map layers for the area
+    es: Preparando las capas del mapa de la zona
+  params:
+    type: object
+    required: [variable]
+    additionalProperties: false
+    properties:
+      variable:
+        type: string
+      source:
+        enum: [imerg-monthly, nex-gddp-cmip6, landsat-c2-l2]
+      period:
+        type: object
+        required: [start, end]
+        additionalProperties: false
+        properties:
+          start: {type: string, pattern: '^\d{4}-\d{2}-\d{2}$'}
+          end: {type: string, pattern: '^\d{4}-\d{2}-\d{2}$'}
+          months:
+            type: array
+            items: {type: integer, minimum: 1, maximum: 12}
+      scenario:
+        enum: [ssp126, ssp245, ssp370, ssp585]
+  output:
+    type: layer
+    data_class: inherit
+- id: read_exposure
+  version: '1.1'
+  type: ingest
+  visual_type: satellite
+  phrase:
+    en: Aligning population and the applicable flood map
+    es: Alineando la población y el mapa de inundación aplicable
+  params:
+    type: object
+    required: [variable, grid, flood_layers]
+    additionalProperties: false
+    properties:
+      variable:
+        const: population_in_flood_area
+      grid:
+        type: object
+        required: [source, year, url]
+        additionalProperties: false
+        properties:
+          source: {const: ghsl}
+          year: {type: integer}
+          url: {type: string, format: uri}
+        default:
+          source: ghsl
+          year: 2025
+          url: https://doi.org/10.1080/17538947.2024.2390454
+      flood_layers:
+        type: array
+        items:
+          type: object
+          required: [source, kind, start, masks, url]
+          additionalProperties: false
+          properties:
+            source: {type: string}
+            url: {type: string, format: uri}
+            version: {type: string}
+            kind: {enum: [observed, hazard]}
+            start: {type: string, format: date}
+            end: {type: string, format: date}
+            masks: {type: array, minItems: 1, items: {type: string}}
+            return_years: {type: integer, minimum: 1}
+            coverage: {type: string}
+            coverage_url: {type: string, format: uri}
+            coverage_filter: {type: object}
+            mask_filter: {type: object}
+            category:
+              enum: [flooded_area, flood_trace]
+          dependentRequired:
+            coverage: [coverage_url]
+          allOf:
+          - if:
+              properties:
+                kind: {const: hazard}
+            then:
+              required: [return_years, coverage]
+        default:
+        - source: copernicus-ems-emsr773
+          url: https://mapping.emergency.copernicus.eu/activations/EMSR773/
+          version: DEL v1
+          kind: observed
+          start: '2024-10-29'
+          end: '2024-10-29'
+          masks: ['*DEL_PRODUCT*__*observedEventA*']
+          mask_filter: {event_type: 5-Flood, notation: Flooded area}
+          category: flooded_area
+        - source: copernicus-ems-emsr773
+          url: https://mapping.emergency.copernicus.eu/activations/EMSR773/
+          version: DEL v1
+          kind: observed
+          start: '2024-10-29'
+          end: '2024-10-29'
+          masks: ['*DEL_PRODUCT*__*observedEventA*']
+          mask_filter: {event_type: 5-Flood, notation: Flood trace}
+          category: flood_trace
+        - source: patricova
+          url: https://dadesobertes.gva.es/es/dataset/patricova-peligrosidad-por-inundacion-plan-de-accion-territorial-de-caracter-sectorial-sobre-pr
+          version: 2026-11-11 package
+          kind: hazard
+          start: '2026-11-11'
+          masks: [patricova_peligrosidad_2, patricova_peligrosidad_4]
+          return_years: 100
+          coverage: ine/seccionado_2026__SECC_CE_20260101
+          coverage_url: https://www.ine.es/
+          coverage_filter: {CCA: '10'}
+  output:
+    type: table
+    data_class: inherit
+    unit: people
+  evidence_level: E0
+  diagnostics: [repaired_geometries, coverage_pct, raster_cells, census_sections]
+- id: exposure
+  version: '1.1'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Summing population inside the supplied mask
+    es: Sumando la población dentro de la máscara
+  params:
+    type: object
+    properties:
+      min_cells:
+        type: integer
+        minimum: 1
+        default: 1
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires a complete table on a common grid.
+    es: Requiere una tabla completa en una cuadrícula común.
+  evidence_level: E0
+  diagnostics:
+  - n_cells
+  - n_masked
+- id: validate_against
+  version: '1.0'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Comparing the supplied masks
+    es: Comparando las máscaras proporcionadas
+  params:
+    type: object
+    properties:
+      min_cells:
+        type: integer
+        minimum: 1
+        default: 1
+  output:
+    type: value
+    data_class: inherit
+  limits:
+  - en: Requires a complete table on a common grid.
+  evidence_level: E0
+  diagnostics:
+  - n_cells
+- id: resource_estimate
+  version: '1.3'
+  type: compute
+  visual_type: compute
+  phrase:
+    en: Multiplying the quantity by the archetype's unit coefficients
+    es: Multiplicando la cantidad por los coeficientes unitarios del arquetipo
+  params:
+    type: object
+    required:
+    - archetype
+    properties:
+      archetype:
+        description: The archetype as the catalog gives it (catalog.archetypes), copied into the plan.
+        type: object
+        required:
+        - id
+        - resource
+        - unit
+        - per
+        properties:
+          id:
+            type: string
+          name:
+            type: object
+          resource:
+            type: string
+          unit:
+            type: string
+          per:
+            type: string
+          low:
+            type:
+            - number
+            - 'null'
+          central:
+            type:
+            - number
+            - 'null'
+          high:
+            type:
+            - number
+            - 'null'
+          ref:
+            type:
+            - string
+            - 'null'
+          typical:
+            description: Typical size of one installation in the per unit, with its published reference.
+            type:
+            - object
+            - 'null'
+          limits:
+            type: array
+            items:
+              type: object
+              required: [en]
+              additionalProperties: {type: string}
+      quantity:
+        description: Optional. A size the question itself states, in the archetype's per unit (whatif design).
+          Without it and without an input, the typical size of the archetype, or one unit of per.
+        type: object
+        required:
+        - value
+        - unit
+        additionalProperties: false
+        properties:
+          value:
+            type: number
+            exclusiveMinimum: 0
+          unit:
+            type: string
+  output:
+    type: value
+    data_class: approximated
+  limits:
+  - en: Unit coefficients from a published reference, applied to one size (typical, stated or one unit); the
+      range is not a probability interval.
+    es: Coeficientes unitarios de una referencia publicada, aplicados a un tamaño (típico, dicho o una unidad); el
+      rango no es un intervalo de probabilidad.
+  evidence_level: E0
+  diagnostics: []

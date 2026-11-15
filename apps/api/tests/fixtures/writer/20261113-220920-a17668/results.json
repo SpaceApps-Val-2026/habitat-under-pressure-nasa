@@ -1,0 +1,121 @@
+[
+  {
+    "type": "series",
+    "variable": "air_temperature",
+    "data_class": "measured",
+    "sources": [
+      {
+        "license": "Open; acknowledgement of the NASA Langley Research Center POWER Project required",
+        "product": "MERRA-2 monthly",
+        "source": "nasa-power",
+        "url": "https://power.larc.nasa.gov/api/temporal/monthly/point"
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "air_temperature",
+        "aggregate": "year",
+        "statistic": "mean",
+        "min_count": 12
+      }
+    },
+    "period": {
+      "start": "1981-01-01",
+      "end": "2025-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "unit": "°C",
+    "series": [
+      {
+        "t": "1981",
+        "v": 17.99166666666667
+      },
+      {
+        "t": "1982",
+        "v": 17.8825
+      },
+      {
+        "t": "1983",
+        "v": 18.04
+      }
+    ],
+    "support": {
+      "cells": 0.1146,
+      "resolution_m": 55000,
+      "since": 1981
+    },
+    "coverage": {
+      "valid_pct": 100.0,
+      "n_dates": 45
+    },
+    "id": "r-s1-series",
+    "analysis": "20261113-220920-a17668",
+    "step": "s1",
+    "fingerprint": "6304382fd87b995a1c388d18d5bd78caa70ab48def62b153a9394c20a7e00e66"
+  },
+  {
+    "type": "value",
+    "variable": "air_temperature",
+    "data_class": "measured",
+    "unit": "°C/year",
+    "sources": [
+      {
+        "license": "Open; acknowledgement of the NASA Langley Research Center POWER Project required",
+        "product": "MERRA-2 monthly",
+        "source": "nasa-power",
+        "url": "https://power.larc.nasa.gov/api/temporal/monthly/point"
+      }
+    ],
+    "method": {
+      "operation": "trend",
+      "version": "1.0",
+      "params": {
+        "min_years": 30,
+        "alpha": 0.05
+      }
+    },
+    "support": {
+      "cells": 0.1146,
+      "resolution_m": 55000,
+      "since": 1981
+    },
+    "limits": [
+      {
+        "en": "The grid cell is at least as large as the area."
+      }
+    ],
+    "evidence_level": "E1",
+    "period": {
+      "start": "1981-01-01",
+      "end": "2025-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "diagnostics": {
+      "n_years": 45,
+      "correction": "Hamed-Rao",
+      "autocorrelation_lag1": 0.19857440078609923,
+      "interval_crosses_zero": false
+    },
+    "statistic": {
+      "name": "Mann-Kendall (Hamed-Rao)",
+      "p": 5.212257758735461e-07,
+      "value": 5.018330037336759,
+      "n": 45
+    },
+    "interval": {
+      "level": 0.95,
+      "low": 0.016354166666666448,
+      "high": 0.03727477477477467,
+      "method": "Sen slope"
+    },
+    "direction_assertable": true,
+    "value": 0.026111111111111196,
+    "id": "r-s2-trend",
+    "analysis": "20261113-220920-a17668",
+    "step": "s2",
+    "fingerprint": "d415cad93c4272f39f1ff96b961aa0b3659d49a72dd478f8208b7a96afc592ad"
+  }
+]

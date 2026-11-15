@@ -1,0 +1,132 @@
+/* The raster reader brings its own SIG panel and colorbar. We use its API only: the panel is
+   hidden, the legend is dressed with the stage tokens. */
+.panel-map {
+  /* The legend is measured against the map, not the window: the same card is narrow in the
+     side column of a wide screen. */
+  container-type: inline-size;
+}
+
+.panel-map .mlr-control {
+  display: none !important;
+}
+
+/* Before/after curtain: two maps of the same view in one frame. The "after" map sits below; the
+   "before" map sits on top and its canvas alone is clipped at the divider, so both sides keep the
+   same bounds, range and colormap, and the legend of the top map stays whole. */
+.panel-map .panel-map-stage {
+  position: relative;
+}
+
+.panel-map .panel-map-pane {
+  position: absolute;
+  inset: 0;
+}
+
+.panel-map .panel-map-split .maplibregl-canvas {
+  clip-path: inset(0 calc(100% - var(--panel-map-split, 50%)) 0 0);
+}
+
+.panel-map .panel-map-swipe {
+  cursor: ew-resize;
+}
+
+.panel-map .panel-map-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--orbit-focus);
+  pointer-events: none;
+}
+
+.panel-map .panel-map-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 2px solid var(--orbit-focus);
+  border-radius: 999px;
+  background: var(--orbit);
+}
+
+/* Each side is named in words, never by colour alone. A long window wraps instead of running under
+   the other label. */
+.panel-map .panel-map-label {
+  position: absolute;
+  top: 8px;
+  max-width: calc(50% - 12px);
+  padding: 2px 8px;
+  border: 1px solid var(--orbit-line);
+  border-radius: 2px;
+  background: var(--orbit);
+  color: var(--orbit-ink);
+}
+
+.panel-map .panel-map-label-before {
+  left: 8px;
+}
+
+.panel-map .panel-map-label-after {
+  right: 8px;
+}
+
+.panel-map .panel-map-range {
+  accent-color: var(--orbit-focus);
+}
+
+.panel-map .panel-map-range:focus-visible {
+  outline: 2px solid var(--orbit-focus);
+  outline-offset: 4px;
+}
+
+/* The map is in the tab order; MapLibre writes outline:none inline, so this needs !important.
+   Without it a keyboard reader cannot see where the focus is. */
+.panel-map .maplibregl-canvas:focus-visible {
+  outline: 2px solid var(--orbit-focus) !important;
+  outline-offset: -2px;
+}
+
+/* The legend never grows past the map: a long layer name wraps. The unit is in the title, so the
+   marks are short numbers. Panel.tsx places each mark at its value (left: N%), centred on it; the
+   side padding leaves room for half a label at either end of the bar. */
+.panel-map .mlr-colorbar {
+  max-width: calc(100% - 20px);
+  padding: 8px 16px;
+}
+
+.panel-map .mlr-colorbar-title {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.panel-map .mlr-colorbar-ticks {
+  position: relative;
+  display: block;
+  height: 1.3em;
+}
+
+.panel-map .mlr-colorbar-horizontal .mlr-colorbar-tick {
+  position: absolute;
+  top: 0;
+  margin: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.panel-map .mlr-colorbar {
+  --mlr-bg: var(--orbit-2);
+  --mlr-surface-soft: var(--orbit);
+  --mlr-surface-muted: var(--orbit);
+  --mlr-text: var(--orbit-ink);
+  --mlr-text-strong: var(--orbit-ink);
+  --mlr-text-soft: var(--orbit-ink);
+  --mlr-text-muted: var(--orbit-muted);
+  --mlr-border: var(--orbit-line);
+  --mlr-border-soft: var(--orbit-line);
+  --mlr-accent: var(--orbit-focus);
+  --mlr-shadow: none;
+}

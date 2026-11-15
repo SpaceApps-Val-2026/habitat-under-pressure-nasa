@@ -1,0 +1,12 @@
+# Dollars per million tokens, input and output, by model id.
+# Source: docs/arquitectura-v0.3.md, section 5 (Anthropic tariff consulted on 2026-11-03).
+# A model that is not here gets cost_usd null, never zero. Cached input is counted at the full input price,
+# so the cost of a call that reuses the prompt cache is an upper bound.
+source: "docs/arquitectura-v0.3.md, sections 5 and 5.1; Anthropic tariff consulted on 2026-11-03, OpenAI pricing page on 2026-11-12"
+models:
+  claude-sonnet-5-5: {input: 2.0, output: 10.0}
+  claude-opus-5-5: {input: 4.0, output: 20.0}
+  claude-haiku-5-5: {input: 0.10, output: 0.50}
+  gpt-6.1-sol: {input: 2.0, output: 10.0}
+  gpt-6.1-terra: {input: 1.0, output: 5.0}
+  gpt-6-luna: {input: 0.10, output: 0.50}

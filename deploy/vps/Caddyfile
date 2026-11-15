@@ -1,0 +1,32 @@
+# Caddy in front of the app: automatic HTTPS (Let's Encrypt) for HUP_DOMAIN, and SSE that is never buffered.
+# HUP_DOMAIN comes from compose.prod.yaml; a free name that points at the server is enough (see README.md).
+
+{$HUP_DOMAIN} {
+	# Optional for the demo: a single shared user in front of everything, so a public URL cannot spend LLM money.
+	# Create the hash with:  docker run --rm caddy:2.10 caddy hash-password   (the person types the password)
+	# and put HUP_BASIC_USER and HUP_BASIC_HASH in /srv/hup/compose.env (hash in single quotes). Then uncomment:
+	# basic_auth {
+	# 	{$HUP_BASIC_USER} {$HUP_BASIC_HASH}
+	# }
+
+	# Compress everything except the event stream, so each event leaves as soon as it is written.
+	@compressible not path /api/analyses/*/events
+	encode @compressible zstd gzip
+
+	reverse_proxy app:8080 {
+		# Flush every write. Caddy already does this for text/event-stream; this keeps it explicit.
+		flush_interval -1
+		transport http {
+			# An analysis can stream for many minutes: no read timeout on the upstream (also Caddy's default).
+			read_timeout 0
+		}
+	}
+
+	header {
+		-Server
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+	}
+
+	# No access log on purpose: it would keep visitors' IP addresses (security.md). Errors still reach docker logs.
+}

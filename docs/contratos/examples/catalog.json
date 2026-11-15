@@ -1,0 +1,521 @@
+{
+  "version": "0.2.0",
+  "sources": [
+    {
+      "id": "landsat-c2-l2",
+      "name": "Landsat 8/9 Collection 2 Level-2",
+      "provider": "USGS and NASA",
+      "product": "landsat-c2-l2",
+      "version": "02",
+      "resolution": "30 m (surface temperature: ~100 m)",
+      "since": "2013",
+      "access": {
+        "mode": "api",
+        "account": "none",
+        "coverage": "on_demand",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2"
+      },
+      "license": {
+        "en": "Public domain (USGS). No use restrictions; credit is optional. Cite doi:10.5066/P9OGBGM6.",
+        "es": "Dominio público (USGS). Sin restricciones de uso; el crédito es opcional. Citar doi:10.5066/P9OGBGM6."
+      },
+      "citation": {
+        "en": "Landsat Collection 2 Level-2 image courtesy of the U.S. Geological Survey. doi:10.5066/P9OGBGM6",
+        "es": "Landsat Collection 2 Level-2 image courtesy of the U.S. Geological Survey. doi:10.5066/P9OGBGM6"
+      },
+      "redistributable": true
+    },
+    {
+      "id": "nasa-power",
+      "name": "NASA POWER",
+      "provider": "NASA LaRC",
+      "product": "MERRA-2",
+      "resolution": "~50 km",
+      "since": "1981",
+      "access": {
+        "mode": "api",
+        "account": "none",
+        "coverage": "on_demand",
+        "url": "https://power.larc.nasa.gov/api/temporal/monthly/point"
+      },
+      "license": "Open, acknowledgement required",
+      "citation": "NASA Langley Research Center POWER Project",
+      "redistributable": true
+    },
+    {
+      "id": "smap-l3",
+      "name": "SMAP L3 soil moisture 9 km",
+      "provider": "NASA NSIDC DAAC",
+      "product": "SPL3SMP_E",
+      "version": "006",
+      "resolution": "9 km",
+      "since": "2015",
+      "access": {
+        "mode": "package",
+        "account": "earthdata",
+        "coverage": "cases",
+        "url": "https://nsidc.org/data/spl3smp_e"
+      },
+      "license": "Open, citation required",
+      "citation": "SMAP Enhanced L3 Radiometer Global Daily 9 km (NSIDC DAAC)",
+      "redistributable": true
+    },
+    {
+      "id": "chj-phj-2022-2027",
+      "name": "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027",
+      "provider": "Confederación Hidrográfica del Júcar",
+      "since": "2023",
+      "access": {
+        "mode": "manual",
+        "account": "none",
+        "coverage": "cases",
+        "url": "https://www.chj.es/"
+      },
+      "license": "To be confirmed",
+      "citation": "Confederación Hidrográfica del Júcar, Plan Hidrológico 2022-2027 (Real Decreto 35/2023)",
+      "redistributable": false
+    }
+  ],
+  "variables": [
+    {
+      "id": "ndvi",
+      "name": {
+        "en": "Vegetation greenness (NDVI)",
+        "es": "Verde (NDVI)"
+      },
+      "unit": "1",
+      "layer": "green",
+      "sources": [
+        "landsat-c2-l2"
+      ],
+      "answers": [
+        "verde",
+        "vegetación",
+        "arbolado",
+        "greenness",
+        "vegetation",
+        "tree cover"
+      ],
+      "not": {
+        "en": "Not a count of trees and not crop yield.",
+        "es": "No es un recuento de árboles ni el rendimiento de un cultivo."
+      },
+      "support": {
+        "resolution_m": 30,
+        "since": 2013,
+        "revisit_days": 8
+      },
+      "frame": "state",
+      "designs": [
+        "state",
+        "trend",
+        "impact",
+        "scan"
+      ]
+    },
+    {
+      "id": "lst",
+      "name": {
+        "en": "Land surface temperature",
+        "es": "Temperatura de superficie"
+      },
+      "unit": "°C",
+      "layer": "heat",
+      "sources": [
+        "landsat-c2-l2"
+      ],
+      "limit": {
+        "en": "Surface temperature around 10:30, not air temperature.",
+        "es": "Temperatura de superficie hacia las 10:30, no del aire."
+      },
+      "answers": [
+        "calor",
+        "isla de calor",
+        "heat",
+        "heat island",
+        "hot neighbourhoods"
+      ],
+      "not": {
+        "en": "Not air temperature and not the heat a person feels; night-time heat is not covered.",
+        "es": "No es la temperatura del aire ni el calor que siente una persona; no cubre el calor nocturno."
+      },
+      "support": {
+        "resolution_m": 100,
+        "since": 2013,
+        "revisit_days": 8
+      },
+      "frame": "state",
+      "designs": [
+        "state",
+        "trend",
+        "impact",
+        "scan"
+      ],
+      "eurovoc": [
+        "c_3f4ff841"
+      ]
+    },
+    {
+      "id": "soil_moisture",
+      "name": {
+        "en": "Soil moisture",
+        "es": "Humedad del suelo"
+      },
+      "unit": "m³/m³",
+      "layer": "water",
+      "sources": [
+        "smap-l3"
+      ],
+      "answers": [
+        "sequía",
+        "suelo seco",
+        "drought",
+        "dry soil"
+      ],
+      "not": {
+        "en": "Not groundwater and not reservoir storage; one cell is larger than a municipality.",
+        "es": "No es agua subterránea ni agua embalsada; una celda es mayor que un municipio."
+      },
+      "support": {
+        "resolution_m": 9000,
+        "since": 2015,
+        "revisit_days": 3
+      },
+      "frame": "state",
+      "designs": [
+        "state",
+        "trend"
+      ],
+      "eurovoc": [
+        "3988"
+      ]
+    },
+    {
+      "id": "water_demand",
+      "name": {
+        "en": "Water demand",
+        "es": "Demanda de agua"
+      },
+      "unit": "hm³/year",
+      "layer": "water",
+      "sources": [
+        "chj-phj-2022-2027"
+      ],
+      "answers": [
+        "consumo de agua",
+        "demanda de agua",
+        "water use",
+        "water demand"
+      ],
+      "not": {
+        "en": "A planning figure from a document, not a measurement.",
+        "es": "Una cifra de planificación tomada de un documento, no una medición."
+      },
+      "frame": "pressure",
+      "designs": [
+        "state",
+        "scenario"
+      ],
+      "eurovoc": [
+        "141",
+        "3144"
+      ]
+    },
+    {
+      "id": "air_temperature",
+      "name": {
+        "en": "Air temperature at 2 m",
+        "es": "Temperatura del aire a 2 m"
+      },
+      "unit": "°C",
+      "layer": "climate",
+      "sources": [
+        "nasa-power"
+      ],
+      "data_class": "reanalysis",
+      "limit": {
+        "en": "Reanalysis (MERRA-2) on a cell of about 50 km; it is not a thermometer reading.",
+        "es": "Reanálisis (MERRA-2) en una celda de unos 50 km; no es la lectura de un termómetro."
+      },
+      "answers": [
+        "temperatura",
+        "calentamiento",
+        "temperature",
+        "warming"
+      ],
+      "not": {
+        "en": "Not a station measurement; local extremes are smoothed out.",
+        "es": "No es una medida de estación; los extremos locales se suavizan."
+      },
+      "support": {
+        "resolution_m": 50000,
+        "since": 1981,
+        "revisit_days": 1
+      },
+      "frame": "state",
+      "designs": [
+        "state",
+        "trend",
+        "scan"
+      ],
+      "eurovoc": [
+        "5482"
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "read_series",
+      "version": "1.0",
+      "type": "ingest",
+      "visual_type": "satellite",
+      "phrase": {
+        "en": "Reading {n} scenes from {source}",
+        "es": "Leyendo {n} escenas de {source}"
+      },
+      "params": {
+        "type": "object",
+        "required": [
+          "variable"
+        ],
+        "properties": {
+          "variable": {
+            "type": "string"
+          },
+          "max_cloud_pct": {
+            "type": "number"
+          }
+        }
+      },
+      "output": {
+        "type": "series",
+        "data_class": "inherit"
+      },
+      "evidence_level": "E0"
+    },
+    {
+      "id": "baci_contrast",
+      "version": "1.0",
+      "type": "compute",
+      "visual_type": "compute",
+      "phrase": {
+        "en": "Comparing the site with its surroundings, before and after",
+        "es": "Comparando la zona con su entorno, antes y después"
+      },
+      "params": {
+        "type": "object",
+        "required": [
+          "variable",
+          "before",
+          "after",
+          "reference_km"
+        ],
+        "properties": {
+          "variable": {
+            "type": "string"
+          },
+          "before": {
+            "type": "array"
+          },
+          "after": {
+            "type": "array"
+          },
+          "reference_km": {
+            "type": "number"
+          }
+        }
+      },
+      "output": {
+        "type": "value",
+        "data_class": "inherit"
+      },
+      "limits": [
+        {
+          "en": "Coincides in time and place; does not prove cause.",
+          "es": "Coincide en tiempo y lugar; no prueba la causa."
+        }
+      ],
+      "evidence_level": "E2",
+      "diagnostics": [
+        "n_dates",
+        "interval_crosses_zero"
+      ]
+    },
+    {
+      "id": "write_findings",
+      "version": "1.0",
+      "type": "write",
+      "visual_type": "document",
+      "phrase": {
+        "en": "Writing the findings",
+        "es": "Redactando los hallazgos"
+      },
+      "params": {
+        "type": "object"
+      },
+      "output": {
+        "type": "document",
+        "data_class": "inherit"
+      }
+    },
+    {
+      "id": "review_findings",
+      "version": "1.0",
+      "type": "review",
+      "visual_type": "document",
+      "phrase": {
+        "en": "Checking every figure against its result",
+        "es": "Comprobando cada cifra contra su resultado"
+      },
+      "params": {
+        "type": "object"
+      },
+      "output": {
+        "type": "table",
+        "data_class": "inherit"
+      }
+    }
+  ],
+  "chains": [
+    {
+      "id": "greenness_heat",
+      "name": {
+        "en": "Less vegetation, hotter surface",
+        "es": "Menos verde, superficie más caliente"
+      },
+      "links": [
+        {
+          "from": "ndvi",
+          "to": "lst",
+          "sign": "-",
+          "lag_years": [
+            0,
+            0
+          ],
+          "ref": null
+        }
+      ]
+    }
+  ],
+  "norms": [
+    {
+      "id": "es-rd-35-2023-jucar",
+      "title": "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027",
+      "scope": {
+        "type": "basin",
+        "id": "jucar"
+      },
+      "applies_to": [
+        "water_demand"
+      ],
+      "clause": {
+        "document": "chj-phj-2022-2027",
+        "quote": null
+      },
+      "threshold": {
+        "kind": "limit",
+        "value": null,
+        "unit": "hm³/year"
+      },
+      "reviewed_by": null
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "household-water",
+      "name": {
+        "en": "Household water use",
+        "es": "Consumo doméstico de agua"
+      },
+      "resource": "water",
+      "unit": "L/day",
+      "per": "inhabitant",
+      "low": null,
+      "central": null,
+      "high": null,
+      "ref": null
+    }
+  ],
+  "blocks": [
+    {
+      "id": "KeyFigure",
+      "needs": {
+        "result_types": [
+          "value"
+        ],
+        "fields": [
+          "interval"
+        ]
+      },
+      "styles": [
+        "journalistic",
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "TrendChart",
+      "needs": {
+        "result_types": [
+          "series"
+        ]
+      },
+      "styles": [
+        "journalistic",
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "EvidenceBadge",
+      "needs": {
+        "fields": [
+          "evidence_level"
+        ]
+      },
+      "styles": [
+        "journalistic",
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "NormCard",
+      "needs": {
+        "result_types": [
+          "value"
+        ]
+      },
+      "styles": [
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "MethodBox",
+      "needs": {},
+      "styles": [
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "LimitsBox",
+      "needs": {},
+      "styles": [
+        "journalistic",
+        "institutional",
+        "scientific"
+      ]
+    },
+    {
+      "id": "SourcesTable",
+      "needs": {},
+      "styles": [
+        "journalistic",
+        "institutional",
+        "scientific"
+      ]
+    }
+  ]
+}

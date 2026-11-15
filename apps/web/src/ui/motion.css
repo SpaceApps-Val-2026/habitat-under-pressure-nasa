@@ -1,0 +1,24 @@
+/* Interface micro-transitions (design system, "Movimiento"): what appears fades in, a floating layer fades
+   out before it is removed, and a direct answer to a gesture never waits. Opacity only. With reduced motion
+   the duration tokens are 0 ms, so both are instant. */
+.fade-in {
+  animation: fade-in var(--motion-fade) var(--ease-enter);
+}
+
+.fade-out {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-fade) var(--ease-exit);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media print {
+  .fade-in {
+    animation: none;
+  }
+}

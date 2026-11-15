@@ -1,0 +1,138 @@
+# Evaluation set for the typed reading of a question (Jev and the lexical floor), 25 questions.
+# Written on 2026-11-14 BEFORE any run; the expected readings are not to be tuned after seeing results.
+# Run: .venv\Scripts\python.exe -X utf8 -m tests.assistant.jev_eval   (Jev needs TYPESAFE_API_KEY; costs a fraction
+# of a cent for the whole set)
+#
+# expect:
+#   designs: the correct kinds of answer; the first is the best one, any of them counts as right.
+#   subjects: the subjects (understand.SUBJECTS) the question is about; [] when none.
+#   shortlist: catalog variables that must be in the prefilter's full entries (the planner needs their detail).
+#   time: kind of the time reference (point, since, range, future, episode, recent) or null when there is none.
+#   place: the question names a place (true/false), wherever it is.
+#   in_scope: Delfos's informants could answer it (a place on Earth, a subject of the catalog).
+#   size: the question states a size with its unit.
+
+cases:
+  - id: J01
+    language: es
+    text: "¿Está subiendo la temperatura en Ontinyent?"
+    expect: {designs: [trend], subjects: [heat], shortlist: [air_temperature], time: null, place: true,
+             in_scope: true, size: false}
+  - id: J02
+    language: es
+    text: "¿Cuánto calor hará en Valencia en 2050?"
+    expect: {designs: [scenario], subjects: [heat], shortlist: [tas_mean], time: future, place: true,
+             in_scope: true, size: false}
+  - id: J03
+    language: es
+    text: "¿Qué ha cambiado en Paiporta desde la DANA de 2024?"
+    expect: {designs: [impact, trend], subjects: [rain, flood], shortlist: [], time: since, place: true,
+             in_scope: true, size: false}
+  - id: J04
+    language: es
+    text: "¿Cómo de excepcional fue la lluvia de octubre de 2024 en Algemesí?"
+    expect: {designs: [event], subjects: [rain], shortlist: [precipitation], time: point, place: true,
+             in_scope: true, size: false}
+  - id: J05
+    language: es
+    text: "¿Cuánta gente vive en zona inundable en Catarroja?"
+    expect: {designs: [exposure], subjects: [flood, population], shortlist: [population_in_flood_area], time: null,
+             place: true, in_scope: true, size: false}
+  - id: J06
+    language: es
+    text: "¿Qué pasa si se construyen 5.000 viviendas en Sagunto?"
+    expect: {designs: [whatif], subjects: [building], shortlist: [], time: null, place: true, in_scope: true,
+             size: true}
+  - id: J07
+    language: en
+    text: "How many people live in flood-prone areas in Lyon, France?"
+    expect: {designs: [exposure], subjects: [flood, population], shortlist: [population_in_flood_area], time: null,
+             place: true, in_scope: true, size: false}
+  - id: J08
+    language: es
+    text: "¿Cómo está la vegetación en Torrent este año?"
+    expect: {designs: [state], subjects: [vegetation], shortlist: [ndvi], time: recent, place: true,
+             in_scope: true, size: false}
+  - id: J09
+    language: es
+    text: "Dame un panorama general del clima en Gandia"
+    expect: {designs: [scan, state], subjects: [], shortlist: [], time: null, place: true, in_scope: true,
+             size: false}
+  - id: J10
+    language: es
+    text: "¿Ha bajado el verde en Port de Sagunt desde que se construyó la gigafactoría?"
+    expect: {designs: [impact, trend], subjects: [vegetation], shortlist: [ndvi], time: since, place: true,
+             in_scope: true, size: false}
+  - id: J11
+    language: es
+    text: "¿Cuánta lluvia habrá en Sueca a final de siglo?"
+    expect: {designs: [scenario], subjects: [rain], shortlist: [pr_total], time: future, place: true,
+             in_scope: true, size: false}
+  - id: J12
+    language: es
+    text: "¿Fue excepcional el calor del verano de 2022 en Xàtiva?"
+    expect: {designs: [event], subjects: [heat], shortlist: [air_temperature], time: point, place: true,
+             in_scope: true, size: false}
+  - id: J13
+    language: es
+    text: "¿Cuánta agua necesitaría un centro de datos de 50 MW en Alzira?"
+    expect: {designs: [whatif], subjects: [water, energy], shortlist: [], time: null, place: true, in_scope: true,
+             size: true}
+  - id: J14
+    language: es
+    text: "¿Está subiendo la temperatura del mar en la costa de Cullera?"
+    expect: {designs: [trend], subjects: [sea, heat], shortlist: [sea_surface_temperature], time: null, place: true,
+             in_scope: true, size: false}
+  - id: J15
+    language: en
+    text: "Write me a poem about the beaches of Valencia."
+    expect: {designs: [], subjects: [], shortlist: [], time: null, place: true, in_scope: false, size: false}
+  - id: J16
+    language: es
+    text: "¿Cuánta superficie construida hay en Burjassot?"
+    expect: {designs: [state], subjects: [building], shortlist: [built_up_surface], time: null, place: true,
+             in_scope: true, size: false}
+  - id: J17
+    language: es
+    text: "¿Está subiendo la temperatura?"
+    expect: {designs: [trend], subjects: [heat], shortlist: [air_temperature], time: null, place: false,
+             in_scope: true, size: false}
+  - id: J18
+    language: es
+    text: "Analiza mi barrio"
+    expect: {designs: [scan, state], subjects: [], shortlist: [], time: null, place: false, in_scope: true,
+             size: false}
+  - id: J19
+    language: es
+    text: "¿Ha subido la temperatura en Marte?"
+    expect: {designs: [trend], subjects: [heat], shortlist: [], time: null, place: true, in_scope: false,
+             size: false}
+  - id: J20
+    language: en
+    text: "Is it getting hotter in Phoenix, Arizona since 2000?"
+    expect: {designs: [trend], subjects: [heat], shortlist: [air_temperature], time: since, place: true,
+             in_scope: true, size: false}
+  - id: J21
+    language: en
+    text: "How much water would 20,000 new residents need in Murcia?"
+    expect: {designs: [whatif], subjects: [water, population], shortlist: [], time: null, place: true,
+             in_scope: true, size: true}
+  - id: J22
+    language: ca
+    text: "Ha augmentat la calor a València des de 1990?"
+    expect: {designs: [trend], subjects: [heat], shortlist: [air_temperature], time: since, place: true,
+             in_scope: true, size: false}
+  - id: J23
+    language: ca
+    text: "Quanta gent viu en zona inundable a Alzira?"
+    expect: {designs: [exposure], subjects: [flood, population], shortlist: [population_in_flood_area], time: null,
+             place: true, in_scope: true, size: false}
+  - id: J24
+    language: ca
+    text: "Com seran les pluges a Gandia l'any 2050?"
+    expect: {designs: [scenario], subjects: [rain], shortlist: [pr_total], time: future, place: true,
+             in_scope: true, size: false}
+  - id: J25
+    language: es
+    text: "¿Quién ganará la liga este año?"
+    expect: {designs: [], subjects: [], shortlist: [], time: null, place: false, in_scope: false, size: false}

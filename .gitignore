@@ -1,0 +1,20 @@
+# Data stays out of Git
+/data/
+*.nc
+*.tif
+*.zarr/
+# Credentials: never in the repository
+.netrc
+.env
+.env.*
+!.env.example
+# Python
+__pycache__/
+.venv*/
+.pytest_cache/
+.ruff_cache/
+# Node and build output
+node_modules/
+dist/
+# Desktop files
+.DS_Store

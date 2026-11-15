@@ -1,0 +1,1060 @@
+# variables: one entry per item. Shape: docs/contratos/catalog.schema.json, property "variables".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: population_in_flood_area
+  name:
+    en: Estimated population within a mapped flood area
+    es: Población estimada en un área de inundación cartografiada
+  unit: people
+  data_class: approximated
+  layer: population
+  sources: [ine-population, ine, ghsl-built-s, ghsl, copernicus-ems-emsr773, patricova]
+  # The reader (readers/exposure.py) counts people at 100 m (INE spread by built-up 100 m, or the GHSL 100 m tile)
+  # and only falls back to the 1 km GHSL grid where no tile covers the zone; each result states its own.
+  support: {resolution_m: 100}
+  # Where it exists depends on the flood maps of read_exposure (operations.yaml, flood_layers): today EMSR773 and
+  # PATRICOVA, box [-4.65, 36.63, 0.65, 40.82]. Not declared as a bbox: the exposure tests swap those maps for a
+  # synthetic one elsewhere and keep this extent (.dev/notes/2026-11-15-qa-extension-variables.md). The limit says it.
+  extent:
+    kind: global
+    verified: false
+    ref: .dev/notes/2026-11-15-qa-extension-variables.md
+  frame: exposure
+  designs: [exposure]
+  answers: [flood exposure, population in a flood area, población expuesta a inundación, habitantes en zona inundable]
+  limit:
+    en: Population is estimated on the support of the selected source. The map describes spatial exposure only. The only catalogued flood maps are PATRICOVA (Comunitat Valenciana) and the Copernicus EMS activation EMSR773 (October 2024, areas in eastern and southern Spain); elsewhere there is no flood map to count people in.
+    es: La población se estima en el soporte de la fuente elegida. El mapa describe exposición espacial. Los únicos mapas de inundación catalogados son PATRICOVA (Comunitat Valenciana) y la activación EMSR773 de Copernicus EMS (octubre de 2024, zonas del este y el sur de España); en el resto no hay mapa en el que contar personas.
+  eurovoc:
+  - '1440'
+- id: ndvi
+  name:
+    en: Vegetation greenness (NDVI)
+    es: Verde (NDVI)
+  unit: '1'
+  layer: green
+  sources:
+  - landsat-c2-l2
+  answers:
+  - verde
+  - vegetación
+  - arbolado
+  - greenness
+  - vegetation
+  - tree cover
+  not:
+    en: Not a count of trees and not crop yield.
+    es: No es un recuento de árboles ni el rendimiento de un cultivo.
+  support:
+    resolution_m: 30
+    since: 2013
+    revisit_days: 8
+  extent:
+    kind: global
+    verified: true
+    ref: https://www.usgs.gov/landsat-missions/landsat-collection-2-level-2-science-products
+  frame: state
+  designs:
+  - state
+  - trend
+  - impact
+  - scan
+- id: lst
+  name:
+    en: Land surface temperature
+    es: Temperatura de superficie
+  unit: °C
+  layer: heat
+  sources:
+  - landsat-c2-l2
+  limit:
+    en: Surface temperature around 10:30, not air temperature.
+    es: Temperatura de superficie hacia las 10:30, no del aire.
+  answers:
+  - calor
+  - isla de calor
+  - heat
+  - heat island
+  - hot neighbourhoods
+  not:
+    en: Not air temperature and not the heat a person feels; night-time heat is not covered.
+    es: No es la temperatura del aire ni el calor que siente una persona; no cubre el calor nocturno.
+  support:
+    resolution_m: 100
+    since: 2013
+    revisit_days: 8
+  extent:
+    kind: global
+    verified: true
+    ref: https://www.usgs.gov/landsat-missions/landsat-collection-2-level-2-science-products
+  frame: state
+  designs:
+  - state
+  - trend
+  - impact
+  - scan
+  eurovoc:
+  - '434786'
+- id: soil_moisture
+  name:
+    en: Soil moisture
+    es: Humedad del suelo
+  unit: m³/m³
+  layer: water
+  sources:
+  - smap-l3
+  answers:
+  - sequía
+  - suelo seco
+  - drought
+  - dry soil
+  not:
+    en: Not groundwater and not reservoir storage; one cell is larger than a municipality.
+    es: No es agua subterránea ni agua embalsada; una celda es mayor que un municipio.
+  support:
+    resolution_m: 9000
+    since: 2015
+    revisit_days: 3
+  extent:
+    kind: bbox
+    bbox: [-180, -85.044, 180, 90]
+    verified: true
+    ref: https://nsidc.org/data/spl3smp_e/versions/6
+  frame: state
+  designs:
+  - state
+  - trend
+  eurovoc:
+  - '3144'
+  - '434786'
+- id: water_demand
+  name:
+    en: Water demand
+    es: Demanda de agua
+  unit: hm³/year
+  layer: water
+  sources:
+  - chj-phj-2022-2027
+  answers:
+  - consumo de agua
+  - demanda de agua
+  - water use
+  - water demand
+  not:
+    en: A planning figure from a document, not a measurement.
+    es: Una cifra de planificación tomada de un documento, no una medición.
+  # Planning cycle in force 2022-2027 (exploracion/fuentes/plan-hidrologico-jucar.md).
+  support:
+    since: 2022
+    until: 2027
+  # Júcar river basin district. No district outline is held; box: the 1,526 points of the CHJ F71 well inventory
+  # (F71_M10_Todas, UTM ETRS89 30N), widened 5 km. An approximation of the district, far from Madrid or Lisbon.
+  extent:
+    kind: bbox
+    bbox: [-2.50, 37.88, 0.55, 40.75]
+    region: ES-DH-JUCAR
+    verified: true
+    ref: .dev/notes/2026-11-15-qa-extension-variables.md
+  frame: pressure
+  designs:
+  - state
+  - scenario
+  eurovoc:
+  - '141'
+  - '3144'
+- id: air_temperature
+  data_class: reanalysis
+  name:
+    en: Air temperature, monthly mean
+    es: Temperatura del aire, media mensual
+  unit: "°C"
+  layer: heat
+  sources:
+  - nasa-power
+  limit:
+    en: "One grid cell is about 50 km wide: it describes a region, not a town."
+    es: "Una celda mide unos 50 km: describe una comarca, no un municipio."
+  answers:
+  - "temperatura"
+  - "calor"
+  - "temperature"
+  - "warming"
+  - "calentamiento"
+  not:
+    en: "Not the temperature of a street or a neighbourhood."
+    es: "No es la temperatura de una calle ni de un barrio."
+  support:
+    resolution_m: 55000
+    since: 1981
+  extent:
+    kind: global
+    verified: true
+    ref: https://power.larc.nasa.gov/docs/methodology/
+  frame: state
+  designs:
+  - state
+  - trend
+  - scan
+  eurovoc:
+  - '434786'
+- id: air_temperature_max
+  data_class: reanalysis
+  name:
+    en: Air temperature, monthly mean of daily maxima
+    es: Temperatura del aire, media mensual de las máximas diarias
+  unit: "°C"
+  layer: heat
+  sources:
+  - nasa-power
+  limit:
+    en: "One grid cell is about 50 km wide: it describes a region, not a town."
+    es: "Una celda mide unos 50 km: describe una comarca, no un municipio."
+  answers:
+  - "temperatura máxima"
+  - "maximum temperature"
+  not:
+    en: "Not the hottest hour of one day, not a heat wave of a few days (a monthly mean smooths it out), and not a street-level value."
+    es: "No es la hora más calurosa de un día, ni una ola de calor de unos días (la media mensual la diluye), ni un valor a pie de calle."
+  support:
+    resolution_m: 55000
+    since: 1981
+  extent:
+    kind: global
+    verified: true
+    ref: https://power.larc.nasa.gov/docs/methodology/
+  frame: state
+  designs:
+  - state
+  - trend
+  - scan
+  eurovoc:
+  - '434786'
+- id: precipitation
+  name:
+    en: Precipitation, monthly total
+    es: Precipitación, total mensual
+  unit: "mm/month"
+  layer: water
+  sources:
+  - imerg-monthly
+  answers:
+  - "lluvia"
+  - "precipitación"
+  - "rain"
+  - "rainfall"
+  not:
+    en: "Not the rain of a single storm, not water stored in reservoirs or aquifers, and not a drought index: a monthly total does not measure the deficit against normal."
+    es: "No es la lluvia de una tormenta concreta, ni el agua embalsada o subterránea, ni un índice de sequía: un total mensual no mide el déficit frente a lo normal."
+  support:
+    resolution_m: 11100
+    since: 1998
+  extent:
+    kind: global
+    verified: true
+    ref: https://gpm.nasa.gov/data/imerg
+  frame: state
+  designs:
+  - state
+  - trend
+  - event
+  - scan
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: tas_mean
+  data_class: extrapolated
+  baseline:
+    variable: air_temperature
+    statistic: mean
+  name:
+    en: Projected air temperature, yearly mean
+    es: Temperatura del aire proyectada, media anual
+  unit: "°C"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "temperatura futura"
+  - "future temperature"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '434786'
+- id: tasmax_mean
+  data_class: extrapolated
+  baseline:
+    variable: air_temperature_max
+    statistic: mean
+  name:
+    en: Projected daily maximum temperature, yearly mean
+    es: Temperatura máxima diaria proyectada, media anual
+  unit: "°C"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "máximas futuras"
+  - "future maximum temperature"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '434786'
+- id: tasmax_max
+  data_class: extrapolated
+  name:
+    en: Projected hottest day of the year
+    es: Día más caluroso del año, proyectado
+  unit: "°C"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "día más caluroso"
+  - "hottest day"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '434786'
+- id: days_above_35c
+  data_class: extrapolated
+  name:
+    en: Projected days above 35 °C per year
+    es: Días al año por encima de 35 °C, proyectados
+  unit: "days"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "días de calor extremo"
+  - "days of extreme heat"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '434786'
+- id: pr_total
+  data_class: extrapolated
+  baseline:
+    variable: precipitation
+    statistic: sum
+  name:
+    en: Projected precipitation, yearly total
+    es: Precipitación proyectada, total anual
+  unit: "mm"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "lluvia futura"
+  - "future rainfall"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: pr_max_1day
+  data_class: extrapolated
+  name:
+    en: Projected wettest day of the year
+    es: Día más lluvioso del año, proyectado
+  unit: "mm"
+  layer: climate
+  sources:
+  - nex-gddp-cmip6
+  limit:
+    en: "Climate models at about 28 km: read the change between periods, not the absolute value of one year."
+    es: "Modelos climáticos a unos 28 km: se lee el cambio entre periodos, no el valor absoluto de un año."
+  answers:
+  - "lluvia extrema futura"
+  - "future extreme rain"
+  not:
+    en: "Not a forecast for a given year: a set of model runs under an emissions scenario."
+    es: "No es una previsión para un año concreto: es un conjunto de simulaciones bajo un escenario de emisiones."
+  support:
+    resolution_m: 27830
+    since: 1995
+  extent:
+    kind: bbox
+    bbox: [-180, -60, 180, 90]
+    verified: true
+    ref: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  frame: driver
+  designs:
+  - scenario
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: population
+  name:
+    en: Resident population (INE in Spain, GHSL estimate elsewhere)
+    es: Población residente (INE en España, estimación GHSL en el resto)
+  unit: people
+  data_class: approximated
+  layer: population
+  sources:
+  - ine-population
+  - ghsl
+  - ghsl-built-s
+  limit:
+    en: "Where the whole zone lies within INE census sections with a figure (today, the province of Valencia): 1 January 2025; the total of each municipality is the official register figure, each census section keeps its share in the annual census, and inside the section people are spread over 100 m cells by residential built-up surface (GHSL), a modelled split valid for a neighbourhood, not for a building. Elsewhere, the GHSL estimate for 2020 and 2025 on a 100 m grid where the tile is available and a 1 km grid otherwise, spread evenly within each cell; against the register it fell 15% short outside the city of Valencia."
+    es: "Donde toda la zona está dentro de secciones censales del INE con cifra (hoy, la provincia de Valencia): 1 de enero de 2025; el total de cada municipio es la cifra oficial del padrón, cada sección censal conserva su parte en el censo anual y, dentro de la sección, la población se reparte en celdas de 100 m según la superficie construida residencial (GHSL), un reparto modelado válido para un barrio, no para un edificio. En el resto, la estimación GHSL de 2020 y 2025 en rejilla de 100 m donde hay tesela y de 1 km en el resto, repartida por igual dentro de cada celda; frente al padrón quedó un 15 % por debajo fuera de la ciudad de Valencia."
+  answers:
+  - población
+  - habitantes
+  - cuánta gente vive
+  - population
+  - inhabitants
+  - residents
+  not:
+    en: "Not the people present at a given hour. Only the total of a whole municipality is an official count; any part of it is a modelled split."
+    es: "No es la gente presente a una hora concreta. Solo el total de un municipio entero es una cifra oficial; cualquier parte de él es un reparto modelado."
+  support:
+    resolution_m: 100
+    since: 2020
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  frame: exposure
+  designs:
+  - state
+- id: population_projected
+  data_class: extrapolated
+  name:
+    en: Projected population by SSP scenario
+    es: Población proyectada por escenario SSP
+  unit: people
+  layer: population
+  sources:
+  - sedac-ssp
+  limit:
+    en: "Projections by decade on a grid of about 14 km: valid for a region or a large municipality, not for a small one."
+    es: "Proyecciones por década en una rejilla de unos 14 km: valen para una región o un municipio grande, no para uno pequeño."
+  answers:
+  - población futura
+  - crecimiento de la población
+  - future population
+  - population growth
+  not:
+    en: "Not a forecast for a given year: one projection per socioeconomic pathway (SSP1 to SSP5)."
+    es: "No es una previsión para un año concreto: es una proyección por trayectoria socioeconómica (SSP1 a SSP5)."
+  support:
+    resolution_m: 13900
+    since: 2000
+    # Product popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01 (catalog/sources.yaml, sedac-ssp).
+    until: 2100
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  frame: driver
+  designs:
+  - scenario
+- id: built_up_surface
+  data_class: approximated
+  name:
+    en: Built-up surface
+    es: Superficie construida
+  unit: m²
+  layer: land
+  sources:
+  - ghsl-built-s
+  limit:
+    en: "Ground covered by buildings, estimated from satellite images in 100 m cells; it does not count floors. Last observation 2018: later epochs are carried forward."
+    es: "Suelo cubierto por edificios, estimado con imágenes de satélite en celdas de 100 m; no cuenta plantas. Última observación en 2018: las épocas posteriores se prolongan."
+  answers:
+  - superficie construida
+  - suelo construido
+  - huella edificada
+  - edificación
+  - built-up area
+  - built-up surface
+  - building footprint
+  - urban footprint
+  not:
+    en: "Not the floor area of a project, not the outline of a single building (a 100 m cell is larger than most buildings) and not sealed soil: only roofed structures count, not roads or paved yards."
+    es: "No es la superficie edificada de un proyecto, ni el contorno de un edificio (una celda de 100 m es mayor que la mayoría de los edificios), ni suelo sellado: solo cuentan las estructuras con cubierta, no viales ni patios pavimentados."
+  support:
+    resolution_m: 100
+    since: 1975
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  frame: pressure
+  designs:
+  - state
+  - trend
+  - impact
+  - scan
+  eurovoc: []
+- id: built_up_fraction
+  data_class: approximated
+  name:
+    en: Built-up share of the area
+    es: Fracción construida de la zona
+  unit: '1'
+  layer: land
+  sources:
+  - ghsl-built-s
+  limit:
+    en: "Built-up surface divided by the area with data, from 100 m cells; it does not count floors. Last observation 2018: later epochs are carried forward."
+    es: "Superficie construida dividida por el área con dato, con celdas de 100 m; no cuenta plantas. Última observación en 2018: las épocas posteriores se prolongan."
+  answers:
+  - porcentaje construido
+  - proporción construida
+  - densidad edificada
+  - built-up share
+  - share of land built on
+  not:
+    en: "Not imperviousness: only roofed structures count; roads, car parks and paved yards do not. Sealed soil (Copernicus Imperviousness, 10 m) is sealed_surface."
+    es: "No es impermeabilidad: solo cuentan las estructuras con cubierta; viales, aparcamientos y patios pavimentados no. El suelo sellado (Copernicus Imperviousness, 10 m) es sealed_surface."
+  support:
+    resolution_m: 100
+    since: 1975
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  frame: pressure
+  designs:
+  - state
+  - trend
+  - impact
+  - scan
+  eurovoc: []
+- id: sealed_surface
+  data_class: approximated
+  name:
+    en: Sealed share of the ground (imperviousness)
+    es: Fracción de suelo sellado (impermeabilidad)
+  unit: '1'
+  layer: land
+  sources:
+  - copernicus-imperviousness
+  limit:
+    en: "Mean sealed percentage of the 10 m pixels of the zone, divided by 100; each reading also gives the sealed area in m². The percentage of each pixel is estimated from Sentinel-2 images. CLMS only publishes the campaigns of 2006, 2009, 2012 and 2015 (20 m) and 2018, 2021 and 2024 (10 m): there is no map of any other year (for example 2019), and a period without a campaign year has no value. This tool reads the 10 m campaigns 2018, 2021 and 2024, each a status map; CLMS warns that the difference between two status maps also carries technical change (method, variability and noise of the images) and publishes its own change layers for 2018-2021 and 2021-2024 at 20 m and 100 m. CLMS lists 2021 and 2024 as pending validation. Only the EEA38 countries and the United Kingdom."
+    es: "Media del porcentaje sellado de los píxeles de 10 m de la zona, dividida por 100; cada lectura da también la superficie sellada en m². El porcentaje de cada píxel se estima con imágenes de Sentinel-2. CLMS solo publica las campañas de 2006, 2009, 2012 y 2015 (20 m) y de 2018, 2021 y 2024 (10 m): no hay mapa de ningún otro año (por ejemplo, 2019), y un periodo sin año de campaña no tiene valor. Esta herramienta lee las campañas de 10 m de 2018, 2021 y 2024, cada una un mapa de estado; CLMS advierte de que la diferencia entre dos mapas de estado también recoge cambio técnico (método, variabilidad y ruido de las imágenes) y publica sus propias capas de cambio 2018-2021 y 2021-2024 a 20 m y 100 m. CLMS da 2021 y 2024 como pendientes de validación. Solo los 38 países de la EEA y el Reino Unido."
+  answers:
+  - sellado
+  - suelo sellado
+  - impermeable
+  - superficie impermeable
+  - impermeabilización
+  - sealed
+  - sealed soil
+  - impervious
+  - imperviousness
+  not:
+    en: "Not a building footprint (built_up_surface): roads, car parks and paved yards count too. It does not tell buildings from roads or any other kind of sealing, and it is not the floor area of a project."
+    es: "No es huella de edificio (built_up_surface): también cuentan viales, aparcamientos y patios pavimentados. No distingue edificios de viales ni ningún tipo de sellado de otro, y no es la superficie edificada de un proyecto."
+  support:
+    resolution_m: 10
+    since: 2018
+  # EEA SDI record of the 2018 10 m product (EX_GeographicBoundingBox; «EEA38 countries and the United Kingdom»).
+  extent:
+    kind: bbox
+    bbox: [-31.285, 27.642, 44.807, 71.165]
+    region: EEA38+UK
+    verified: true
+    ref: https://sdi.eea.europa.eu/catalogue/srv/api/records/3bf542bd-eebd-4d73-b53c-a0243f2ed862
+  frame: pressure
+  designs:
+  - state
+  eurovoc: []
+- id: flood_extent
+  data_class: measured
+  name:
+    en: Observed flood extent of a mapped episode
+    es: Extensión inundada observada de un episodio cartografiado
+  unit: '1'
+  layer: water
+  sources:
+  - copernicus-ems-emsr773
+  limit:
+    en: "Share of the mapped part of the zone that a Copernicus EMS delineation (EMSR773, episode of 29 October 2024, images of 30-31 October) shows as reached by the water: flooded area (water still seen) plus flood trace (marks where it had already gone), each class also given apart. One episode, not every flood and not a probability."
+    es: "Fracción de la parte cartografiada de la zona que una delimitación de Copernicus EMS (EMSR773, episodio del 29 de octubre de 2024, imágenes del 30 y 31) muestra alcanzada por el agua: área inundada (agua aún visible) más huella de inundación (señales donde ya se había retirado), con cada clase también aparte. Un episodio, no todas las inundaciones ni una probabilidad."
+  answers:
+  - zona inundada
+  - área inundada
+  - extensión de la inundación
+  - agua en superficie
+  - flood extent
+  - flooded area
+  not:
+    en: "Not a flood hazard map (see flood_hazard_extent) and not a yearly series."
+    es: "No es un mapa de peligrosidad (véase flood_hazard_extent) ni una serie anual."
+  # One episode: the map of 29 October 2024 (operations.yaml, flood_layers).
+  support:
+    since: 2024
+    until: 2024
+  # Box of the 36 areas of interest of the activation (EMSR773_aois.geojson in the package, read 2026-11-15).
+  extent:
+    kind: bbox
+    bbox: [-4.65, 36.63, 0.65, 40.82]
+    region: ES (EMSR773)
+    verified: true
+    ref: .dev/notes/2026-11-15-qa-extension-variables.md
+  frame: state
+  # Not event nor exposure: those templates read their own paths (history around an episode; read_exposure).
+  designs:
+  - state
+  eurovoc: []
+- id: flood_hazard_extent
+  data_class: approximated
+  name:
+    en: Flood-prone share of the area by return period
+    es: Fracción inundable de la zona por periodo de retorno
+  unit: '1'
+  layer: risk
+  sources:
+  - snczi
+  - patricova
+  limit:
+    en: "Share of the zone inside the flood-prone area of official hazard maps: SNCZI (MITECO, 10, 100 and 500 years) and PATRICOVA (Generalitat Valenciana, 25, 100 and 500 years). Modelled probability maps, not observed floods; the date is the version of the map. SNCZI covers only the river stretches studied, and only mainland Spain and the Balearic Islands: there is no map for Portugal, Andorra or any other country."
+    es: "Fracción de la zona dentro de la zona inundable de los mapas oficiales de peligrosidad: SNCZI (MITECO, 10, 100 y 500 años) y PATRICOVA (Generalitat Valenciana, 25, 100 y 500 años). Mapas de probabilidad modelados, no inundaciones observadas; la fecha es la versión del mapa. El SNCZI solo cubre los tramos de río estudiados, y solo la España peninsular y Baleares: no hay mapa de Portugal, Andorra ni ningún otro país."
+  answers:
+  - zona inundable
+  - peligrosidad de inundación
+  - riesgo de inundación
+  - periodo de retorno
+  - flood hazard
+  - flood-prone area
+  - flood zone
+  not:
+    en: "Not an observed flood (see flood_extent) and not a time series."
+    es: "No es una inundación observada (véase flood_extent) ni una serie temporal."
+  # SNCZI third cycle, Peninsula and Balearic files (laminasPB-q10/q100/q500, EPSG:25830 bounds to lon/lat); PATRICOVA
+  # lies inside. The box also takes in Portugal, Andorra and northern Morocco: the limit says so.
+  extent:
+    kind: bbox
+    bbox: [-9.32, 35.13, 3.54, 43.85]
+    region: ES
+    verified: true
+    ref: .dev/notes/2026-11-15-qa-extension-variables.md
+  frame: state
+  designs:
+  - state
+  eurovoc: []
+- id: population_in_hot_cells
+  data_class: approximated
+  name:
+    en: Population living in hot cells
+    es: Población en celdas calientes
+  unit: people
+  layer: population
+  sources:
+  - landsat-c2-l2
+  - ine-population
+  - ghsl
+  - ghsl-built-s
+  limit:
+    en: "People (INE by census section spread at 100 m, or GHSL elsewhere) inside the Landsat surface temperature pixels at or above a threshold in each summer. The threshold is set by the catalogue with the ratified method: the 95th percentile of summer surface temperature of all the cells of the zone together, base 2013-2020, fixed for every later year and declared as a parameter: an adaptation of AEMET and ETCCDI TX90p from air temperature to surface temperature and from days to cells; the standard base is 30 years, here Landsat starts in 2013. Same population year for every year."
+    es: "Personas (INE por sección censal repartidas a 100 m, o GHSL en el resto) dentro de los píxeles de temperatura de superficie Landsat iguales o superiores a un umbral en cada verano. El umbral lo fija el catálogo con el método ratificado: el percentil 95 de la temperatura de superficie del verano de todas las celdas de la zona juntas, base 2013-2020, fijo para todos los años posteriores y declarado como parámetro: una adaptación de AEMET y del TX90p de ETCCDI de temperatura del aire a temperatura de superficie y de días a celdas; la base estándar es de 30 años, aquí Landsat empieza en 2013. El mismo año de población para todos los años."
+  answers:
+  - población expuesta al calor
+  - habitantes en celdas calientes
+  - gente en zonas calientes
+  - celdas calientes
+  - heat exposure
+  - people in hot cells
+  - hot cells
+  not:
+    en: "Not air temperature and not a health effect: surface temperature is that of roofs and ground."
+    es: "No es la temperatura del aire ni un efecto en la salud: la temperatura de superficie es la de tejados y suelo."
+  support:
+    resolution_m: 100
+    since: 2013
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  threshold:
+    percentile: 95
+    base_period:
+      start: '2013-01-01'
+      end: '2020-12-31'
+    ref: "docs/decisiones.md, «A10, celda caliente»; catalog/chains.yaml, sealing_heat, link 3 (AEMET 2019, Sanidad 2025, ETCCDI/Climdex TX90p)"
+  frame: exposure
+  # state only: one figure per summer, read by read_series with the threshold above copied into the step. Not trend,
+  # scan or impact: the series jumps from one summer to the next and no trend on it has been ratified. Not exposure:
+  # that template goes through read_exposure, which reads flood maps.
+  designs:
+  - state
+  eurovoc: []
+- id: groundwater_level
+  data_class: measured
+  name:
+    en: Groundwater level at a monitoring well
+    es: Nivel del agua subterránea en un piezómetro
+  unit: m a.s.l.
+  layer: water
+  sources:
+  - chj-f71
+  # readers/piezometry.py: the well inside the zone with the most dates in the period, or the nearest within 5 km.
+  limit:
+    en: "Validated static water level of one CHJ monitoring well, in metres above sea level, on the dates it was measured, with their gaps. It is a point: not the level of the whole groundwater body nor of the zone. The well read and its groundwater body travel with each result. Only the Júcar river basin district."
+    es: "Nivel estático validado de un piezómetro de la CHJ, en metros sobre el nivel del mar, en las fechas en que se midió y con sus huecos. Es un punto: no es el nivel de toda la masa de agua subterránea ni el de la zona. El piezómetro leído y su masa de agua viajan con cada resultado. Solo la demarcación del Júcar."
+  answers:
+  - nivel del acuífero
+  - nivel freático
+  - agua subterránea
+  - piezometría
+  - sobreexplotación del acuífero
+  - groundwater level
+  - water table
+  - aquifer level
+  - piezometric level
+  not:
+    en: "Not the volume of water stored, not the pumping, not the water quality and not the level of the whole groundwater body; a falling level alone does not show its reason."
+    es: "No es el volumen de agua almacenada, ni el bombeo, ni la calidad del agua, ni el nivel de toda la masa de agua; un nivel que baja no dice por sí solo por qué baja."
+  support:
+    since: 1959
+  # Box of the 1,526 points of the CHJ F71 inventory (F71_M10_Todas, UTM ETRS89 30N), widened by the 5 km the reader
+  # searches for the nearest well. Outside it the reader finds no well.
+  extent:
+    kind: bbox
+    bbox: [-2.50, 37.88, 0.55, 40.75]
+    region: ES-DH-JUCAR
+    verified: true
+    ref: .dev/notes/2026-11-15-qa-extension-variables.md
+  frame: state
+  designs:
+  - state
+  - trend
+  eurovoc:
+  - '609'
+  - '3144'
+- id: radar_water_extent
+  data_class: approximated
+  name:
+    en: Share of the area with water seen by radar
+    es: Fracción de la zona con agua vista por el radar
+  unit: '1'
+  layer: water
+  sources:
+  - sentinel-1-rtc
+  - jrc-gsw
+  limit:
+    en: "Water is radar backscatter (VV) below a threshold that travels with each result: given, or by default Otsu's (1979) threshold between the permanent water and the dry ground that JRC Global Surface Water marks in the box of the zone. Radar shadow behind relief and smooth dry ground (tarmac, bare or ploughed fields) read as water; streets, buildings and vegetation hide the water under them; flooded rice fields count as water. It sees only the day of each pass, up to 12 days from the dates asked."
+    es: "El agua es la retrodispersión del radar (VV) por debajo de un umbral que viaja con cada resultado: dado, o por defecto el de Otsu (1979) entre el agua permanente y el suelo seco que JRC Global Surface Water marca en la caja de la zona. La sombra del radar tras el relieve y el suelo seco liso (asfalto, campos desnudos o arados) se leen como agua; calles, edificios y vegetación esconden el agua que hay debajo; los arrozales inundados cuentan como agua. Solo ve el día de cada pasada, hasta 12 días de las fechas pedidas."
+  answers:
+  - agua vista por satélite tras una inundación
+  - superficie inundada detectada por radar
+  - lámina de agua antes y después
+  - zona anegada
+  - radar flood extent
+  - water seen by satellite after a flood
+  - standing water before and after
+  not:
+    en: "Not the official flood extent (see the Copernicus EMS delineation), not water depth, not flood risk and not the water of every day between the two passes."
+    es: "No es la extensión oficial de la inundación (véase la delimitación de Copernicus EMS), ni la profundidad del agua, ni el riesgo de inundación, ni el agua de cada día entre las dos pasadas."
+  support:
+    resolution_m: 20
+    since: 2014
+    revisit_days: 12
+  extent:
+    kind: global
+    verified: true
+    ref: .dev/notes/2026-11-14-cobertura-geografica-variables.md
+  frame: state
+  designs:
+  - event
+- id: sea_surface_temperature
+  data_class: measured
+  name:
+    en: Sea surface temperature next to the zone
+    es: Temperatura del mar junto a la zona
+  unit: °C
+  layer: sea
+  sources:
+  - mur-sst
+  limit:
+    en: "Monthly mean of the daily MUR SST analysis over the open sea within 12 nautical miles (22.2 km) of the zone outline, measured from the outline and not from legal baselines; a zone with no open sea within 2 km has no value. Foundation temperature from several satellites and buoys, interpolated where clouds hide the sea. The public copy read without an account ends on 20 January 2020."
+    es: "Media mensual del análisis diario MUR SST sobre el mar abierto a menos de 12 millas náuticas (22,2 km) del contorno de la zona, medidas desde el contorno y no desde las líneas de base legales; una zona sin mar abierto a menos de 2 km no tiene valor. Temperatura de fundación a partir de varios satélites y boyas, interpolada donde las nubes tapan el mar. La copia pública que se lee sin cuenta termina el 20 de enero de 2020."
+  answers:
+  - temperatura del mar
+  - temperatura del agua del mar
+  - calentamiento del mar
+  - mar
+  - costa
+  - sea temperature
+  - sea surface temperature
+  - SST
+  - ocean warming
+  not:
+    en: "Not the water temperature at a beach or a port, not the temperature at depth and not a count of marine heatwaves; not for lakes or lagoons."
+    es: "No es la temperatura del agua en una playa o un puerto, ni la del fondo, ni un recuento de olas de calor marinas; no sirve para lagos ni albuferas."
+  support:
+    resolution_m: 1100
+    since: 2002
+    revisit_days: 1
+  extent:
+    kind: global
+    verified: true
+    ref: https://podaac.jpl.nasa.gov/dataset/MUR-JPL-L4-GLOB-v4.1
+  frame: state
+  designs:
+  - state
+  - trend
+  eurovoc:
+  - '5742'
+- id: precipitation_daily
+  # IMERG Final combines microwave and infrared satellite observations with rain gauge analyses (GES DISC, CMR record
+  # of GPM_3IMERGDF v07, read 2026-11-14): measured, like the monthly product of the same algorithm.
+  data_class: measured
+  name:
+    en: Precipitation, daily total
+    es: Precipitación, total diario
+  unit: "mm/day"
+  layer: water
+  sources:
+  - imerg-daily
+  limit:
+    en: "Satellite estimate calibrated with rain gauges, on a grid of about 11 km: each day is the mean of the 0.1° cells that touch the zone, weighted by the area they share with it. It dilutes a storm of a few hours over a few kilometres, and in coastal and mountain areas satellites see heavy rain worse."
+    es: "Estimación por satélite calibrada con pluviómetros, en una rejilla de unos 11 km: cada día es la media de las celdas de 0,1° que tocan la zona, ponderada por el área que comparten con ella. Diluye una tormenta de unas horas sobre unos pocos kilómetros, y en la costa y la montaña los satélites ven peor la lluvia intensa."
+  answers:
+  - lluvia diaria
+  - lluvia de un día
+  - lluvia del episodio
+  - cuánto llovió
+  - daily rainfall
+  - daily precipitation
+  - rain on the day
+  - how much it rained
+  not:
+    en: "Not the rain of one hour or of one rain gauge, not a forecast and not a flood: an 11 km grid dilutes local storms, so a town can have had much more than its cell."
+    es: "No es la lluvia de una hora ni la de un pluviómetro, ni una previsión, ni una inundación: la rejilla de 11 km diluye las tormentas locales, así que un pueblo puede haber recibido mucho más que su celda."
+  support:
+    resolution_m: 11100
+    since: 1998
+    revisit_days: 1
+  extent:
+    kind: global
+    verified: true
+    ref: https://disc.gsfc.nasa.gov/datacollection/GPM_3IMERGDF_07.html
+  frame: state
+  designs:
+  - state
+  - event
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: pr_max_1day_observed
+  data_class: measured
+  name:
+    en: Wettest day of the year, observed
+    es: Día más lluvioso del año, observado
+  unit: "mm"
+  layer: water
+  sources:
+  - imerg-daily
+  limit:
+    en: "The highest daily total of each year in IMERG Final (satellites calibrated with rain gauges, about 11 km), averaged over the zone before taking the maximum; a year counts only with 95% of its days read. It is the observed counterpart of the projected wettest day, not the same quantity at the same scale."
+    es: "El total diario más alto de cada año en IMERG Final (satélites calibrados con pluviómetros, unos 11 km), promediado en la zona antes de tomar el máximo; un año solo cuenta con el 95 % de sus días leídos. Es la contrapartida observada del día más lluvioso proyectado, no la misma magnitud a la misma escala."
+  answers:
+  - lluvia extrema
+  - lluvia máxima en un día
+  - día más lluvioso
+  - aguaceros más fuertes
+  - extreme rainfall
+  - wettest day
+  - maximum daily rainfall
+  not:
+    en: "Not the rain of one hour, not the reading of a rain gauge and not a return period: an 11 km grid dilutes local storms, and a maximum over the zone mean is lower than the maximum of its wettest point."
+    es: "No es la lluvia de una hora, ni la lectura de un pluviómetro, ni un periodo de retorno: la rejilla de 11 km diluye las tormentas locales, y el máximo de la media de la zona es menor que el de su punto más lluvioso."
+  support:
+    resolution_m: 11100
+    since: 1998
+  extent:
+    kind: global
+    verified: true
+    ref: https://disc.gsfc.nasa.gov/datacollection/GPM_3IMERGDF_07.html
+  frame: state
+  designs:
+  - state
+  - trend
+  - event
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: precipitation_daily_gauge
+  data_class: measured
+  name:
+    en: Precipitation at a rain gauge, daily total
+    es: Precipitación en un pluviómetro, total diario
+  unit: "mm/day"
+  layer: water
+  sources:
+  - ghcn-daily
+  # readers/ghcn_daily.py: the GHCN station with rain in the period nearest to the zone centre, within 20 km.
+  limit:
+    en: "Daily rain of one GHCN-Daily rain gauge, the nearest to the zone centre with data in the period, within 20 km: a point, not the rain of the zone. The station and its distance travel with each result. Days without a value or with a quality flag are gaps, never zeros. The day is that of the station's source (UTC day for GSOD synoptic summaries, which NOAA says to use with caution; for AEMET, 07 to 07 UTC). Not homogenised."
+    es: "Lluvia diaria de un pluviómetro de GHCN-Daily, el más cercano al centro de la zona con datos en el periodo, a menos de 20 km: un punto, no la lluvia de la zona. La estación y su distancia viajan con cada resultado. Los días sin valor o con indicador de calidad son huecos, nunca ceros. El día es el de la fuente de la estación (día UTC en los resúmenes sinópticos GSOD, que NOAA pide usar con cautela; en AEMET, de 07 a 07 UTC). Sin homogeneizar."
+  answers:
+  - lluvia en el pluviómetro
+  - lluvia medida en tierra
+  - pluviómetro
+  - rain gauge
+  - measured rainfall at a station
+  not:
+    en: "Not the rain of the zone, of one hour or of the nearest town: a storm can fall a few kilometres from the gauge (29-10-2024: 771.8 mm in Turís, AEMET, against 1.0 mm at Valencia airport). Not a forecast and not a flood."
+    es: "No es la lluvia de la zona, ni la de una hora, ni la del pueblo más cercano: una tormenta puede caer a pocos kilómetros del pluviómetro (29-10-2024: 771,8 mm en Turís, AEMET, frente a 1,0 mm en el aeropuerto de Valencia). No es una previsión ni una inundación."
+  # First year of GHCN-Daily as a whole; each station starts later, and the result gives its own year.
+  support:
+    since: 1763
+  extent:
+    kind: global
+    verified: false
+    ref: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
+  frame: state
+  designs:
+  - state
+  - event
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: pr_max_1day_gauge
+  data_class: measured
+  name:
+    en: Wettest day of the year at a rain gauge
+    es: Día más lluvioso del año en un pluviómetro
+  unit: "mm"
+  layer: water
+  sources:
+  - ghcn-daily
+  limit:
+    en: "The highest daily total of each year at one GHCN-Daily rain gauge, the nearest to the zone centre within 20 km; a year counts only with 95% of its days with a value, and gaps are not filled. A point: a storm can miss it. Not homogenised: a change of instrument, site or reporting can move the maxima."
+    es: "El total diario más alto de cada año en un pluviómetro de GHCN-Daily, el más cercano al centro de la zona a menos de 20 km; un año solo cuenta con el 95 % de sus días con valor, y los huecos no se rellenan. Un punto: una tormenta puede no pasar por él. Sin homogeneizar: un cambio de instrumento, de emplazamiento o de forma de informar puede mover los máximos."
+  answers:
+  - lluvia máxima en un día en el pluviómetro
+  - día más lluvioso medido en tierra
+  - máximo anual de lluvia diaria
+  - wettest day at a rain gauge
+  - annual maximum daily rainfall
+  not:
+    en: "Not the rain of one hour, not the maximum of the zone and not a return period: it is the reading of one point, which can be far lower than the wettest place nearby."
+    es: "No es la lluvia de una hora, ni el máximo de la zona, ni un periodo de retorno: es la lectura de un punto, que puede quedarse muy por debajo del lugar más lluvioso cercano."
+  # First year of GHCN-Daily as a whole; each station starts later, and the result gives its own year.
+  support:
+    since: 1763
+  extent:
+    kind: global
+    verified: false
+    ref: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
+  frame: state
+  designs:
+  - state
+  - trend
+  eurovoc:
+  - '1440'
+  - '434786'
+- id: nighttime_radiance
+  name:
+    en: Annual nighttime radiance
+    es: Radiancia nocturna anual
+  unit: 'nW/(cm²·sr)'
+  data_class: measured
+  layer: energy
+  sources: [black-marble]
+  support: {resolution_m: 500, since: 2012, until: 2025, revisit_days: 365}
+  extent:
+    kind: bbox
+    bbox: [-10, 30, 0, 40]
+    verified: true
+    ref: https://doi.org/10.5067/VIIRS/VNP46A4.002
+  frame: state
+  designs: [state, trend]
+  answers: [nighttime radiance, nighttime lights, night lights, llum nocturna, llums nocturnes, luces nocturnas, luz nocturna, radiancia nocturna]
+  not:
+    en: Electricity consumption needs its own data. Annual composites cannot describe individual days or months.
+    es: El consumo eléctrico requiere datos propios. Los compuestos anuales no describen días ni meses concretos.
+- id: terrestrial_water_storage_anomaly
+  name:
+    en: Regional terrestrial water storage anomaly
+    es: Anomalía regional del agua terrestre almacenada
+  unit: cm
+  data_class: measured
+  layer: water
+  sources: [grace-fo]
+  support: {resolution_m: 330000, since: 2002, until: 2026, revisit_days: 30}
+  extent: {kind: global, verified: true, ref: 'https://doi.org/10.5067/TEMSC-3JC634'}
+  frame: state
+  designs: [state]
+  answers: [terrestrial water storage, stored water, water storage anomaly, aigua emmagatzemada, emmagatzematge d'aigua, agua almacenada, almacenamiento de agua]
+  not:
+    en: Regional total-water anomaly in equivalent thickness. Consumption, groundwater levels and supply need separate evidence.
+    es: Anomalía regional de agua total en espesor equivalente. El consumo, el nivel freático y el suministro requieren otras fuentes.

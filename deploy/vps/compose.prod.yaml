@@ -1,0 +1,69 @@
+# Production on a single server (VPS): the app behind Caddy, which serves HTTPS on 80/443.
+# Run from the repository root on the server (steps in deploy/vps/README.md):
+#   docker compose --env-file /srv/hup/compose.env -f deploy/vps/compose.prod.yaml up -d --build
+# Settings come from /srv/hup/compose.env (outside the checkout, mode 600), never from a file inside the repository:
+#   HUP_COMMIT     the commit being deployed, shown by /health
+#   HUP_DOMAIN     the public host name, for example 203-0-113-10.sslip.io (placeholder address)
+#   HUP_DATA_HOST  the data folder on the server (default /srv/hup/data)
+#   HUP_ENV_FILE   the secrets file on the server, mode 600 (default /srv/hup/.env)
+name: hup-prod
+
+services:
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/Dockerfile
+      args:
+        HUP_COMMIT: ${HUP_COMMIT:-}
+    image: hup-app:${HUP_COMMIT:-latest}
+    environment:
+      HUP_DATA_DIR: /data
+    env_file:
+      - path: ${HUP_ENV_FILE:-/srv/hup/.env}
+        required: false
+    volumes:
+      - ${HUP_DATA_HOST:-/srv/hup/data}:/data
+    # Only this machine can reach the app directly (curl http://127.0.0.1:8080/health); the world goes through Caddy.
+    ports:
+      - "127.0.0.1:8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+  proxy:
+    image: caddy:2.10
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      HUP_DOMAIN: ${HUP_DOMAIN:?set HUP_DOMAIN to the public host name}
+      # Only used if the basic_auth block in the Caddyfile is uncommented. The hash comes from caddy hash-password.
+      HUP_BASIC_USER: ${HUP_BASIC_USER:-}
+      HUP_BASIC_HASH: ${HUP_BASIC_HASH:-}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+volumes:
+  caddy_data:
+  caddy_config:

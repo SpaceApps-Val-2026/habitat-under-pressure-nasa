@@ -1,0 +1,17 @@
+# Nothing here reaches the image: data, secrets, local environments and build output.
+data/
+datos/
+.env
+.env.*
+.git/
+.venv*/
+**/node_modules/
+**/dist/
+**/__pycache__/
+**/.pytest_cache/
+.ruff_cache/
+.dev/
+exploracion/
+notebooks/
+HEY.md
+AGENTS.local.md

@@ -1,0 +1,19 @@
+Habitat Under Pressure
+Copyright 2026 Iban Borràs Serret and contributors.
+
+The project's original code and materials are distributed under the Apache
+License 2.0. The full license text is provided in LICENSE.
+
+Third-party materials retain their own terms; this notice does not modify
+their licenses or grant rights to those materials:
+
+- Data sources: each keeps its licence and citation, listed in
+  docs/data-sources.md and shown in the application next to its figures.
+- Logos under apps/web/public/logos/ belong to their owners and are not
+  covered by the Apache License. Their origin and the usage rule of each
+  owner are recorded in apps/web/public/logos/SOURCES.md.
+- Fonts and libraries are installed from their packages under their own
+  licences (see apps/web/package.json and uv.lock).
+
+This project is not endorsed by NASA or by any of the agencies whose open
+data it uses.

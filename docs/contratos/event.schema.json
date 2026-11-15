@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/event.schema.json",
+  "title": "Run event",
+  "description": "One line per event (Server-Sent Events, and the .jsonl file saved with the analysis).",
+  "type": "object",
+  "required": ["analysis", "seq", "type", "ts", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "analysis": { "$ref": "common.schema.json#/$defs/id" },
+    "step": { "description": "Absent only in analysis_finished and in general errors", "$ref": "common.schema.json#/$defs/id" },
+    "seq": { "description": "Strict order within the analysis, starting at 1", "type": "integer", "minimum": 1 },
+    "type": { "enum": ["step_started", "data_read", "progress", "partial_result", "warning", "alert", "step_finished", "error", "analysis_finished", "analysis_cancelled"] },
+    "ts": { "type": "string", "format": "date-time" },
+    "data": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "step_started" } } },
+      "then": { "required": ["step"], "properties": { "data": {
+        "required": ["operation", "visual_type", "phrase"],
+        "properties": {
+          "operation": { "type": "string" },
+          "visual_type": { "enum": ["zone", "satellite", "compute", "document"] },
+          "phrase": { "$ref": "common.schema.json#/$defs/text" },
+          "bbox": { "type": "array", "minItems": 4, "maxItems": 4 }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "data_read" } } },
+      "then": { "required": ["step"], "properties": { "data": {
+        "required": ["source", "origin", "n_items"],
+        "properties": {
+          "source": { "type": "string" },
+          "origin": {
+            "description": "derived: a saved result was reused; cache: we already had it; package: read from a pre-downloaded file; remote: just downloaded and now cached",
+            "enum": ["derived", "cache", "package", "remote"]
+          },
+          "n_items": { "type": "integer", "minimum": 0 },
+          "mb": { "type": "number", "minimum": 0 },
+          "period": { "$ref": "common.schema.json#/$defs/period" },
+          "quicklooks": { "type": "array", "items": { "type": "string" } }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "progress" } } },
+      "then": { "required": ["step"], "properties": { "data": {
+        "required": ["fraction"],
+        "properties": {
+          "fraction": { "type": "number", "minimum": 0, "maximum": 1 },
+          "item": { "type": "string" },
+          "phase": { "enum": ["download", "processing"] }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "partial_result" } } },
+      "then": { "required": ["step"], "properties": { "data": {
+        "required": ["result"],
+        "properties": { "result": { "description": "Id of a result that is already saved", "type": "string" } }
+      } } }
+    },
+    {
+      "if": { "properties": { "type": { "enum": ["warning", "error"] } } },
+      "then": { "properties": { "data": {
+        "required": ["code", "text"],
+        "properties": {
+          "code": { "type": "string" },
+          "text": { "$ref": "common.schema.json#/$defs/text" }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "alert" } } },
+      "then": { "properties": { "data": {
+        "required": ["rule", "severity", "result"],
+        "properties": {
+          "rule": { "type": "string" },
+          "severity": { "enum": ["info", "attention", "critical"] },
+          "result": { "type": "string" }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "step_finished" } } },
+      "then": { "required": ["step"], "properties": { "data": {
+        "required": ["seconds", "results"],
+        "properties": {
+          "seconds": { "type": "number", "minimum": 0 },
+          "results": { "type": "array", "items": { "type": "string" } }
+        } } } }
+    },
+    {
+      "if": { "properties": { "type": { "const": "analysis_finished" } } },
+      "then": { "properties": { "data": {
+        "required": ["status"],
+        "properties": { "status": { "enum": ["finished", "failed"] } }
+      } } }
+    }
+  ]
+}

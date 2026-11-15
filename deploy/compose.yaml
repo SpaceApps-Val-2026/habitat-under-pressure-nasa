@@ -1,0 +1,21 @@
+# Local service. From the repository root:
+#   docker compose -f deploy/compose.yaml up --build -d
+# app: the application (API, executor and web) at http://localhost:8080
+name: hup
+
+services:
+  # The same container that is deployed. Data are mounted; they never enter the image.
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      HUP_DATA_DIR: /data
+    env_file:
+      - path: ../.env
+        required: false
+    volumes:
+      - ../data:/data
+    restart: unless-stopped

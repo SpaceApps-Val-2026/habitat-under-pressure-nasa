@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/analysis.schema.json",
+  "title": "Saved analysis",
+  "description": "The library object. The report (HTML, PDF and data package) is generated from it and from the results it references, and from nothing else.",
+  "type": "object",
+  "required": ["contract_version", "id", "title", "status", "created", "plan", "fingerprint", "results", "findings", "alerts", "reports"],
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": { "const": "1.0" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "title": { "$ref": "common.schema.json#/$defs/text" },
+    "summary": { "$ref": "common.schema.json#/$defs/text" },
+    "author": { "type": "string" },
+    "created": { "type": "string", "format": "date-time" },
+    "status": { "enum": ["planned", "running", "finished", "failed", "cancelled"] },
+    "plan": { "$ref": "plan.schema.json" },
+    "fingerprint": {
+      "description": "Two analyses with the same fingerprint are equivalent.",
+      "type": "object",
+      "required": ["sha256", "catalog_version", "data"],
+      "additionalProperties": false,
+      "properties": {
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "catalog_version": { "type": "string" },
+        "data": {
+          "description": "Source → version, or the checksum of its manifest",
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "seed": { "type": "integer" }
+      }
+    },
+    "plan_fingerprint": {
+      "description": "sha256 of the canonical plan (see the README). Two wordings of one question share it: the plan cache key.",
+      "$ref": "common.schema.json#/$defs/sha256"
+    },
+    "featured": { "description": "Shown on the cover even when newer analyses exist", "type": "boolean" },
+    "results": { "description": "Result ids", "type": "array", "items": { "type": "string" } },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "text", "results", "data_class", "review"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "order": { "type": "integer", "minimum": 1 },
+          "headline": { "type": "boolean" },
+          "text": {
+            "description": "Figures are {result.field} placeholders filled by code, not by the LLM.",
+            "$ref": "common.schema.json#/$defs/text"
+          },
+          "results": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "data_class": { "$ref": "common.schema.json#/$defs/data_class" },
+          "evidence_level": {
+            "description": "Level the sentence claims; never above the highest level of its results",
+            "$ref": "common.schema.json#/$defs/evidence_level"
+          },
+          "review": {
+            "type": "object",
+            "required": ["status"],
+            "additionalProperties": false,
+            "properties": {
+              "status": { "enum": ["pending", "approved", "rejected"] },
+              "by": { "description": "reviewer agent or person", "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "alerts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule", "severity", "result", "text"],
+        "additionalProperties": false,
+        "properties": {
+          "rule": { "type": "string" },
+          "severity": { "enum": ["info", "attention", "critical"] },
+          "result": { "type": "string" },
+          "text": { "$ref": "common.schema.json#/$defs/text" }
+        }
+      }
+    },
+    "story": {
+      "description": "The report as ordered blocks, one list per style. Built by the composer from the plan design and the results that exist. Optional `editorial`: the opening written by the journalistic writing step, one piece per style; when absent, the report opens as before.",
+      "type": "object",
+      "propertyNames": { "anyOf": [{ "$ref": "common.schema.json#/$defs/report_style" }, { "const": "editorial" }] },
+      "properties": {
+        "editorial": {
+          "description": "Reviewed editorial opening per report style. Block choice and order stay in the style lists.",
+          "type": "object",
+          "propertyNames": { "$ref": "common.schema.json#/$defs/report_style" },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["headline", "lead", "meaning", "cannot_say", "results"],
+            "additionalProperties": false,
+            "properties": {
+              "headline": { "description": "Headline, with {result.field} placeholders; same rule as findings", "$ref": "common.schema.json#/$defs/text" },
+              "lead": { "description": "Lead sentence carrying the main figure", "$ref": "common.schema.json#/$defs/text" },
+              "meaning": { "description": "What it means for the person asking", "$ref": "common.schema.json#/$defs/text" },
+              "cannot_say": { "description": "What these data do not allow anyone to say", "$ref": "common.schema.json#/$defs/text" },
+              "body": { "description": "The middle of the story: one to three paragraphs that explain the lead, same placeholder rule. Optional", "type": "array", "minItems": 1, "maxItems": 3, "items": { "$ref": "common.schema.json#/$defs/text" } },
+              "closing": { "description": "The ending: what follows from it for the person asking, without claiming more than the evidence. Optional", "$ref": "common.schema.json#/$defs/text" },
+              "featured": { "description": "Id of the result whose figure (chart or map) illustrates the story. Optional", "type": "string" },
+              "results": { "description": "Ids of the results the piece cites", "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["block"],
+          "additionalProperties": false,
+          "properties": {
+            "block": { "description": "Id of a catalog block", "type": "string" },
+            "results": { "type": "array", "items": { "type": "string" } },
+            "finding": { "description": "Id of the finding this block shows", "type": "string" },
+            "norm": { "description": "Id of a catalog norm", "type": "string" },
+            "text": {
+              "description": "Linking sentence with {result.field} placeholders; same rule as findings",
+              "$ref": "common.schema.json#/$defs/text"
+            }
+          }
+        }
+      }
+    },
+    "reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["format", "language", "path"],
+        "additionalProperties": false,
+        "properties": {
+          "format": { "enum": ["html", "pdf", "data"] },
+          "style": { "$ref": "common.schema.json#/$defs/report_style" },
+          "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+          "path": { "type": "string" }
+        }
+      }
+    }
+  }
+}

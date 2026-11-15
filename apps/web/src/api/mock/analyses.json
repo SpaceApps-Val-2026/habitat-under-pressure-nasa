@@ -1,0 +1,38 @@
+[
+  {
+    "id": "sagunt-impact-example",
+    "title": {
+      "en": "What changed around the Sagunt gigafactory",
+      "es": "Qué ha cambiado alrededor de la gigafactoría de Sagunt"
+    },
+    "summary": {
+      "en": "Vegetation and surface heat around the site, before and after the works.",
+      "es": "Vegetación y calor de superficie alrededor de la obra, antes y después."
+    },
+    "design": "impact",
+    "zone": {
+      "id": "parc-sagunt-ii",
+      "name": "Parc Sagunt II",
+      "bbox": [-0.35, 39.6, -0.15, 39.75]
+    },
+    "created": "2026-11-14T10:00:00Z",
+    "status": "finished",
+    "featured": true
+  },
+  {
+    "id": "sagunto-precipitation-example",
+    "title": {
+      "en": "Sagunto: monthly precipitation",
+      "es": "Sagunto: precipitación mensual"
+    },
+    "summary": {
+      "en": "No clear trend: the confidence interval includes zero.",
+      "es": "Sin tendencia clara: el intervalo de confianza incluye el cero."
+    },
+    "design": "trend",
+    "zone": null,
+    "created": "2026-11-14T09:20:00Z",
+    "status": "finished",
+    "featured": false
+  }
+]

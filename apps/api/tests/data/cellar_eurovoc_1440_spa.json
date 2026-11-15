@@ -1,0 +1,33 @@
+{
+ "head": {
+  "link": [],
+  "vars": [
+   "celex",
+   "title",
+   "date"
+  ]
+ },
+ "results": {
+  "distinct": false,
+  "ordered": true,
+  "bindings": [
+   {
+    "celex": {
+     "type": "literal",
+     "datatype": "http://www.w3.org/2001/XMLSchema#string",
+     "value": "32007L0060"
+    },
+    "title": {
+     "type": "literal",
+     "datatype": "http://www.w3.org/2001/XMLSchema#string",
+     "value": "Directiva 2007/60/CE del Parlamento Europeo y del Consejo, de 23 de octubre de 2007 , relativa a la evaluación y gestión de los riesgos de inundación (Texto pertinente a efectos del EEE)"
+    },
+    "date": {
+     "type": "literal",
+     "datatype": "http://www.w3.org/2001/XMLSchema#date",
+     "value": "2007-10-23"
+    }
+   }
+  ]
+ }
+}

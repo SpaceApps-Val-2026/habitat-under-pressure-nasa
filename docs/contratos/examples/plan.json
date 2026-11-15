@@ -1,0 +1,168 @@
+{
+  "contract_version": "1.0",
+  "id": "plan-sagunt-impact-example",
+  "request": {
+    "text": "¿Qué ha cambiado alrededor de la gigafactoría de Sagunt?",
+    "language": "es",
+    "level": "media",
+    "origin": "assistant"
+  },
+  "answer": {
+    "level": "with_limits",
+    "limits": [
+      {
+        "en": "Soil moisture is not available for this place: its source needs a downloaded package.",
+        "es": "La humedad del suelo no está disponible para este lugar: su fuente necesita un paquete descargado."
+      }
+    ]
+  },
+  "design": "impact",
+  "zone": {
+    "id": "parc-sagunt-ii",
+    "name": "Parc Sagunt II",
+    "bbox": [
+      -0.35,
+      39.6,
+      -0.15,
+      39.75
+    ],
+    "source": "OpenStreetMap, provisional"
+  },
+  "period": {
+    "start": "2013-06-01",
+    "end": "2025-09-30",
+    "months": [
+      6,
+      7,
+      8,
+      9
+    ]
+  },
+  "variables": [
+    "ndvi",
+    "lst",
+    "soil_moisture"
+  ],
+  "comparison": {
+    "type": "spatial_reference",
+    "reference_km": 3
+  },
+  "catalog_version": "0.2.0",
+  "steps": [
+    {
+      "id": "s1",
+      "type": "ingest",
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "max_cloud_pct": 20
+      },
+      "depends_on": [],
+      "sources": [
+        "landsat-c2-l2"
+      ],
+      "data": {
+        "origin": "remote",
+        "estimated_seconds": 90,
+        "estimated_mb": 40
+      }
+    },
+    {
+      "id": "s2",
+      "type": "ingest",
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "lst",
+        "max_cloud_pct": 20
+      },
+      "depends_on": [],
+      "sources": [
+        "landsat-c2-l2"
+      ],
+      "data": {
+        "origin": "cache"
+      }
+    },
+    {
+      "id": "s3",
+      "type": "ingest",
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "soil_moisture"
+      },
+      "depends_on": [],
+      "sources": [
+        "smap-l3"
+      ],
+      "data": {
+        "origin": "package"
+      }
+    },
+    {
+      "id": "s4",
+      "type": "compute",
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      },
+      "depends_on": [
+        "s1"
+      ]
+    },
+    {
+      "id": "s5",
+      "type": "compute",
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "variable": "lst",
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      },
+      "depends_on": [
+        "s2"
+      ]
+    },
+    {
+      "id": "s6",
+      "type": "write",
+      "operation": "write_findings",
+      "version": "1.0",
+      "params": {},
+      "depends_on": [
+        "s4",
+        "s5"
+      ]
+    },
+    {
+      "id": "s7",
+      "type": "review",
+      "operation": "review_findings",
+      "version": "1.0",
+      "params": {},
+      "depends_on": [
+        "s6"
+      ]
+    }
+  ]
+}

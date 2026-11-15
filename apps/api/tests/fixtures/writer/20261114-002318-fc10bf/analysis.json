@@ -1,0 +1,213 @@
+{
+  "contract_version": "1.0",
+  "id": "20261114-002318-fc10bf",
+  "title": {
+    "en": "Zone drawn from OpenStreetMap way 1180219207: Vegetation greenness (NDVI)",
+    "es": "Zone drawn from OpenStreetMap way 1180219207: Verde (NDVI)"
+  },
+  "created": "2026-11-14T00:23:19.200Z",
+  "status": "finished",
+  "plan": {
+    "contract_version": "1.0",
+    "id": "plan-impact-ndvi",
+    "request": {
+      "text": "¿Qué ha cambiado en esta zona respecto a su entorno?",
+      "language": "es",
+      "origin": "form"
+    },
+    "answer": {
+      "level": "with_limits",
+      "limits": [
+        {
+          "en": "Coincides in time and place; does not prove cause.",
+          "es": "Coincide en tiempo y lugar; no prueba la causa."
+        }
+      ]
+    },
+    "design": "impact",
+    "zone": {
+      "id": "drawn-zone-osm-way-1180219207",
+      "name": "Zone drawn from OpenStreetMap way 1180219207",
+      "bbox": [
+        -0.2776782,
+        39.6413915,
+        -0.2589762,
+        39.6550133
+      ],
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -0.2589762,
+              39.6475447
+            ],
+            [
+              -0.2648493,
+              39.6445932
+            ],
+            [
+              -0.2712085,
+              39.6413915
+            ],
+            [
+              -0.2724673,
+              39.6428758
+            ],
+            [
+              -0.2776782,
+              39.64902
+            ],
+            [
+              -0.2728327,
+              39.6514579
+            ],
+            [
+              -0.2735099,
+              39.6523089
+            ],
+            [
+              -0.2713465,
+              39.6533877
+            ],
+            [
+              -0.2706637,
+              39.652565
+            ],
+            [
+              -0.2658168,
+              39.6550133
+            ],
+            [
+              -0.2652264,
+              39.6549225
+            ],
+            [
+              -0.2600996,
+              39.6488708
+            ],
+            [
+              -0.2589762,
+              39.6475447
+            ]
+          ]
+        ]
+      },
+      "source": "OpenStreetMap, way 1180219207"
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "variables": [
+      "ndvi"
+    ],
+    "comparison": {
+      "type": "spatial_reference"
+    },
+    "catalog_version": "0.2.0",
+    "steps": [
+      {
+        "id": "s1",
+        "type": "ingest",
+        "operation": "read_series",
+        "version": "1.0",
+        "depends_on": [],
+        "params": {
+          "variable": "ndvi",
+          "area": "zone",
+          "aggregate": "none",
+          "statistic": "mean",
+          "min_count": 1,
+          "reference_km": 3,
+          "ring_km": [
+            1,
+            2,
+            3
+          ]
+        },
+        "sources": [
+          "landsat-c2-l2"
+        ],
+        "data": {
+          "origin": "remote"
+        }
+      },
+      {
+        "id": "s2",
+        "type": "ingest",
+        "operation": "read_series",
+        "version": "1.0",
+        "depends_on": [],
+        "params": {
+          "variable": "ndvi",
+          "area": "reference",
+          "reference_km": 3,
+          "aggregate": "none",
+          "statistic": "mean",
+          "min_count": 1,
+          "ring_km": [
+            1,
+            2,
+            3
+          ]
+        },
+        "sources": [
+          "landsat-c2-l2"
+        ],
+        "data": {
+          "origin": "remote"
+        }
+      },
+      {
+        "id": "s3",
+        "type": "compute",
+        "operation": "baci_contrast",
+        "version": "1.0",
+        "depends_on": [
+          "s1",
+          "s2"
+        ],
+        "params": {
+          "variable": "ndvi",
+          "before": [
+            2013,
+            2021
+          ],
+          "after": [
+            2023,
+            2025
+          ],
+          "reference_km": 3,
+          "min_dates": 3,
+          "confidence": 0.95,
+          "resamples": 2000,
+          "alpha": 0.05
+        }
+      }
+    ]
+  },
+  "plan_fingerprint": "4c95cfc6dca21d4c4bc474cea08dad5a0018ef0792cabd56f21060fc618b600b",
+  "fingerprint": {
+    "sha256": "914b06fa89739db2668f1f5d8277e72ddd0ebb0366c814c9b92840847d44d2a1",
+    "catalog_version": "0.2.0",
+    "data": {
+      "landsat-c2-l2": "02"
+    },
+    "seed": 1284886470
+  },
+  "results": [
+    "r-s1-series",
+    "r-s2-series",
+    "r-s3-contrast"
+  ],
+  "findings": [],
+  "alerts": [],
+  "reports": []
+}

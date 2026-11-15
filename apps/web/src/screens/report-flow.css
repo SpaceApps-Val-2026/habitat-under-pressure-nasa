@@ -1,0 +1,1001 @@
+/* The report as the journalistic draft lays it out (.dev/design-drafts/2026-11-09-informe-periodistico,
+   informe.css): a flat page, a narrow reading column, wider figures, thin rules and type hierarchy. No
+   cards. Measures are the draft's; colours are the design system's tokens, so both themes follow. */
+
+.report-page {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* The article breathes inside the page: below the tabs, everything is inset from the page's edges by a
+   fluid margin that is 0 on phones, about 32 px at 1024 px, 70-80 px at 1366 px and 90 px from 1455 px
+   up (an article of about 1230 px when the page is at its maximum). `--report-measure` is the article's
+   width; the reading column takes two thirds of it, between 640 and 820 px. */
+.report {
+  --report-inset: clamp(0px, calc((100vw - 768px) * 0.13), 90px);
+  --report-measure: calc(100% - 2 * var(--report-inset));
+  --report-column: min(var(--report-measure), clamp(640px, calc(var(--report-measure) * 0.66), 820px));
+  counter-reset: figure;
+  padding-bottom: 64px;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+/* Reading column narrow and centred; the tabs, the figure row and the figures span the whole page
+   container, aligned with the header's logo and controls. */
+.report-col {
+  width: var(--report-column);
+  margin-inline: auto;
+}
+
+/* Wide blocks span the article, not the window; the tabs stay aligned with the header. */
+.report-wide {
+  width: var(--report-measure);
+  margin-inline: auto;
+}
+
+.report-wide.report-toolbar {
+  width: 100%;
+}
+
+/* A map figure sized like the place photo never passes the article's edges either. */
+.report > .report-maps {
+  max-width: var(--report-measure);
+}
+
+/* Tabs and actions: a flat line, like the draft's bar. */
+.report-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.report-spacer {
+  flex: 1;
+}
+
+.report-ghost {
+  padding: 5px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--ink);
+  font: 500 13px var(--font-sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.report-ghost:hover {
+  border-color: var(--ink);
+}
+
+/* Head */
+.report-head {
+  padding-top: 48px;
+}
+
+.report-kicker {
+  margin: 0 0 12px;
+  color: var(--signal);
+  font: 500 12.5px/1.5 var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.report h1 {
+  margin: 0 0 18px;
+  font: 700 clamp(30px, 4.6vw, 44px) / 1.12 var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.report-standfirst {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 21px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.report-byline {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font: 13px/1.6 var(--font-mono);
+}
+
+.report-byline .chip {
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--signal-soft);
+  color: var(--signal);
+}
+
+/* Key figures: one column per figure across the row, under thin top rules, no boxes. A single figure
+   takes the reading column's width and place. */
+.report-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 24px;
+  margin-block: 32px;
+}
+
+.report-figures[data-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-figures[data-count="1"] {
+  grid-template-columns: minmax(0, 1fr);
+  width: var(--report-column);
+  margin-inline: auto;
+}
+
+.report-stat {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 12px 2px 4px;
+  border-top: 3px solid var(--ink);
+}
+
+.report-stat b {
+  font: 700 36px/1.05 var(--font-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.report-stat b.flat {
+  font-size: 26px;
+}
+
+.report-stat b .unit {
+  font: 500 15px var(--font-sans);
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.report-stat .what {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.report-stat small {
+  color: var(--muted);
+  font: 12.5px/1.5 var(--font-mono);
+}
+
+.report-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Tags: the class of a figure as the draft writes it, solid when measured, dashed when modelled. */
+.report .tag {
+  justify-self: start;
+  padding: 2px 6px;
+  border: 1.5px dashed var(--signal);
+  border-radius: var(--radius-xs);
+  color: var(--signal);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.report .tag[data-class="measured"] {
+  border-style: solid;
+}
+
+.report .tag[data-class="illustrative"] {
+  border-color: var(--amber);
+  color: var(--amber-ink);
+}
+
+.report .tag.evidence {
+  border: 1.5px solid var(--line-strong);
+  color: var(--muted);
+}
+
+/* Figures */
+.report-figure {
+  margin-block: 36px;
+  counter-increment: figure;
+}
+
+.report-figure figcaption.top,
+.report-figure .report-block > section > h2:first-child {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font: 400 14px/1.55 var(--font-sans);
+}
+
+.report-figure .figure-number::before,
+.report-figure .report-block > section > h2:first-child::before {
+  content: var(--figure-label) " " counter(figure) ". ";
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.report-figure .src {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.report-figure .src:empty {
+  display: none;
+}
+
+.report-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.report-img {
+  position: relative;
+  background: var(--orbit);
+}
+
+/* The legend line of the data-class asterisks, under the figure row. */
+.report-figures > .report-mark-legend {
+  grid-column: 1 / -1;
+}
+
+.report > .report-mark-legend {
+  margin-block: -20px 24px;
+}
+
+/* A chart fills its figure; nothing stays stuck to the left. */
+.report-figure .report-block svg[class^="plot"] {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Before and after in one frame, divided by a curtain. */
+.report-curtain-stage {
+  position: relative;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.report-curtain-before {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--split, 50%)) 0 0);
+}
+
+.report-curtain-after .report-img-label {
+  right: 10px;
+  left: auto;
+}
+
+/* The divider: a light line with a dark edge, visible over warm and cool colours alike, and a round
+   handle in the middle. The whole image drags; the hidden range input carries the keyboard. */
+.report-curtain-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split, 50%);
+  width: 3px;
+  margin-left: -1.5px;
+  background: var(--orbit-ink);
+  box-shadow: 0 0 0 1px var(--orbit);
+  pointer-events: none;
+}
+
+.report-curtain-handle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--orbit);
+  border-radius: var(--radius-pill);
+  background: var(--orbit-ink);
+  box-shadow: var(--elevation-overlay);
+  color: var(--orbit);
+  font: 700 11px/1 var(--font-sans);
+  letter-spacing: -0.1em;
+  transform: translate(-50%, -50%);
+}
+
+.report-curtain:has(.report-curtain-range:focus-visible) .report-curtain-handle {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* The place view, as wide as its photo; beside it, the next block when the photo leaves room. */
+.report-place-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0 32px;
+}
+
+.report-place-row > .report-place {
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
+/* Inside the side of the photo row the article's inset is already applied. Custom properties keep the
+   value computed where they were declared, so the measures are declared again here. */
+.report-place-side {
+  --report-measure: 100%;
+  --report-column: min(100%, clamp(640px, 66%, 820px));
+  flex: 1 1 calc(50% - 16px);
+  min-width: min(100%, calc(50% - 16px));
+}
+
+.report-place-side > .report-figure {
+  margin-top: 36px;
+}
+
+.report-img canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The place view keeps its box while the image loads; the zone outline sits on top. */
+.report-place .report-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.report-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.report-outline polygon {
+  fill: none;
+  stroke: var(--orbit-focus);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.report-img-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 4px 7px;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--orbit) 85%, transparent);
+  color: var(--orbit-ink);
+  font: 500 12px var(--font-mono);
+}
+
+.report-legend {
+  display: grid;
+  gap: 3px;
+  max-width: 320px;
+  margin-top: 10px;
+}
+
+.report-ramp {
+  height: 10px;
+  border-radius: 2px;
+}
+
+.report-ends {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font: 12px var(--font-mono);
+}
+
+/* The blocks inside a figure or the text column lose their panel cards: the page is flat. */
+.report .report-block > section {
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.report .report-block figure,
+.report .report-block article {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+
+.report details summary {
+  color: var(--signal);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Charts drawn by the report itself (the estimate range). */
+.report-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.report-chart .grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.report-chart .range {
+  stroke: var(--signal);
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.45;
+}
+
+.report-chart .end {
+  stroke: var(--signal);
+  stroke-width: 2;
+}
+
+.report-chart .mid {
+  fill: var(--ink);
+  stroke: var(--paper);
+  stroke-width: 2;
+}
+
+.report-chart .tick {
+  fill: var(--muted);
+  font: 11.5px var(--font-mono);
+}
+
+.report-chart .note {
+  fill: var(--ink);
+  font: 600 13px var(--font-sans);
+}
+
+.report-chart .strong {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+/* Text */
+.report-prose p {
+  margin: 0 0 1.1em;
+  text-wrap: pretty;
+}
+
+/* The story's text is the article's voice, not a caption: it keeps real space from the figures around it. */
+.report-prose {
+  margin-block: 48px;
+}
+
+@media (min-width: 1024px) {
+  .report-prose {
+    margin-block: 80px;
+  }
+}
+
+/* A short decorative stroke above and below the story's text marks it off from the figures around it: the same
+   mark for a long text and for a lone standout sentence. */
+.report-prose::before,
+.report-prose::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin-inline: auto;
+  background: var(--signal);
+}
+
+.report-prose::before {
+  margin-bottom: 36px;
+}
+
+.report-prose::after {
+  margin-top: 36px;
+}
+
+.report-prose > :last-child {
+  margin-bottom: 0;
+}
+
+@media print {
+  .report-prose::before,
+  .report-prose::after {
+    background: currentColor;
+  }
+}
+
+/* A lone short paragraph stands out: larger, between the two strokes, without a drop cap. */
+.report-prose .standout {
+  margin: 0;
+  text-align: center;
+  font: 500 22px/1.4 var(--font-display);
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+  .report-prose .standout {
+    font-size: 26px;
+  }
+}
+
+.report-nowrap {
+  white-space: nowrap;
+}
+
+.report-prose .lead::first-letter {
+  float: left;
+  margin: 0.06em 0.08em 0 0;
+  color: var(--signal);
+  font: 700 3.1em/0.9 var(--font-display);
+}
+
+.report h2 {
+  margin: 1.6em 0 0.55em;
+  font: 700 26px/1.2 var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.report .fn {
+  margin-left: 2px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: var(--signal-soft);
+  color: var(--signal);
+  font: 600 11px var(--font-mono);
+  text-decoration: none;
+  vertical-align: super;
+}
+
+.report .fn + .fn {
+  margin-left: 3px;
+}
+
+/* "How we know" and "What this does not say": text with a thin rule on the left, not boxes. */
+.report-box {
+  margin-block: 32px;
+  padding-block: 4px;
+  padding-left: 18px;
+  border-left: 3px solid var(--signal);
+}
+
+.report-box.limits {
+  border-left-color: var(--amber);
+}
+
+.report-box h2 {
+  margin-top: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 20px;
+}
+
+.report-box ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+}
+
+/* The other formats' prose blocks (method, evidence, limits, law) read the same way. */
+.report-boxes {
+  display: grid;
+  gap: 32px;
+  margin-block: 32px;
+}
+
+.report-boxes .report-block > section {
+  padding-left: 18px;
+  border-left: 3px solid var(--signal);
+}
+
+.report-boxes .report-block > section h2 {
+  margin-top: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 20px;
+}
+
+.report-boxes .report-block[data-block="LimitsBox"] > section {
+  border-left-color: var(--amber);
+}
+
+.report-boxes .report-block[data-block="NormCard"] > section {
+  border-left-color: var(--line-strong);
+}
+
+/* Sources */
+.report-sources {
+  margin-top: 48px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.report-sources ol {
+  display: grid;
+  gap: 8px;
+  padding-left: 24px;
+  list-style: decimal;
+  font-size: 14px;
+}
+
+.report-sources li::marker {
+  color: var(--signal);
+  font: 600 13px var(--font-mono);
+}
+
+.report-sources li:target {
+  background: var(--signal-soft);
+}
+
+.report-sources a {
+  color: var(--signal);
+  overflow-wrap: anywhere;
+}
+
+.report-sources .cite,
+.report-sources .license {
+  display: block;
+}
+
+.report-sources .license,
+.report-sources .foot {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Desktop: a wider column reads at a larger size, so a line stays near eighty characters. */
+@media (min-width: 1024px) {
+  .report-prose,
+  .report-box ul {
+    font-size: 19px;
+  }
+
+  .report-standfirst {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 760px) {
+  .report-figures,
+  .report-figures[data-count],
+  .report-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .report-standfirst {
+    font-size: 19px;
+  }
+}
+
+@media print {
+  .report {
+    --report-measure: 100%;
+    --report-column: 100%;
+    font-size: 11pt;
+  }
+
+  .report details {
+    display: none;
+  }
+
+  .report-figure,
+  .report-box,
+  .report-stat {
+    break-inside: avoid;
+  }
+
+  /* On paper the curtain is two frames side by side. */
+  .report-curtain-stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .report-curtain-before {
+    position: static;
+    order: -1;
+    clip-path: none;
+  }
+
+  .report-curtain-divider,
+  .report-curtain-range {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------------------
+   Institutional and scientific documents: the same type and rules, sober headings, tables instead of big
+   numbers. Institutional = a summary between two rules, tables, the law open. Scientific = numbered
+   sections, dense tables, identifiers in mono, no hero typography. */
+.report-doc-head {
+  padding-top: 40px;
+}
+
+.report-doc-label {
+  margin: 0 0 10px;
+  color: var(--signal);
+  font: 500 12.5px/1.5 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.report-document h1 {
+  margin: 0 0 12px;
+  font-size: clamp(26px, 3.2vw, 34px);
+  line-height: 1.18;
+}
+
+.report-doc-context {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.report-summary {
+  margin-block: 32px;
+  padding-block: 16px 18px;
+  border-block: 1px solid var(--line-strong);
+}
+
+.report-summary h2,
+.report-abstract h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.report-summary ul,
+.report-limit-groups ul,
+.report-use ul,
+.report-section ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+  font-size: 16px;
+}
+
+.report-analysed {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.report-table-block,
+.report-law,
+.report-limit-groups,
+.report-use,
+.report-section {
+  margin-block: 36px;
+}
+
+.report-limit-groups h3,
+.report-use h3,
+.report-section h3 {
+  margin: 18px 0 6px;
+  color: var(--muted);
+  font: 600 14px/1.3 var(--font-sans);
+}
+
+.report-use-grid {
+  display: grid;
+  gap: 8px 32px;
+}
+
+@media (min-width: 760px) {
+  .report-use-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Tables: rules between rows, no boxes; numbers aligned in columns. */
+.report-table-scroll {
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 14px/1.45 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.report-table th,
+.report-table td {
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.report-table thead th {
+  border-bottom-color: var(--line-strong);
+  color: var(--muted);
+  font: 500 11.5px/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.report-table tbody th {
+  font-weight: 600;
+}
+
+.report-table .sub,
+.report-steps .sub {
+  display: block;
+  color: var(--muted);
+  font: 400 12px/1.45 var(--font-mono);
+}
+
+.report-table.dense {
+  font-size: 13px;
+}
+
+.report-table.dense th,
+.report-table.dense td {
+  padding: 6px 12px 6px 0;
+}
+
+.report-table tr.absent th,
+.report-table tr.absent td {
+  color: var(--muted);
+}
+
+.report-table-block .data-mark-legend,
+.report-section .data-mark-legend {
+  margin-top: 10px;
+}
+
+/* Scientific: numbered sections and the study area small. */
+.report[data-style="scientific"] {
+  counter-reset: figure section;
+}
+
+.report[data-style="scientific"] .report-section > h2 {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 22px;
+}
+
+.report[data-style="scientific"] .report-section > h2::before {
+  counter-increment: section;
+  content: counter(section) ". ";
+  color: var(--signal);
+}
+
+.report-abstract {
+  margin-block: 32px;
+  padding-left: 18px;
+  border-left: 3px solid var(--signal);
+}
+
+.report-abstract p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.report-study-area .report-place {
+  width: min(100%, 360px) !important;
+  margin: 0;
+}
+
+.report-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+  font-size: 15px;
+}
+
+.report-dl {
+  margin: 0;
+}
+
+.report-dl > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 30%) minmax(0, 1fr);
+  gap: 2px 16px;
+  padding-block: 7px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.report-dl dt {
+  font-weight: 600;
+}
+
+.report-dl dd {
+  margin: 0;
+}
+
+.report-document code {
+  color: var(--muted);
+  font: 12px/1.45 var(--font-mono);
+}
+
+.report-document .chip-code {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+@media (max-width: 760px) {
+  .report-dl > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .report-table tr,
+  .report-dl > div,
+  .report-summary li {
+    break-inside: avoid;
+  }
+
+  .report-table thead {
+    display: table-header-group;
+  }
+
+  .report-table-scroll {
+    overflow: visible;
+  }
+}
+
+@media print {
+  /* The briefing note prints its law open. */
+  .report[data-style="institutional"] .report-law details {
+    display: block;
+  }
+}
+
+/* Table columns: numbers, short labels and periods never break inside a value; the row name and the
+   statistic take the slack. Below 900 px the table scrolls inside its wrapper instead of squeezing. */
+.report-table td.num,
+.report-table thead th {
+  white-space: nowrap;
+}
+
+.report-table td.wrap {
+  min-width: 14ch;
+}
+
+.report-table tbody th {
+  min-width: 16ch;
+}
+
+@media (max-width: 900px) {
+  .report-table {
+    min-width: 720px;
+  }
+}
+
+/* The data behind a long chart, read in full, flows in columns side by side. */
+.data-behind-columns {
+  display: grid;
+  gap: 0 32px;
+}
+
+@media (min-width: 900px) {
+  .data-behind-columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

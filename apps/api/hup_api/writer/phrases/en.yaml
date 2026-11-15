@@ -1,0 +1,178 @@
+{
+  "weather_hypotheses": {
+    "compatible": "Compatible with the hypothesis that {hypothesis}. The evidence does not establish it. Evidence level E2.",
+    "inconclusive": "The test does not establish a direction for {pair}.",
+    "not_testable": "The test for {pair} requires at least twenty complete consecutive years and enough residual variation.",
+    "period": "{start}–{end}, {years} paired years.",
+    "summer_rain_and_daily_highs": {
+      "label": "summer rainfall and mean daily highs",
+      "negative": "summers with less rain tend to have higher mean daily highs"
+    },
+    "annual_rain_and_mean_temperature": {
+      "label": "annual rainfall and annual mean temperature",
+      "negative": "warmer years coincide with drier years",
+      "positive": "warmer years coincide with wetter years"
+    }
+  },
+  "fallback": {
+    "E0": "{variable} has a reported value of {value} {unit}."
+  },
+  "neutral": {
+    "E0": "The available evidence does not establish a direction for {variable}."
+  },
+  "read_series": {"E0": "{variable}: {series}."},
+  "trend": {
+    "E0": "The estimated rate for {variable} is {value} {unit}.",
+    "E1": "{variable} shows a trend with a slope of {value} {unit}."
+  },
+  "baci_contrast": {
+    "E1": "The before-and-after contrast for {variable} is {value} {unit}.",
+    "E2": "The estimated change for {variable} relative to the reference is {value} {unit} across the selected periods."
+  },
+  "rain_extreme": {
+    "E0": "The rainfall total for the selected period is at percentile {value} of the historical windows."
+  },
+  "exposure": {"E0": "{variable}: an estimated {value} {unit}."},
+  "exposure_labels": {
+    "flooded_area": "Population within the mapped flooded area",
+    "flood_trace": "Population within mapped flood traces"
+  },
+  "climate_delta": {"E0": "{variable}, anchored to the annual reference. Median and model spread by horizon and scenario: {series}."},
+  "climate_delta_change": {"E0": "Change in {variable} relative to 1995-2014 according to the models. Median and model spread by horizon and scenario: {series}."},
+  "uncertainty_split": {"E0": "Estimated variance across models and scenarios by horizon: {table}."},
+  "resource_estimate": {"E0": "With the quantity assumed in the question, {variable} would ask for an estimated {value} {unit}, from published unit coefficients ({table})."},
+  "resource_estimate_basis": {
+    "assumed": "With the quantity assumed in the question, {variable} would ask for an estimated {value} {unit}, from published unit coefficients ({table}).",
+    "input": "For the quantity computed in this analysis, {variable} would ask for an estimated {value} {unit}, from published unit coefficients ({table}).",
+    "typical": "For a published example size, {variable} would ask for an estimated {value} {unit}, from published unit coefficients ({table}).",
+    "per_unit": "For each unit of reference, {variable} would ask for an estimated {value} {unit}, from published unit coefficients ({table})."
+  },
+  "lagged_association": {
+    "E3": "{variable} shows an association with partial rank correlation {value}."
+  },
+  "return_level": {
+    "E0": "{variable}: on average, once every {return_period} years a day reaches or exceeds {value} {unit} ({interval}), going by {record} years of record."
+  },
+  "return_level_event": {
+    "E0": "{variable}: a year like {year} is expected, on average, once every {value} years ({interval}), going by the {record} years before it."
+  },
+  "return_level_event_day": {
+    "E0": "{variable}: a day like the wettest of the episode ({event_value} mm) is the maximum of a year, on average, once every {value} years ({interval}), going by the {record} years before it."
+  },
+  "return_level_rare_day": {
+    "E0": "{variable}: the wettest day of the episode ({event_value} mm) is rarer than {record} years of record can estimate. It exceeds the {record}-year level, and no return period is extrapolated beyond the record."
+  },
+  "return_level_rare": {
+    "E0": "{variable}: {year} is rarer than {record} years of record can estimate. It exceeds the {record}-year level, and no return period is extrapolated beyond the record."
+  },
+  "same_date_anomaly": {
+    "E0": "The difference from equivalent windows for {variable} is {value} {unit}."
+  },
+  "break_year": {
+    "E2": "The estimated level change for {variable} starts in {value}."
+  },
+  "distance_decay": {
+    "E2": "The estimated contrast for {variable} in this ring is {value} {unit}."
+  },
+  "placebo_test": {
+    "E2": "The observed contrast for {variable} ranks at percentile {value} among comparisons."
+  },
+  "report": {
+    "institutional": "Reported value: {value}. Interval: {interval}.",
+    "scientific": "Estimate: {value}. Reported interval: {interval}."
+  },
+  "design_opening": {
+    "scan_detected": {
+      "headline": "The scan detects a clear direction in the data",
+      "lead": "The scan identifies changes that remain clear after adjusting for multiple comparisons.",
+      "meaning": "The matrix shows which indicators have a supported direction and which remain inconclusive."
+    },
+    "scan_inconclusive": {
+      "headline": "No clear direction in the indicators tested",
+      "lead": "After accounting for the comparisons, the scan does not establish a direction for any indicator tested.",
+      "meaning": "The available records leave open how the indicators have changed."
+    },
+    "scan_unavailable": {
+      "headline": "The records are too limited to assess change",
+      "lead": "The available records did not meet the requirements to assess a direction.",
+      "meaning": "The assessment needs usable observations over the period being studied."
+    },
+    "scan_limit": "The scan cannot establish whether a change in one indicator explains a change in another.",
+    "impact_detected": {
+      "headline": "The site changed differently from its surroundings",
+      "meaning": "The estimate compares the change in the site with the change in its surroundings over the same windows."
+    },
+    "impact_pretrend": {
+      "headline": "The gap with the surroundings was already changing",
+      "meaning": "The difference was already shifting before the event, so the contrast describes how the site and reference evolved."
+    },
+    "impact_inconclusive": {
+      "headline": "No clear difference between the site and its surroundings",
+      "lead": "The estimated range still allows for no difference between how the site and the reference changed.",
+      "meaning": "The comparison leaves open whether the site evolved differently over these windows."
+    },
+    "impact_unavailable": {
+      "headline": "The records do not support a before-and-after comparison",
+      "lead": "The available data cannot support the requested comparison between the site and its surroundings.",
+      "meaning": "The comparison needs usable, matched observations in both periods."
+    },
+    "impact_limit": "The available evidence leaves the change relative to the surroundings unresolved."
+  },
+  "units": {
+    "1": "",
+    "NDVI": "",
+    "°C": "°C",
+    "degC": "°C",
+    "°C/year": "°C per year",
+    "°C/decade": "°C per decade",
+    "mm/month": "mm per month",
+    "mm/year/year": "mm of annual rainfall per year",
+    "mm/day": "mm per day",
+    "mm": "mm",
+    "years": "years",
+    "L/day": "L/day",
+    "m3/year": "m³/year",
+    "MWh/year": "MWh/year",
+    "m2": "m²",
+    "people": "people",
+    "percentile": "percentile",
+    "%": "%"
+  },
+  "labels": {
+    "air_temperature": "mean air temperature",
+    "lst": "land surface temperature",
+    "ndvi": "greenness (NDVI)"
+  },
+  "tendency": {
+    "up": "increases",
+    "down": "decreases",
+    "flat": "shows no trend"
+  },
+  "impact": {
+    "up": "higher",
+    "down": "lower",
+    "limit": "The observed change coincides in time and place with the period and area compared. The contrast does not establish its origin."
+  },
+  "formats": {
+    "indicator": "The indicator",
+    "scenario_opening": "The chart shows {variable} by scenario and time horizon, with the range across models.",
+    "scenario_opening_change": "The models project different changes in {variable} by scenario and time horizon.",
+    "trend": "In {zone}, {variable} {verb} at {value} {unit} ({interval}), {period}.",
+    "impact": "In {zone}, the change in {variable} is {verb} than in the surroundings by {value} {unit} ({interval}), comparing {method}. {limit}",
+    "comparison_windows": "Comparison windows: {method}.",
+    "pretrend_limit": "The difference between the site and the reference was already changing before the event.",
+    "event_window": "Episode window: {method}.",
+    "state_period": "Requested period: {period}.",
+    "reference_period": "Reference record: {period}.",
+    "scenario_limit": "The model grid and short horizon windows limit local interpretation. Bounds describe spread across models.",
+    "variance_limit": "Model variance is averaged within scenarios. Scenario variance compares their means. Only models common to every scenario are used, with equal weight.",
+    "rain_grid": "The analysis uses monthly totals on a grid with {support} resolution. Local rainfall over a few hours can be diluted at this scale.",
+    "rain_monthly": "The analysis uses monthly totals. Local rainfall over a few hours can be diluted at this scale.",
+    "rain_editorial_grid": "Monthly totals at {support} resolution can hide intense local rainfall over a few hours.",
+    "rain_editorial": "Monthly totals can hide intense local rainfall over a few hours.",
+    "return_level_limit": "It is the maximum of the zone mean on a grid of {support}: its wettest point gets more. The fit assumes the climate of the record does not change.",
+    "institution": "The method used was {method}.",
+    "scientific": "Statistical test result: {statistic}.",
+    "diagnostics": "Diagnostics: {diagnostics}."
+  }
+}

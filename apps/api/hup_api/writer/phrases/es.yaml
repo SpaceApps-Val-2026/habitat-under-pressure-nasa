@@ -1,0 +1,178 @@
+{
+  "weather_hypotheses": {
+    "compatible": "Compatible con la hipótesis de que {hypothesis}; no la demuestra. Nivel de evidencia E2.",
+    "inconclusive": "El contraste no establece una dirección para {pair}.",
+    "not_testable": "No se pudo contrastar {pair}. Se necesitan al menos veinte años completos consecutivos y variación residual suficiente.",
+    "period": "Periodo {start}–{end}, {years} años emparejados.",
+    "summer_rain_and_daily_highs": {
+      "label": "la lluvia de verano y la media de las máximas diarias",
+      "negative": "los veranos con menos lluvia tienden a presentar máximas diarias medias más altas"
+    },
+    "annual_rain_and_mean_temperature": {
+      "label": "la lluvia anual y la temperatura media anual",
+      "negative": "los años más cálidos coinciden con años más secos",
+      "positive": "los años más cálidos coinciden con años más lluviosos"
+    }
+  },
+  "fallback": {
+    "E0": "El valor obtenido para {variable} es {value} {unit}."
+  },
+  "neutral": {
+    "E0": "La evidencia disponible no permite afirmar una dirección para {variable}."
+  },
+  "read_series": {"E0": "{variable}: {series}."},
+  "trend": {
+    "E0": "El ritmo estimado para {variable} es de {value} {unit}.",
+    "E1": "{variable} muestra una tendencia con pendiente de {value} {unit}."
+  },
+  "baci_contrast": {
+    "E1": "El contraste antes y después para {variable} es {value} {unit}.",
+    "E2": "El cambio estimado para {variable} respecto a la referencia es de {value} {unit} entre los periodos seleccionados."
+  },
+  "rain_extreme": {
+    "E0": "La precipitación del periodo seleccionado queda en el percentil {value} de las ventanas históricas."
+  },
+  "exposure": {"E0": "{variable}: se estiman {value} {unit}."},
+  "exposure_labels": {
+    "flooded_area": "Población dentro del área inundada cartografiada",
+    "flood_trace": "Población dentro de las huellas de inundación cartografiadas"
+  },
+  "climate_delta": {"E0": "{variable}, a partir de la referencia anual. Mediana y dispersión entre modelos por horizonte y escenario: {series}."},
+  "climate_delta_change": {"E0": "Cambio de {variable} respecto a 1995-2014 según los modelos. Mediana y dispersión entre modelos por horizonte y escenario: {series}."},
+  "uncertainty_split": {"E0": "Varianza estimada entre modelos y entre escenarios por horizonte: {table}."},
+  "resource_estimate": {"E0": "Con la cantidad supuesta en la pregunta, {variable} pediría unos {value} {unit} estimados, a partir de coeficientes unitarios publicados ({table})."},
+  "resource_estimate_basis": {
+    "assumed": "Con la cantidad supuesta en la pregunta, {variable} pediría unos {value} {unit} estimados, a partir de coeficientes unitarios publicados ({table}).",
+    "input": "Para la cantidad calculada en este análisis, {variable} pediría unos {value} {unit} estimados, a partir de coeficientes unitarios publicados ({table}).",
+    "typical": "Para un tamaño de ejemplo publicado, {variable} pediría unos {value} {unit} estimados, a partir de coeficientes unitarios publicados ({table}).",
+    "per_unit": "Por cada unidad de referencia, {variable} pediría unos {value} {unit} estimados, a partir de coeficientes unitarios publicados ({table})."
+  },
+  "lagged_association": {
+    "E3": "{variable} presenta una asociación con correlación parcial de rangos de {value}."
+  },
+  "return_level": {
+    "E0": "{variable}: de media, una vez cada {return_period} años se alcanzan o superan {value} {unit} en un día ({interval}), según {record} años de registro."
+  },
+  "return_level_event": {
+    "E0": "{variable}: un año como {year} se espera, de media, una vez cada {value} años ({interval}), según los {record} años anteriores."
+  },
+  "return_level_event_day": {
+    "E0": "{variable}: un día como el más lluvioso del episodio ({event_value} mm) es el máximo de un año, de media, una vez cada {value} años ({interval}), según los {record} años anteriores."
+  },
+  "return_level_rare_day": {
+    "E0": "{variable}: el día más lluvioso del episodio ({event_value} mm) es más raro de lo que permiten estimar {record} años de registro. Supera el nivel de {record} años, y no se extrapola un periodo de retorno más allá del registro."
+  },
+  "return_level_rare": {
+    "E0": "{variable}: {year} es más raro de lo que permiten estimar {record} años de registro. Supera el nivel de {record} años, y no se extrapola un periodo de retorno más allá del registro."
+  },
+  "same_date_anomaly": {
+    "E0": "La diferencia de {variable} respecto a ventanas equivalentes es de {value} {unit}."
+  },
+  "break_year": {
+    "E2": "El cambio de nivel estimado para {variable} empieza en {value}."
+  },
+  "distance_decay": {
+    "E2": "El contraste estimado de {variable} en este anillo es de {value} {unit}."
+  },
+  "placebo_test": {
+    "E2": "El contraste observado para {variable} queda en el percentil {value} de las comparaciones."
+  },
+  "report": {
+    "institutional": "Valor obtenido: {value}. Intervalo: {interval}.",
+    "scientific": "Estimación: {value}. Intervalo declarado: {interval}."
+  },
+  "design_opening": {
+    "scan_detected": {
+      "headline": "El escaneo detecta cambios con una dirección clara",
+      "lead": "El escaneo identifica cambios que siguen siendo claros tras ajustar por comparaciones múltiples.",
+      "meaning": "La matriz muestra qué indicadores tienen una dirección respaldada y cuáles siguen sin resolverse."
+    },
+    "scan_inconclusive": {
+      "headline": "Sin una dirección clara en los indicadores evaluados",
+      "lead": "Tras tener en cuenta las comparaciones, el escaneo no establece una dirección para ninguno de los indicadores evaluados.",
+      "meaning": "Los registros disponibles dejan abierta la evolución de los indicadores."
+    },
+    "scan_unavailable": {
+      "headline": "Los registros son insuficientes para evaluar el cambio",
+      "lead": "Los registros disponibles no cumplieron los requisitos de la prueba de dirección.",
+      "meaning": "La evaluación necesita observaciones utilizables a lo largo del periodo analizado."
+    },
+    "scan_limit": "El escaneo no permite saber si el cambio de un indicador explica el de otro.",
+    "impact_detected": {
+      "headline": "La zona cambió de forma distinta a su entorno",
+      "meaning": "La estimación compara el cambio en la zona con el cambio en su entorno durante las mismas ventanas."
+    },
+    "impact_pretrend": {
+      "headline": "La diferencia con el entorno ya cambiaba antes del hito",
+      "meaning": "La diferencia ya cambiaba antes del hito, así que el contraste describe cómo evolucionaron la zona y la referencia."
+    },
+    "impact_inconclusive": {
+      "headline": "Sin una diferencia clara entre la zona y su entorno",
+      "lead": "El intervalo estimado es compatible con que la zona y la referencia cambiaran de forma similar.",
+      "meaning": "La comparación deja abierta la posibilidad de que la zona evolucionara de forma distinta en estas ventanas."
+    },
+    "impact_unavailable": {
+      "headline": "Los registros no permiten comparar el antes y el después",
+      "lead": "Los datos disponibles no permiten comparar la zona con su entorno en las ventanas consultadas.",
+      "meaning": "La comparación necesita observaciones utilizables y emparejadas en ambos periodos."
+    },
+    "impact_limit": "La evidencia disponible deja abierto cómo cambió la zona respecto a su entorno."
+  },
+  "units": {
+    "1": "",
+    "NDVI": "",
+    "°C": "°C",
+    "degC": "°C",
+    "°C/year": "°C por año",
+    "°C/decade": "°C por década",
+    "mm/month": "mm al mes",
+    "mm/year/year": "mm de lluvia anual por año",
+    "mm/day": "mm al día",
+    "mm": "mm",
+    "years": "años",
+    "L/day": "L/día",
+    "m3/year": "m³/año",
+    "MWh/year": "MWh/año",
+    "m2": "m²",
+    "people": "personas",
+    "percentile": "percentil",
+    "%": "%"
+  },
+  "labels": {
+    "air_temperature": "la temperatura media del aire",
+    "lst": "la temperatura de superficie",
+    "ndvi": "el verdor (NDVI)"
+  },
+  "tendency": {
+    "up": "aumenta",
+    "down": "desciende",
+    "flat": "no muestra tendencia"
+  },
+  "impact": {
+    "up": "mayor",
+    "down": "menor",
+    "limit": "El cambio observado coincide en tiempo y lugar con el periodo y la zona comparados. El contraste no establece su origen."
+  },
+  "formats": {
+    "indicator": "El indicador",
+    "scenario_opening": "El gráfico muestra {variable} por escenario y horizonte, con el rango entre modelos.",
+    "scenario_opening_change": "Los modelos proyectan cambios distintos en {variable} según el escenario y el horizonte.",
+    "trend": "En {zone}, {variable} {verb} a un ritmo de {value} {unit} ({interval}), {period}.",
+    "impact": "En {zone}, {variable} registra un cambio {verb} que en su entorno, de {value} {unit} ({interval}), al comparar {method}. {limit}",
+    "comparison_windows": "Periodos comparados: {method}.",
+    "pretrend_limit": "La diferencia entre la zona y la referencia ya cambiaba antes del hito.",
+    "event_window": "Ventana del episodio: {method}.",
+    "state_period": "Periodo solicitado: {period}.",
+    "reference_period": "Registro de referencia: {period}.",
+    "scenario_limit": "La rejilla de los modelos y las ventanas cortas limitan la interpretación local. Los límites reflejan la dispersión entre modelos.",
+    "variance_limit": "La varianza entre modelos se promedia dentro de los escenarios. La varianza entre escenarios compara sus medias. Solo entran los modelos comunes a todos, con el mismo peso.",
+    "rain_grid": "El análisis usa totales mensuales de una rejilla de {support} de resolución. La lluvia local de unas horas puede quedar diluida a esta escala.",
+    "rain_monthly": "El análisis usa totales mensuales. La lluvia local de unas horas puede quedar diluida a esta escala.",
+    "rain_editorial_grid": "Los totales mensuales en una rejilla de {support} pueden ocultar lluvias locales intensas de unas horas.",
+    "rain_editorial": "Los totales mensuales pueden ocultar lluvias locales intensas de unas horas.",
+    "return_level_limit": "Es el máximo de la media de la zona en una rejilla de {support}: su punto más lluvioso recibe más. El ajuste supone que el clima del registro no cambia.",
+    "institution": "El método empleado fue {method}.",
+    "scientific": "Resultado del contraste estadístico: {statistic}.",
+    "diagnostics": "Diagnósticos: {diagnostics}."
+  }
+}

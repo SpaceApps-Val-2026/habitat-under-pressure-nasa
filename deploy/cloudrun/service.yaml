@@ -1,0 +1,107 @@
+# Cloud Run service for Habitat Under Pressure. Placeholders, replaced by the sed line in README.md:
+#   PROJECT_ID  REGION  BUCKET  IMAGE_TAG  PROVIDER_NAME  MODEL_FOR_PLAN  MODEL_FOR_TEXT  MODEL_FOR_SMALL  KEY_VARIABLE
+# Deploy:  gcloud run services replace <rendered copy of this file> --region REGION
+#
+# One instance, always the same one (min = max = 1): an analysis and its event stream live in the same process.
+# CPU always allocated (instance-based billing): the run goes on after the HTTP answer and after the tab closes;
+# with CPU only during requests it would stall. The bucket is mounted at /data with Cloud Storage FUSE.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hup
+  labels:
+    cloud.googleapis.com/location: REGION
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/startup-cpu-boost: "true"
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      serviceAccountName: hup-run@PROJECT_ID.iam.gserviceaccount.com
+      # Long enough for an SSE stream (the maximum Cloud Run allows); the web reconnects with Last-Event-ID after it.
+      timeoutSeconds: 3600
+      containerConcurrency: 40
+      containers:
+        - name: app
+          image: REGION-docker.pkg.dev/PROJECT_ID/hup/app:IMAGE_TAG
+          ports:
+            - name: http1
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: "2"
+              memory: 4Gi
+          env:
+            - name: HUP_DATA_DIR
+              value: /data
+            # The bucket takes about one write per second per object and uploads a whole object on every append:
+            # a running analysis keeps its events on the instance's own disk (in memory on Cloud Run, a few KB
+            # per analysis) and copies them to /data at most once a second and at its end; manifest and request
+            # log lines are written one small file each.
+            - name: HUP_EVENTS_LOCAL_DIR
+              value: /tmp/hup-events
+            - name: HUP_SPLIT_APPENDS
+              value: "1"
+            # Caps for a public URL with paid LLM calls (docs/despliegue.md, section 6).
+            - name: HUP_LLM_DAILY_BUDGET_USD
+              value: "10"
+            - name: HUP_MAX_RUNNING_ANALYSES
+              value: "3"
+            - name: HUP_RATE_LIMIT_PER_MINUTE
+              value: "10"
+            - name: HUP_TRUST_FORWARDED_FOR
+              value: "1"
+            # LLM provider (openai or anthropic) and models: not secrets, filled in by the sed line in README.md.
+            # HUP_LLM_PROVIDER none turns the LLM off; then also delete the key block below.
+            - name: HUP_LLM_PROVIDER
+              value: PROVIDER_NAME
+            - name: HUP_LLM_MODEL_PLAN
+              value: MODEL_FOR_PLAN
+            - name: HUP_LLM_MODEL_TEXT
+              value: MODEL_FOR_TEXT
+            - name: HUP_LLM_MODEL_SMALL
+              value: MODEL_FOR_SMALL
+            # The provider's key, from Secret Manager. KEY_VARIABLE becomes OPENAI_API_KEY or ANTHROPIC_API_KEY.
+            # Create the secret hup-llm-api-key first: a missing secret fails the deploy.
+            - name: KEY_VARIABLE
+              valueFrom:
+                secretKeyRef:
+                  name: hup-llm-api-key
+                  key: latest
+            # - name: TYPESAFE_API_KEY
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: hup-typesafe-api-key
+            #       key: latest
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            periodSeconds: 60
+            timeoutSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: data
+          csi:
+            driver: gcsfuse.run.googleapis.com
+            readOnly: false
+            volumeAttributes:
+              bucketName: BUCKET
+              # Folders uploaded with gcloud storage rsync have no folder objects: list them anyway.
+              mountOptions: implicit-dirs

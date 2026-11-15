@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/plan.schema.json",
+  "title": "Analysis plan",
+  "description": "What the assistant (or the form) proposes and the person accepts before anything runs.",
+  "type": "object",
+  "required": ["contract_version", "id", "request", "answer", "design", "zone", "period", "variables", "catalog_version", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": { "const": "1.0" },
+    "id": { "$ref": "common.schema.json#/$defs/id" },
+    "request": {
+      "type": "object",
+      "required": ["text", "language"],
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+        "level": { "description": "Reading level", "enum": ["general", "media", "university"] },
+        "origin": { "enum": ["assistant", "form"] }
+      }
+    },
+    "answer": {
+      "description": "Honest answer in three levels, stated before running.",
+      "type": "object",
+      "required": ["level"],
+      "additionalProperties": false,
+      "properties": {
+        "level": { "enum": ["complete", "with_limits", "not_possible"] },
+        "limits": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/text" } },
+        "alternative": { "description": "The question that can be answered instead", "$ref": "common.schema.json#/$defs/text" },
+        "decided": {
+          "description": "What Delfos decided because the request did not say it (design, variables, period, size...), so that the person can see and correct it. Optional; never a question.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["field", "text"],
+            "additionalProperties": false,
+            "properties": {
+              "field": { "type": "string" },
+              "text": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        }
+      }
+    },
+    "design": { "$ref": "common.schema.json#/$defs/design" },
+    "zone": { "$ref": "common.schema.json#/$defs/zone" },
+    "period": { "$ref": "common.schema.json#/$defs/period" },
+    "variables": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/id" } },
+    "comparison": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["spatial_reference", "baseline_period", "region", "threshold", "with_and_without_project"] }
+      }
+    },
+    "scenarios": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "horizons": { "type": "array", "items": { "type": "integer" } },
+        "climate": { "type": "array", "items": { "enum": ["ssp126", "ssp245", "ssp370", "ssp585"] } },
+        "human_pressure": { "type": "array", "items": { "enum": ["optimistic", "central", "pessimistic"] } },
+        "industry": { "type": "array", "items": { "enum": ["optimistic", "central", "pessimistic"] } }
+      }
+    },
+    "catalog_version": { "type": "string" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "operation", "version", "params", "depends_on"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "type": { "enum": ["ingest", "compute", "write", "review"] },
+          "operation": { "$ref": "common.schema.json#/$defs/id" },
+          "version": { "type": "string" },
+          "params": { "type": "object" },
+          "depends_on": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+          "sources": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+          "data": {
+            "description": "Ingest steps only: where the data will come from and how much to expect.",
+            "type": "object",
+            "required": ["origin"],
+            "additionalProperties": false,
+            "properties": {
+              "origin": {
+                "description": "Rung of the read ladder the step will land on. derived: a result with the same fingerprint exists; cache: analysis-ready or cached file; package: pre-downloaded raw file; remote: asked from the source now",
+                "enum": ["derived", "cache", "package", "remote"]
+              },
+              "estimated_seconds": { "type": "number", "minimum": 0 },
+              "estimated_mb": { "type": "number", "minimum": 0 }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "answer": { "properties": { "level": { "const": "with_limits" } } } } },
+      "then": { "properties": { "answer": { "required": ["limits"], "properties": { "limits": { "minItems": 1 } } } } }
+    },
+    {
+      "if": { "properties": { "answer": { "properties": { "level": { "const": "not_possible" } } } } },
+      "then": { "properties": { "answer": { "required": ["alternative"] } } }
+    }
+  ]
+}

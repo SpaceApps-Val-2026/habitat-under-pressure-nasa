@@ -1,0 +1,103 @@
+[
+  {
+    "type": "series",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "sources": [
+      {
+        "n_items": 12,
+        "product": "GPM_3IMERGM",
+        "source": "imerg-monthly",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "version": "07"
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "precipitation",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "area": "zone",
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2024-01-01",
+      "end": "2024-12-31"
+    },
+    "zone": "osm-relation-345244",
+    "unit": "mm/month",
+    "series": [
+      {
+        "t": "2024-01-01",
+        "v": 26.288000613451004
+      },
+      {
+        "t": "2024-02-01",
+        "v": 17.86400033533573
+      },
+      {
+        "t": "2024-03-01",
+        "v": 35.96000173687935
+      },
+      {
+        "t": "2024-04-01",
+        "v": 13.440000861883163
+      },
+      {
+        "t": "2024-05-01",
+        "v": 8.432000458240509
+      },
+      {
+        "t": "2024-06-01",
+        "v": 40.320002138614655
+      },
+      {
+        "t": "2024-07-01",
+        "v": 8.680000267922878
+      },
+      {
+        "t": "2024-08-01",
+        "v": 17.360000997781754
+      },
+      {
+        "t": "2024-09-01",
+        "v": 53.280004262924194
+      },
+      {
+        "t": "2024-10-01",
+        "v": 104.9040093421936
+      },
+      {
+        "t": "2024-11-01",
+        "v": 42.72000163793564
+      },
+      {
+        "t": "2024-12-01",
+        "v": 33.48000040650368
+      }
+    ],
+    "support": {
+      "cells": 4.061,
+      "resolution_m": 11100,
+      "since": 1998
+    },
+    "coverage": {
+      "valid_pct": 100.0,
+      "n_dates": 12
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-024143-ba77ed",
+    "step": "s1",
+    "fingerprint": "33f9f972a2c4353ed53bb3254274755629f0a2efcc7944d10c6c136400c25455"
+  }
+]

@@ -1,0 +1,28 @@
+/* The options drawer slides in from the right over a page that dims; nothing moves with reduced motion. */
+.options-drawer {
+  animation: options-in var(--motion-move) var(--ease-enter);
+}
+
+.options-scrim {
+  animation: options-dim var(--motion-move) var(--ease-enter);
+}
+
+@keyframes options-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+@keyframes options-dim {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .options-drawer,
+  .options-scrim {
+    animation: none;
+  }
+}

@@ -1,0 +1,492 @@
+# sources: one entry per item. Shape: docs/contratos/catalog.schema.json, property "sources".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: landsat-c2-l2
+  name: Landsat 8/9 Collection 2 Level-2
+  provider: USGS and NASA
+  product: landsat-c2-l2
+  version: '02'
+  resolution: '30 m (surface temperature: ~100 m)'
+  since: '2013'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2
+  license:
+    en: Public domain (USGS). No use restrictions; credit is optional. Cite doi:10.5066/P9OGBGM6.
+    es: Dominio público (USGS). Sin restricciones de uso; el crédito es opcional. Citar doi:10.5066/P9OGBGM6.
+  citation:
+    en: Landsat Collection 2 Level-2 image courtesy of the U.S. Geological Survey. doi:10.5066/P9OGBGM6
+    es: Landsat Collection 2 Level-2 image courtesy of the U.S. Geological Survey. doi:10.5066/P9OGBGM6
+  redistributable: true
+- id: nasa-power
+  name: NASA POWER
+  provider: NASA LaRC
+  product: MERRA-2
+  resolution: ~50 km
+  since: '1981'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://power.larc.nasa.gov/api/temporal/monthly/point
+  license:
+    en: 'Licence to be confirmed: the POWER referencing page names none. Acknowledgement required; send the reference of publications to the project; notify the POWER project if the data are redistributed. Do not imply NASA endorsement.'
+    es: 'Licencia por confirmar: la página de referencias de POWER no nombra ninguna. Agradecimiento obligatorio; enviar al proyecto la referencia de las publicaciones; avisar al proyecto POWER si se redistribuyen los datos. No sugerir respaldo de la NASA.'
+  citation:
+    en: The data was obtained from National Aeronautics and Space Administration (NASA) Langley Research Center's Prediction Of Worldwide Energy Resources (POWER) project funded through the NASA Earth Science Division
+    es: The data was obtained from National Aeronautics and Space Administration (NASA) Langley Research Center's Prediction Of Worldwide Energy Resources (POWER) project funded through the NASA Earth Science Division
+  redistributable: true
+- id: smap-l3
+  name: SMAP L3 soil moisture 9 km
+  provider: NASA NSIDC DAAC
+  product: SPL3SMP_E
+  version: '006'
+  resolution: 9 km
+  since: '2015'
+  access:
+    mode: package
+    account: earthdata
+    coverage: cases
+    url: https://nsidc.org/data/spl3smp_e
+  license:
+    en: Open, without restriction (NASA NSIDC DAAC). Citing the specific product used is a condition of use. NSIDC asks to be told about publications that use the data. Do not imply NASA endorsement.
+    es: Abierta, sin restricciones (NASA NSIDC DAAC). Citar el producto concreto que se usa es condición de uso. NSIDC pide que se le avise de las publicaciones que usen los datos. No sugerir respaldo de la NASA.
+  citation:
+    en: SMAP L3 Soil Moisture (NASA NSIDC DAAC), SPL3SMP_E version 006, doi:[to be confirmed]
+    es: SMAP L3 Soil Moisture (NASA NSIDC DAAC), SPL3SMP_E versión 006, doi:[por confirmar]
+  redistributable: true
+- id: chj-phj-2022-2027
+  name: Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027
+  provider: Confederación Hidrográfica del Júcar
+  since: '2023'
+  access:
+    mode: manual
+    account: none
+    coverage: cases
+    url: https://www.chj.es/
+  license:
+    en: General reuse conditions for public-sector information (Ley 37/2007 and Real Decreto 1495/2011), per the CHJ legal notice. Cite the source and the update date; do not alter the meaning; do not suggest endorsement by the CHJ; keep the metadata.
+    es: Condiciones generales de reutilización de la información del sector público (Ley 37/2007 y Real Decreto 1495/2011), según el aviso legal de la CHJ. Citar la fuente y la fecha de actualización; no alterar el sentido; no sugerir respaldo de la CHJ; mantener los metadatos.
+  citation:
+    en: 'Origen de los datos: Confederación Hidrográfica del Júcar. Plan Hidrológico 2022-2027 (Real Decreto 35/2023), [document], p. [page], updated [date]'
+    es: 'Origen de los datos: Confederación Hidrográfica del Júcar. Plan Hidrológico 2022-2027 (Real Decreto 35/2023), [documento], p. [página], actualizado el [fecha]'
+  redistributable: false
+- id: imerg-monthly
+  name: GPM IMERG Final Precipitation L3, monthly
+  provider: NASA GES DISC
+  product: GPM_3IMERGM
+  version: '07'
+  resolution: 0.1° (about 11 km)
+  since: '1998'
+  access:
+    mode: package
+    account: earthdata
+    coverage: global
+    url: https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07
+  license:
+    en: 'NASA EOSDIS Data Use and Citation Guidance: openly shared, without restriction (CC0 by default for NASA-led mission data unless marked; the IMERG record names no licence). Acknowledge NASA GES DISC and cite the DOI. Do not imply NASA endorsement.'
+    es: 'Política de uso y cita de datos de NASA EOSDIS: datos compartidos abiertamente y sin restricción (CC0 por defecto para los datos de misiones dirigidas por la NASA salvo indicación; la ficha de IMERG no nombra licencia). Reconocer a NASA GES DISC y citar el DOI. No sugerir respaldo de la NASA.'
+  citation:
+    en: 'GPM IMERG Final V07 (NASA GES DISC). Huffman, G. J., E. F. Stocker, D. T. Bolvin, E. J. Nelkin and J. Tan (2023), GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07, NASA GES DISC, Accessed: [date], doi:10.5067/GPM/IMERG/3B-MONTH/07'
+    es: 'GPM IMERG Final V07 (NASA GES DISC). Huffman, G. J., E. F. Stocker, D. T. Bolvin, E. J. Nelkin and J. Tan (2023), GPM IMERG Final Precipitation L3 1 month 0.1 degree x 0.1 degree V07, NASA GES DISC, Accessed: [date], doi:10.5067/GPM/IMERG/3B-MONTH/07'
+  redistributable: true
+- id: nex-gddp-cmip6
+  name: NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6)
+  provider: NASA NCCS
+  product: yearly-indicators
+  version: '2.0'
+  resolution: 0.25° (about 28 km)
+  since: '1995'
+  access:
+    mode: package
+    account: none
+    coverage: global
+    url: https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6
+  license:
+    en: 'CC0 1.0 for all outputs since September 2022. Cite Thrasher et al. (2022), doi:10.7917/OFSG3345. Older files may still carry CC BY-SA in their metadata: use the current version. Do not imply NASA endorsement.'
+    es: 'CC0 1.0 para todas las salidas desde septiembre de 2022. Citar Thrasher et al. (2022), doi:10.7917/OFSG3345. Algunos archivos antiguos pueden conservar CC BY-SA en sus metadatos: usar la versión vigente. No sugerir respaldo de la NASA.'
+  citation:
+    en: NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6) was accessed on [date] from https://registry.opendata.aws/nex-gddp-cmip6. Thrasher et al. (2022), doi:10.7917/OFSG3345
+    es: NASA Earth Exchange Global Daily Downscaled Projections (NEX-GDDP-CMIP6) was accessed on [date] from https://registry.opendata.aws/nex-gddp-cmip6. Thrasher et al. (2022), doi:10.7917/OFSG3345
+  redistributable: true
+- id: ghsl
+  name: Global Human Settlement Layer population grid
+  provider: European Commission Joint Research Centre
+  product: GHS-POP
+  version: R2023A V1-0
+  resolution: 100 m (teselas R5_C18 y R5_C19) y 1 km (global)
+  access:
+    mode: package
+    account: none
+    coverage: global
+    url: https://doi.org/10.1080/17538947.2024.2390454
+  license:
+    en: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Attribution required and changes must be indicated. Cite Pesaresi et al. (2024), doi:10.1080/17538947.2024.2390454.
+    es: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Atribución obligatoria e indicar si se han hecho cambios. Citar Pesaresi et al. (2024), doi:10.1080/17538947.2024.2390454.
+  citation:
+    en: GHSL R2023A (European Commission, JRC), CC BY 4.0. Pesaresi et al. (2024), doi:10.1080/17538947.2024.2390454
+    es: GHSL R2023A (European Commission, JRC), CC BY 4.0. Pesaresi et al. (2024), doi:10.1080/17538947.2024.2390454
+  redistributable: true
+- id: copernicus-ems-emsr773
+  name: Copernicus EMS observed flood extent, activation EMSR773
+  provider: Copernicus Emergency Management Service
+  product: EMSR773 Delineation
+  version: DEL v1
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://mapping.emergency.copernicus.eu/activations/EMSR773/
+  license:
+    en: Free access; reproduction, distribution and adaptation allowed provided the source is credited with the activation, the area of interest and the product type (Copernicus EMS terms and citation guidelines).
+    es: Acceso libre; se permite reproducir, distribuir y adaptar siempre que se cite la fuente con la activación, la zona de interés y el tipo de producto (condiciones y guía de citas de Copernicus EMS).
+  citation:
+    en: 'Copernicus Emergency Management Service (© 2024 European Union), [EMSR773] [AOI]: Delineation'
+    es: 'Copernicus Emergency Management Service (© 2024 European Union), [EMSR773] [AOI]: Delineation'
+  redistributable: true
+- id: patricova
+  name: PATRICOVA flood hazard
+  provider: Generalitat Valenciana
+  product: PATRICOVA flood hazard polygons
+  version: 2026-11-11 package
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://dadesobertes.gva.es/es/dataset/patricova-peligrosidad-por-inundacion-plan-de-accion-territorial-de-caracter-sectorial-sobre-pr
+  license:
+    en: Creative Commons Attribution; the Generalitat open-data record gives no version (the ICV conditions set CC BY 4.0 by default). Visible attribution required; anyone who receives the data or their derivatives accepts the same conditions.
+    es: Creative Commons Reconocimiento; la ficha de dades obertes de la Generalitat no da versión (las condiciones del ICV fijan CC BY 4.0 por defecto). Atribución visible obligatoria; quien reciba los datos o sus derivados acepta las mismas condiciones.
+  citation:
+    en: PATRICOVA [year] CC BY 4.0, Generalitat
+    es: PATRICOVA [year] CC BY 4.0, Generalitat
+  redistributable: false
+- id: ine
+  name: INE census section boundaries
+  provider: Instituto Nacional de Estadística
+  product: Seccionado censal
+  version: '2026-01-01'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://www.ine.es/
+  license:
+    en: CC BY 4.0 unless otherwise stated (INE reuse conditions); the footer of that INE page says CC BY-SA 4.0, a contradiction pending clarification with INE. Cite the source and the update date; do not suggest endorsement by INE.
+    es: CC BY 4.0 salvo indicación contraria (condiciones de reutilización del INE); el pie de esa página del INE dice CC BY-SA 4.0, contradicción pendiente de aclarar con el INE. Citar la fuente y la fecha de actualización; no sugerir respaldo del INE.
+  citation:
+    en: 'Elaboración propia con datos extraídos del sitio web del INE: www.ine.es. Seccionado censal 2026 ([update date])'
+    es: 'Elaboración propia con datos extraídos del sitio web del INE: www.ine.es. Seccionado censal 2026 ([fecha de actualización])'
+  redistributable: false
+- id: ine-population
+  name: INE population by census section and official municipal figures
+  provider: Instituto Nacional de Estadística
+  product: Censo anual de población (población por sección censal, tabla 69274) y Revisión del Padrón Municipal (cifras oficiales por municipio, tabla 2903)
+  version: '2025'
+  resolution: census section
+  since: '2021'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://www.ine.es/jaxiT3/Tabla.htm?t=69274
+  license:
+    en: CC BY 4.0 unless otherwise stated (INE reuse conditions); the footer of that INE page says CC BY-SA 4.0, a contradiction pending clarification with INE. Cite the source and the update date; do not suggest endorsement by INE.
+    es: CC BY 4.0 salvo indicación contraria (condiciones de reutilización del INE); el pie de esa página del INE dice CC BY-SA 4.0, contradicción pendiente de aclarar con el INE. Citar la fuente y la fecha de actualización; no sugerir respaldo del INE.
+  citation:
+    en: 'Elaboración propia con datos extraídos del sitio web del INE: www.ine.es. Censo anual de población a 1 de enero de 2025 (tabla 69274); Revisión del Padrón Municipal a 1 de enero de 2025 (tabla 2903)'
+    es: 'Elaboración propia con datos extraídos del sitio web del INE: www.ine.es. Censo anual de población a 1 de enero de 2025 (tabla 69274); Revisión del Padrón Municipal a 1 de enero de 2025 (tabla 2903)'
+  redistributable: false
+- id: sedac-ssp
+  name: SEDAC SSP population projections, 1/8 degree
+  provider: NASA SEDAC (CIESIN)
+  product: Global 1/8-degree population base year and projection grids based on the SSPs
+  version: rev01
+  resolution: 1/8 degree
+  since: '2000'
+  access:
+    mode: package
+    account: none
+    coverage: global
+    url: https://doi.org/10.7927/m30p-j498
+  license:
+    en: Free to use, copy, distribute, transmit and adapt for commercial and non-commercial purposes, without restriction, as long as clear attribution of the source is provided (package readme; no Creative Commons licence named). Do not imply NASA endorsement.
+    es: Uso, copia, distribución, transmisión y adaptación libres, con fines comerciales o no, sin restricción, siempre que se atribuya con claridad la fuente (readme del paquete; no nombra licencia Creative Commons). No sugerir respaldo de la NASA.
+  citation:
+    en: 'Population: Jones & O''Neill (2020), SSP 1/8-degree grids, rev. 01 (NASA SEDAC), doi:10.7927/m30p-j498'
+    es: 'Población: Jones y O''Neill (2020), rejillas SSP de 1/8 de grado, rev. 01 (NASA SEDAC), doi:10.7927/m30p-j498'
+  redistributable: true
+- id: jrc-gsw
+  name: JRC Global Surface Water, water occurrence
+  provider: European Commission Joint Research Centre and Google
+  product: occurrence
+  version: '1.4'
+  resolution: 30 m
+  since: '1984'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://global-surface-water.appspot.com/download
+  license:
+    en: Free of charge and without restriction of use, within the Copernicus programme (GSW download page; no CC BY 4.0 named). Cite Pekel et al. (2016), doi:10.1038/nature20584.
+    es: Gratuita y sin restricciones de uso, dentro del programa Copernicus (página de descargas de GSW; no nombra CC BY 4.0). Citar Pekel et al. (2016), doi:10.1038/nature20584.
+  citation:
+    en: 'Source: EC JRC/Google. Pekel, Cottam, Gorelick and Belward (2016), Nature 540, doi:10.1038/nature20584'
+    es: 'Source: EC JRC/Google. Pekel, Cottam, Gorelick and Belward (2016), Nature 540, doi:10.1038/nature20584'
+  redistributable: true
+- id: boe-rd-35-2023
+  name: Real Decreto 35/2023, de 24 de enero, Plan Hidrológico del Júcar (BOE-A-2023-3511)
+  provider: Agencia Estatal Boletín Oficial del Estado
+  since: '2023'
+  access:
+    mode: manual
+    account: none
+    coverage: cases
+    url: https://www.boe.es/eli/es/rd/2023/01/24/35
+  license:
+    en: Standard licence of the Agencia Estatal BOE (in force since 28 June 2024; boe.es legal notice). Cite and link boe.es; do not alter the meaning; do not present the content as official; give the date; flag modifications; keep the metadata. The official text is the one published at boe.es.
+    es: Licencia tipo de la Agencia Estatal BOE (vigente desde el 28 de junio de 2024; aviso legal de boe.es). Citar y enlazar boe.es; no alterar el sentido; no presentar el contenido como oficial; dar la fecha; señalar las modificaciones; mantener los metadatos. El texto oficial es el publicado en boe.es.
+  citation:
+    en: Basado en datos de la Agencia Estatal Boletín Oficial del Estado. Real Decreto 35/2023, de 24 de enero, BOE núm. 35, de 10 de febrero de 2023 (BOE-A-2023-3511), https://www.boe.es/eli/es/rd/2023/01/24/35, consulted [date]
+    es: Basado en datos de la Agencia Estatal Boletín Oficial del Estado. Real Decreto 35/2023, de 24 de enero, BOE núm. 35, de 10 de febrero de 2023 (BOE-A-2023-3511), https://www.boe.es/eli/es/rd/2023/01/24/35, consultado el [fecha]
+  redistributable: true
+- id: ghsl-built-s
+  name: Global Human Settlement Layer built-up surface grid
+  provider: European Commission Joint Research Centre
+  product: GHS-BUILT-S (total, 100 m tiles)
+  version: R2023A V1-0
+  resolution: 100 m
+  since: '1975'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_BUILT_S_GLOBE_R2023A/
+  license:
+    en: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/); © European Union, 2023, reuse authorised provided the source is acknowledged (Decision 2011/833/EU); data provided as is, without warranty. Attribution required and changes must be indicated.
+    es: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/); © Unión Europea, 2023, reutilización autorizada siempre que se cite la fuente (Decisión 2011/833/UE); datos ofrecidos tal cual, sin garantía. Atribución obligatoria e indicar si se han hecho cambios.
+  citation:
+    en: GHS-BUILT-S R2023A (European Commission, JRC), doi:10.2905/9F06F36F-4B11-47EC-ABB0-4F8B7B1D72EA, CC BY 4.0. Pesaresi, M.; Politis, P. (2023); GHSL Data Package 2023, doi:10.2760/098587
+    es: GHS-BUILT-S R2023A (European Commission, JRC), doi:10.2905/9F06F36F-4B11-47EC-ABB0-4F8B7B1D72EA, CC BY 4.0. Pesaresi, M.; Politis, P. (2023); GHSL Data Package 2023, doi:10.2760/098587
+  redistributable: true
+- id: snczi
+  name: Sistema Nacional de Cartografía de Zonas Inundables, flood hazard areas
+  provider: Ministerio para la Transición Ecológica y el Reto Demográfico (MITECO)
+  product: Láminas de inundación por periodo de retorno (T10, T100, T500), tercer ciclo
+  version: 3Ciclo_20260727
+  resolution: vector, scale 1:25,000
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://gis.miteco.gob.es/descargas/app/DescargaFichero?f=laminasPB-q100.zip
+  license:
+    en: General reuse conditions of the Ministry (Ley 37/2007 and Real Decreto 1495/2011); no licence of its own on the SNCZI pages. Cite the source; do not suggest endorsement; keep the update date and the metadata.
+    es: Condiciones generales de reutilización del Ministerio (Ley 37/2007 y Real Decreto 1495/2011); las páginas del SNCZI no tienen licencia propia. Citar la fuente; no sugerir respaldo; mantener la fecha de actualización y los metadatos.
+  citation:
+    en: 'Fuente: Sistema Nacional de Cartografía de Zonas Inundables, MITECO (2026-06-01)'
+    es: 'Fuente: Sistema Nacional de Cartografía de Zonas Inundables, MITECO (2026-06-01)'
+  redistributable: false
+- id: sentinel-1-rtc
+  name: Sentinel-1 Radiometrically Terrain Corrected (RTC)
+  provider: European Space Agency (Copernicus Sentinel-1); RTC processing by Catalyst, served by Microsoft Planetary Computer
+  product: VV gamma naught, IW mode, terrain flattened (Small 2011)
+  resolution: 10 m (read at 20 m)
+  since: '2014'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://planetarycomputer.microsoft.com/api/stac/v1/collections/sentinel-1-rtc
+  license:
+    en: 'Copernicus Sentinel data licence: free, full and open access; attribution only, no share-alike and no use restrictions. The Microsoft Planetary Computer RTC collection is CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): attribution required and changes must be indicated.'
+    es: 'Licencia de datos Copernicus Sentinel: acceso libre, completo y abierto; solo atribución, sin «compartir igual» ni restricciones de uso. La colección RTC de Microsoft Planetary Computer es CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/): atribución obligatoria e indicar si se han hecho cambios.'
+  citation:
+    en: 'Contains modified Copernicus Sentinel data [year]. Sentinel-1 RTC: Microsoft Planetary Computer, Catalyst, CC BY 4.0'
+    es: 'Contains modified Copernicus Sentinel data [year]. Sentinel-1 RTC: Microsoft Planetary Computer, Catalyst, CC BY 4.0'
+  redistributable: true
+- id: mur-sst
+  name: GHRSST MUR SST v4.1, daily sea surface temperature
+  provider: NASA JPL (PO.DAAC); public Zarr copy on AWS Open Data
+  product: MUR-JPL-L4-GLOB-v4.1
+  version: '4.1'
+  resolution: 0.01 degree (~1 km)
+  since: '2002'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://mur-sst.s3.us-west-2.amazonaws.com/zarr
+  license:
+    en: "NASA EOSDIS Data Use and Citation Guidance: openly shared, without restriction (CC0 by default for NASA mission data unless marked; the MUR v4.1 page names no licence). Cite the product and its DOI. Do not imply NASA endorsement."
+    es: "Política de uso y cita de datos de NASA EOSDIS: datos compartidos abiertamente y sin restricción (CC0 por defecto para los datos de misiones NASA salvo indicación; la ficha de MUR v4.1 no nombra licencia). Citar el producto y su DOI. No sugerir respaldo de la NASA."
+  citation: "JPL MUR MEaSUREs Project (2015), GHRSST Level 4 MUR Global Foundation Sea Surface Temperature Analysis, version 4.1, PO.DAAC, https://doi.org/10.5067/GHGMR-4FJ04; Chin, Vazquez-Cuervo and Armstrong (2017), Remote Sensing of Environment 200. These data were provided by JPL under support by NASA MEaSUREs program"
+  redistributable: true
+- id: icv-planeamiento
+  name: Planeamiento urbanístico de la Comunitat Valenciana (clasificación del suelo)
+  provider: Institut Cartogràfic Valencià, Generalitat Valenciana
+  product: Planeamiento.Clasificacion (WFS 0702_Planeamiento)
+  since: '2026'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://terramapas.icv.gva.es/0702_Planeamiento
+  license:
+    en: "Creative Commons Attribution (Generalitat Valenciana and ICV, according to datos.gob.es; the ICV conditions set CC BY 4.0 by default). Visible attribution required. Informative cartography without legal validity: it does not replace the approved planning documents."
+    es: "Creative Commons Reconocimiento (Generalitat Valenciana e ICV, según datos.gob.es; las condiciones del ICV fijan CC BY 4.0 por defecto). Atribución visible obligatoria. Cartografía informativa sin validez jurídica: no sustituye a los documentos de planeamiento aprobados."
+  citation:
+    en: "Institut Cartogràfic Valencià, Generalitat Valenciana: urban planning, land classification (WFS 0702_Planeamiento)"
+    es: "Institut Cartogràfic Valencià, Generalitat Valenciana: planeamiento urbanístico, clasificación del suelo (WFS 0702_Planeamiento)"
+  redistributable: true
+- id: chj-f71
+  name: Red de control piezométrico de la CHJ (F71, Puntos de control piezométrico)
+  provider: Confederación Hidrográfica del Júcar
+  product: F71 Puntos de control piezométrico
+  # Last-Modified of the downloaded ZIP; the CHJ rewrites the file in place, so a new download changes it.
+  version: '2026-11-13'
+  resolution: point (monitoring well)
+  since: '1959'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://aps.chj.es/down/CSV/F71_Puntos_de_control_piezometrico.zip
+  # Read on 2026-11-14 in the CHJ legal notice and in datos.gob.es (ea0043776-de-control-piezometria).
+  license:
+    en: Reuse authorised for commercial and non-commercial purposes without specific conditions, under the general conditions of Ley 37/2007 and Real Decreto 1495/2011, art. 7, per the CHJ legal notice for datasets in datos.gob.es. Do not alter the meaning; cite the source and the update date; do not suggest endorsement by the CHJ; keep the metadata.
+    es: Reutilización autorizada con fines comerciales y no comerciales sin condiciones específicas, con las condiciones generales de la Ley 37/2007 y del Real Decreto 1495/2011, art. 7, según el aviso legal de la CHJ para los conjuntos de datos.gob.es. No desnaturalizar el sentido; citar la fuente y la fecha de actualización; no sugerir respaldo de la CHJ; conservar los metadatos.
+  citation:
+    en: 'Origen de los datos: Confederación Hidrográfica del Júcar. Red de control piezométrico (F71), point [code], downloaded [date]'
+    es: 'Origen de los datos: Confederación Hidrográfica del Júcar. Red de control piezométrico (F71), punto [código], descarga del [fecha]'
+  redistributable: true
+- id: copernicus-imperviousness
+  name: Copernicus High Resolution Layer Imperviousness Density
+  provider: European Environment Agency, Copernicus Land Monitoring Service
+  product: Imperviousness Density (IMD), 10 m, EPSG:3035
+  version: 2018 v020 (10 m DOI 10.2909/3bf542bd-eebd-4d73-b53c-a0243f2ed862); 2021 and 2024 on WEkEO
+  resolution: 10 m
+  since: '2018'
+  access:
+    mode: package
+    account: none
+    coverage: cases
+    url: https://image.discomap.eea.europa.eu/arcgis/rest/services/GioLandPublic/HRL_ImperviousnessDensity_2018/ImageServer
+  license:
+    en: "Copernicus Land Monitoring Service data policy: free, full and open access (Regulation (EU) No 1159/2013); no Creative Commons licence named. Inform of the source, indicate whether the data have been modified and do not suggest endorsement by the European Union."
+    es: "Política de datos del Copernicus Land Monitoring Service: acceso libre, completo y abierto (Reglamento (UE) n.º 1159/2013); no nombra licencia Creative Commons. Informar de la fuente, indicar si los datos se han modificado y no sugerir respaldo de la Unión Europea."
+  citation:
+    en: "This publication has been prepared using European Union's Copernicus Land Monitoring Service information; Imperviousness Density 2018, https://doi.org/10.2909/3bf542bd-eebd-4d73-b53c-a0243f2ed862"
+    es: "This publication has been prepared using European Union's Copernicus Land Monitoring Service information; Imperviousness Density 2018, https://doi.org/10.2909/3bf542bd-eebd-4d73-b53c-a0243f2ed862"
+  redistributable: true
+- id: imerg-daily
+  name: GPM IMERG Final Precipitation L3, daily
+  provider: NASA GES DISC
+  product: GPM_3IMERGDF
+  version: '07'
+  resolution: 0.1° (about 11 km)
+  since: '1998'
+  access:
+    mode: api
+    account: earthdata
+    coverage: on_demand
+    url: https://doi.org/10.5067/GPM/IMERGDF/DAY/07
+  license:
+    en: 'NASA EOSDIS Data Use and Citation Guidance: openly shared, without restriction (CC0 by default for NASA-led mission data unless marked; the IMERG record names no licence). Acknowledge NASA GES DISC and cite the DOI. Do not imply NASA endorsement.'
+    es: 'Política de uso y cita de datos de NASA EOSDIS: datos compartidos abiertamente y sin restricción (CC0 por defecto para los datos de misiones dirigidas por la NASA salvo indicación; la ficha de IMERG no nombra licencia). Reconocer a NASA GES DISC y citar el DOI. No sugerir respaldo de la NASA.'
+  citation:
+    en: 'GPM IMERG Final V07 (NASA GES DISC). Huffman, G. J., E. F. Stocker, D. T. Bolvin, E. J. Nelkin and J. Tan (2023), GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07, NASA GES DISC, Accessed: [date], doi:10.5067/GPM/IMERGDF/DAY/07'
+    es: 'GPM IMERG Final V07 (NASA GES DISC). Huffman, G. J., E. F. Stocker, D. T. Bolvin, E. J. Nelkin and J. Tan (2023), GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V07, NASA GES DISC, Accessed: [date], doi:10.5067/GPM/IMERGDF/DAY/07'
+  redistributable: true
+- id: ghcn-daily
+  name: Global Historical Climatology Network - Daily (GHCN-Daily), rain gauges
+  provider: NOAA National Centers for Environmental Information (NCEI)
+  product: GHCN-Daily PRCP
+  version: '3'
+  resolution: point (rain gauge)
+  since: '1763'
+  # Station inventory predownloaded (ghcnd-inventory); each station's series asked for once to the NCEI data service
+  # (no account) and cached: readers/ghcn_daily.py. Licence read 2026-11-14: docs/licencias-y-atribuciones.md.
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://www.ncei.noaa.gov/products/land-based-station/global-historical-climatology-network-daily
+  license:
+    en: 'No licence named by NOAA NCEI. Data of non-U.S. stations (Spain included) are exchanged under WMO Resolution 40: free for research, education and other non-commercial use; neither the data nor derived products may be provided to others for commercial services. Cite the dataset and Menne et al. (2012). Not homogenised.'
+    es: 'NOAA NCEI no nombra licencia. Los datos de estaciones de fuera de EE. UU. (España incluida) se intercambian bajo la Resolución 40 de la OMM: uso libre en investigación, educación y otras actividades no comerciales; ni los datos ni sus derivados pueden darse a otros para servicios comerciales. Citar el conjunto y a Menne et al. (2012). Sin homogeneizar.'
+  citation:
+    en: 'GHCN-Daily, Version 3 (NOAA NCEI), station [code], doi:10.7289/V5D21VHZ, accessed [date]; Menne et al. (2012), doi:10.1175/JTECH-D-11-00103.1. Non-U.S. station data: free for research, education and other non-commercial use (WMO Resolution 40)'
+    es: 'GHCN-Daily, Version 3 (NOAA NCEI), estación [código], doi:10.7289/V5D21VHZ, consultado el [fecha]; Menne et al. (2012), doi:10.1175/JTECH-D-11-00103.1. Datos de estaciones de fuera de EE. UU.: uso libre en investigación, educación y otras actividades no comerciales (Resolución 40 de la OMM)'
+  # Not served as is: the WMO restriction forbids passing non-U.S. data on for commercial services.
+  redistributable: false
+- id: eox-s2cloudless-2016
+  name: EOxCloudless 2016 (Sentinel-2 cloudless mosaic)
+  provider: EOX IT Services GmbH, from Copernicus Sentinel-2
+  product: s2cloudless (2016 vintage), public WMS
+  version: '2016'
+  resolution: 10 m
+  since: '2016'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://tiles.maps.eox.at/wms
+  license:
+    en: 'CC BY 4.0 for the 2016 vintage only (WMS capabilities and the EOxCloudless FAQ, read on 15 Nov 2026); the FAQ allows any use of the 2016 public endpoint with reasonable traffic, no SLA, and no resale of the raw tiles as a dataset. The credit must be visible wherever the image is shown and embedded in screenshots and exports. Vintages from 2018 are CC BY-NC-SA 4.0 and their public endpoint is not for production: not used.'
+    es: 'CC BY 4.0 solo para la edición de 2016 (capacidades del WMS y preguntas frecuentes de EOxCloudless, leídas el 15 de noviembre de 2026); las preguntas frecuentes permiten cualquier uso del servicio público de 2016 con tráfico razonable, sin garantía de servicio y sin revender las teselas como conjunto de datos. El crédito debe verse siempre que se muestre la imagen e ir incrustado en capturas y exportaciones. Las ediciones desde 2018 son CC BY-NC-SA 4.0 y su servicio público no es para producción: no se usan.'
+  citation:
+    en: EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016)
+    es: EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016)
+  redistributable: true
+- id: nasa-gibs-hls
+  name: NASA GIBS, Harmonized Landsat and Sentinel-2 (HLS) true colour
+  provider: NASA EOSDIS Global Imagery Browse Services (GIBS); HLS by NASA LP DAAC
+  product: HLS_S30_Nadir_BRDF_Adjusted_Reflectance and HLS_L30_Nadir_BRDF_Adjusted_Reflectance (WMS)
+  version: '2.0'
+  resolution: 30 m
+  since: '2013'
+  access:
+    mode: api
+    account: none
+    coverage: on_demand
+    url: https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
+  license:
+    en: 'NASA EOSDIS Data Use and Citation Guidance: openly shared, without restriction. Acknowledge NASA GIBS and HLS; S30 contains modified Copernicus Sentinel data. Do not imply NASA endorsement.'
+    es: 'Política de uso y cita de datos de NASA EOSDIS: datos compartidos abiertamente y sin restricción. Reconocer a NASA GIBS y a HLS; S30 contiene datos modificados de Copernicus Sentinel. No sugerir respaldo de la NASA.'
+  citation:
+    en: 'Imagery from NASA Global Imagery Browse Services (GIBS), part of NASA EOSDIS: Harmonized Landsat and Sentinel-2 ([product]), [date]. Contains modified Copernicus Sentinel data.'
+    es: 'Imagen de NASA Global Imagery Browse Services (GIBS), parte de NASA EOSDIS: Harmonized Landsat and Sentinel-2 ([producto]), [fecha]. Contiene datos modificados de Copernicus Sentinel.'
+  redistributable: true
+- id: black-marble
+  name: NASA VIIRS Black Marble annual
+  provider: NASA LAADS DAAC
+  product: VNP46A4
+  version: '002'
+  resolution: '~500 m'
+  since: '2012'
+  access: {mode: package, account: earthdata, coverage: cases, url: 'https://doi.org/10.5067/VIIRS/VNP46A4.002'}
+  license:
+    en: NASA EOSDIS open data. Cite the product.
+    es: Datos abiertos de NASA EOSDIS. Citar el producto.
+  citation:
+    en: 'NASA VIIRS Black Marble VNP46A4 v002 (LAADS DAAC), doi:10.5067/VIIRS/VNP46A4.002.'
+    es: 'NASA VIIRS Black Marble VNP46A4 v002 (LAADS DAAC), doi:10.5067/VIIRS/VNP46A4.002.'
+  redistributable: true
+- id: grace-fo
+  name: NASA JPL GRACE and GRACE-FO mascons CRI
+  provider: NASA PO.DAAC and JPL
+  product: JPL GRACE/GRACE-FO Mascon CRI
+  version: RL06.3Mv04
+  resolution: 'Native equal-area 3° mascons, distributed on a 0.5° grid'
+  since: '2002'
+  access: {mode: package, account: earthdata, coverage: global, url: 'https://doi.org/10.5067/TEMSC-3JC634'}
+  license:
+    en: NASA EOSDIS open data. Cite the product.
+    es: Datos abiertos de NASA EOSDIS. Citar el producto.
+  citation:
+    en: 'JPL GRACE and GRACE-FO RL06.3Mv04 CRI mascon solution (NASA PO.DAAC), doi:10.5067/TEMSC-3JC634.'
+    es: 'Solución de mascones JPL GRACE y GRACE-FO RL06.3Mv04 CRI (NASA PO.DAAC), doi:10.5067/TEMSC-3JC634.'
+  redistributable: true

@@ -1,0 +1,90 @@
+/* Habitat Under Pressure — tema de Tailwind CSS v4, generado por construir.py. No editar a mano. */
+@import "tailwindcss";
+@import "./tema.css";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme inline {
+  --color-fog: var(--fog);
+  --color-paper: var(--paper);
+  --color-soft: var(--soft);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-signal: var(--signal);
+  --color-signal-soft: var(--signal-soft);
+  --color-on-signal: var(--on-signal);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-amber-ink: var(--amber-ink);
+  --color-alert: var(--alert);
+  --color-alert-soft: var(--alert-soft);
+  --color-water: var(--water);
+  --color-green: var(--green);
+  --color-focus: var(--focus);
+  --color-orbit: var(--orbit);
+  --color-orbit-2: var(--orbit-2);
+  --color-orbit-line: var(--orbit-line);
+  --color-orbit-ink: var(--orbit-ink);
+  --color-orbit-muted: var(--orbit-muted);
+  --color-orbit-focus: var(--orbit-focus);
+  --color-heat-1: var(--heat-1);
+  --color-heat-2: var(--heat-2);
+  --color-heat-3: var(--heat-3);
+  --color-heat-4: var(--heat-4);
+  --color-heat-5: var(--heat-5);
+  --color-veg-1: var(--veg-1);
+  --color-veg-2: var(--veg-2);
+  --color-veg-3: var(--veg-3);
+  --color-veg-4: var(--veg-4);
+  --color-veg-5: var(--veg-5);
+  --color-wet-1: var(--wet-1);
+  --color-wet-2: var(--wet-2);
+  --color-wet-3: var(--wet-3);
+  --color-wet-4: var(--wet-4);
+  --color-wet-5: var(--wet-5);
+  --color-theme-climate: var(--theme-climate);
+  --color-theme-pressure: var(--theme-pressure);
+  --color-theme-water: var(--theme-water);
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+  --radius-xs: 4px;
+  --radius-sm: 7px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-pill: 999px;
+  --spacing-2: 2px;
+  --spacing-4: 4px;
+  --spacing-6: 6px;
+  --spacing-8: 8px;
+  --spacing-10: 10px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-22: 22px;
+  --spacing-28: 28px;
+  --spacing-40: 40px;
+  --shadow-overlay: var(--elevation-overlay);
+}
+
+/* Anything that acts on click says so with the pointer; the reset leaves buttons with the arrow. */
+:where(button:not(:disabled), [role="button"]:not([aria-disabled="true"]), summary, label[for], select) {
+  cursor: pointer;
+}
+
+/* Accessibility: consistent keyboard focus and minimum tap targets. */
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  :where(button, [role="button"], a, summary, input, select, textarea) {
+    min-height: 44px;
+  }
+  :where(input[type="checkbox"], input[type="radio"]) {
+    min-height: 20px;
+    min-width: 20px;
+  }
+}

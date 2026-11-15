@@ -1,0 +1,24 @@
+[project]
+name = "hup-ops"
+version = "0.1.0"
+description = "Scientific operations as pure functions (front A, methods)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "hup-data",
+  "numpy>=2",
+  "pandas>=2.2",
+  "scipy>=1.14",
+  "statsmodels>=0.14",
+  "pymannkendall>=1.4",
+  "SALib>=1.5",
+]
+
+[tool.uv.sources]
+hup-data = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hup_ops"]

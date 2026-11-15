@@ -1,0 +1,164 @@
+# Assistant test bench (B10). Questions P1-P8 and edge cases E1-E4 from
+# .dev/notes/2026-11-11-revision-contratos-preguntas-prueba.md, sections 3 and 4, each with two wordings.
+#
+# expect.accept: the answer passes if it matches ANY of these. A plan entry may say:
+#   design, variables (must all be in the plan), levels (allowed answer levels), limit_contains (text that one
+#   English limit must contain), no_remote_without_limit (every remote read comes with a limit that says so).
+# A clarification entry may say: missing (allowed values).
+# Every answer is also checked for causal words, and the two wordings of a case must give the same plan
+# fingerprint when both give a plan.
+#
+# double: what the stand-in model answers in --dry-run, for both wordings. It checks the code around the model
+# (checks, templates, answer level), not the model. Its years are a recorded model answer; the impact windows
+# are those of docs/contratos/examples/plan.json.
+# gazetteer (dry run only): found (default) or not_found, for the stand-in place resolver.
+# offline: run the case with HUP_OFFLINE=1.
+
+cases:
+  - id: P1
+    language: es
+    wordings:
+      - "Analiza el calor y el verde en Port de Sagunt desde 2013 y compáralo antes y después de la gigafactoría."
+      - "¿Cómo han cambiado la temperatura de superficie y la vegetación en Port de Sagunt desde 2013, antes y después de la gigafactoría?"
+    expect:
+      accept:
+        - {kind: plan, design: impact, variables: [lst, ndvi], levels: [complete, with_limits]}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): no windows -> a design without a date, said in a limit.
+        - {kind: plan, variables: [lst, ndvi], levels: [with_limits], limit_contains: "the date of the change"}
+    double: {kind: plan, missing: null, design: impact, place: "Port de Sagunt", variables: [lst, ndvi],
+             period: {start: "2013", end: "2025"}, before: [2013, 2021], after: [2023, 2025], level: complete}
+
+  - id: P2
+    language: es
+    wordings:
+      - "¿Cuánta superficie construida hay en zonas inundables de l'Horta Sud?"
+      - "¿Cuánto suelo construido hay en zonas inundables de l'Horta Sud?"
+    expect:
+      accept:
+        - {kind: plan, levels: [with_limits, not_possible]}
+        - {kind: article}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): a missing period is decided, so the period clarification is gone.
+    double: {kind: not_possible, missing: null, design: trend, place: "l'Horta Sud", variables: [ndvi],
+             period: {start: "2013", end: "2025"}, before: null, after: null, level: not_possible}
+
+  - id: P3
+    language: es
+    wordings:
+      - "Proyecta el calor en Sagunt a 2050 con y sin la fábrica."
+      - "¿Cuánto calor hará en Sagunt en 2050, con la fábrica y sin ella?"
+    expect:
+      accept:
+        - {kind: plan, design: scenario, levels: [with_limits, not_possible]}
+        - {kind: plan, levels: [not_possible]}
+    double: {kind: plan, missing: null, design: scenario, place: "Sagunt", variables: [tas_mean],
+             period: {start: "1995", end: "2050"}, before: null, after: null, level: complete}
+
+  - id: P4
+    language: es
+    wordings:
+      - "¿Fue excepcional la lluvia de la DANA de octubre de 2024 en Paiporta?"
+      - "¿Fue excepcional la lluvia de octubre de 2024 en Paiporta?"
+    expect:
+      accept:
+        - {kind: plan, design: event, variables: [precipitation], levels: [complete, with_limits]}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): no episode dates -> a design without a date, said in a limit.
+        - {kind: plan, variables: [precipitation], levels: [with_limits], limit_contains: "episode"}
+    double: {kind: plan, missing: null, design: event, place: "Paiporta", variables: [precipitation],
+             period: {start: "2024-10", end: "2024-10"}, before: null, after: null, level: complete}
+
+  - id: P5
+    language: es
+    wordings:
+      - "Hazme un análisis de mi pueblo."
+      - "Analiza mi barrio."
+    expect:
+      accept:
+        - {kind: clarification, missing: [place]}
+    double: {kind: clarification, missing: place, design: null, place: null, variables: [], period: null,
+             before: null, after: null, level: not_possible}
+
+  - id: P6
+    language: es
+    wordings:
+      - "¿La fábrica de Sagunt ha subido la temperatura desde 2013?"
+      - "¿Ha aumentado la temperatura de superficie en Sagunt desde que está la fábrica, desde 2013?"
+    expect:
+      accept:
+        - {kind: plan, design: impact, levels: [with_limits], limit_contains: "coincides in time and place"}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): before_after is no longer asked; place still is.
+        - {kind: clarification, missing: [place]}
+        - {kind: plan, variables: [lst], levels: [with_limits], limit_contains: "the date of the change"}
+    double: {kind: plan, missing: null, design: impact, place: "Sagunt", variables: [lst],
+             period: {start: "2013", end: "2025"}, before: [2013, 2021], after: [2023, 2025], level: complete}
+
+  - id: P7
+    language: en
+    wordings:
+      - "Analyse heat and greenness in Port de Sagunt since 2013, before and after the gigafactory."
+      - "How have surface temperature and vegetation changed in Port de Sagunt since 2013, before and after the gigafactory?"
+    expect:
+      accept:
+        - {kind: plan, design: impact, variables: [lst, ndvi], levels: [complete, with_limits]}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): no windows -> a design without a date, said in a limit.
+        - {kind: plan, variables: [lst, ndvi], levels: [with_limits], limit_contains: "the date of the change"}
+    double: {kind: plan, missing: null, design: impact, place: "Port de Sagunt", variables: [lst, ndvi],
+             period: {start: "2013", end: "2025"}, before: [2013, 2021], after: [2023, 2025], level: complete}
+
+  - id: P8
+    language: es
+    offline: true
+    wordings:
+      - "Analiza el calor en Sagunt desde 2013, sin conexión."
+      - "Sin red: ¿cómo está el calor en Sagunt desde 2013?"
+    expect:
+      accept:
+        - {kind: plan, levels: [with_limits, not_possible], no_remote_without_limit: true}
+        # Only the place is asked since 14 November (AGENTS.md, 6 and 7): period and design are decided, so their clarification is gone.
+    double: {kind: plan, missing: null, design: state, place: "Sagunt", variables: [lst],
+             period: {start: "2013", end: "2025"}, before: null, after: null, level: complete}
+
+  - id: E1
+    language: es
+    wordings:
+      - ""
+      - "asdf qwer zxcv"
+    expect:
+      accept:
+        - {kind: clarification}
+    double: {kind: clarification, missing: place, design: null, place: null, variables: [], period: null,
+             before: null, after: null, level: not_possible}
+
+  - id: E2
+    language: es
+    gazetteer: not_found
+    wordings:
+      - "¿Ha subido la temperatura en Marte?"
+      - "Tendencia del calor en el cráter Jezero de Marte."
+    expect:
+      accept:
+        - {kind: clarification, missing: [place]}
+        - {kind: plan, levels: [not_possible]}
+    double: {kind: plan, missing: null, design: trend, place: "Mars", variables: [air_temperature],
+             period: {start: "2000", end: "2024"}, before: null, after: null, level: complete}
+
+  - id: E3
+    language: es
+    wordings:
+      - "Tendencia de la temperatura de superficie en Sagunt entre 2000 y 2024."
+      - "¿Ha cambiado la temperatura de superficie de Sagunt de 2000 a 2024?"
+    expect:
+      accept:
+        - {kind: plan, variables: [lst], levels: [with_limits], limit_contains: "years available in the requested period"}
+    double: {kind: plan, missing: null, design: trend, place: "Sagunt", variables: [lst],
+             period: {start: "2000", end: "2024"}, before: null, after: null, level: complete}
+
+  - id: E4
+    language: en
+    wordings:
+      - "Is air temperature rising in Sagunt since 1990?"
+      - "Is air temperature rising in Sagunt since 1990?"
+    expect:
+      accept:
+        - {kind: plan, design: trend, variables: [air_temperature], levels: [complete, with_limits]}
+    double: {kind: plan, missing: null, design: trend, place: "Sagunt", variables: [air_temperature],
+             period: {start: "1990", end: "2025"}, before: null, after: null, level: complete}

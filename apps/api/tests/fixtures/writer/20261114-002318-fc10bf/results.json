@@ -1,0 +1,256 @@
+[
+  {
+    "type": "series",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 160,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_198033_20130626_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "area": "zone",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207",
+    "unit": "1",
+    "series": [
+      {
+        "t": "2013-06-01",
+        "v": 0.4645
+      },
+      {
+        "t": "2013-06-10",
+        "v": 0.44001
+      },
+      {
+        "t": "2013-06-26",
+        "v": 0.38997
+      }
+    ],
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 1547.0
+    },
+    "coverage": {
+      "valid_pct": 99.6,
+      "n_dates": 160
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-002318-fc10bf",
+    "step": "s1",
+    "fingerprint": "c81c8734e1385a3f937ff982b623745c3699c761f80df0cbb8dab7cad37ece80"
+  },
+  {
+    "type": "series",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 150,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1",
+          "LC08_L2SP_199032_20130719_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "area": "reference",
+        "reference_km": 3,
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207-reference-3km",
+    "unit": "1",
+    "series": [
+      {
+        "t": "2013-06-01",
+        "v": 0.39703
+      },
+      {
+        "t": "2013-06-10",
+        "v": 0.36675
+      },
+      {
+        "t": "2013-07-03",
+        "v": 0.33332
+      }
+    ],
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 47192.0
+    },
+    "coverage": {
+      "valid_pct": 93.9,
+      "n_dates": 150
+    },
+    "id": "r-s2-series",
+    "analysis": "20261114-002318-fc10bf",
+    "step": "s2",
+    "fingerprint": "191d9484515371359fafa2a4cd1aaf42112fb4ee475505e12d53c04f33c9afd4"
+  },
+  {
+    "type": "value",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "unit": "1",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 160,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_198033_20130626_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1"
+        ]
+      },
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 150,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1",
+          "LC08_L2SP_199032_20130719_02_T1"
+        ]
+      }
+    ],
+    "method": {
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "min_dates": 3,
+        "confidence": 0.95,
+        "resamples": 2000,
+        "alpha": 0.05,
+        "variable": "ndvi",
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      }
+    },
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 1547.0
+    },
+    "limits": [],
+    "evidence_level": "E2",
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207",
+    "diagnostics": {
+      "n_dates": 133,
+      "pre_trend_control": false,
+      "interval_crosses_zero": false
+    },
+    "interval": {
+      "level": 0.95,
+      "low": -0.30527174999999995,
+      "high": -0.27439499999999994,
+      "method": "Paired-date bootstrap"
+    },
+    "direction_assertable": true,
+    "value": -0.28887999999999997,
+    "id": "r-s3-contrast",
+    "analysis": "20261114-002318-fc10bf",
+    "step": "s3",
+    "fingerprint": "55ffd96b81100bb4eacaa57b08f28c6f0b6a67dac7cd4d58ffaa06694cf9ccf7"
+  }
+]

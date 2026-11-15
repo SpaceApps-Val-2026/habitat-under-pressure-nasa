@@ -1,0 +1,253 @@
+[
+  {
+    "type": "series",
+    "variable": "lst",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 150,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1",
+          "LC08_L2SP_199032_20130719_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "lst",
+        "area": "reference",
+        "reference_km": 3,
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207-reference-3km",
+    "unit": "°C",
+    "series": [
+      {
+        "t": "2013-06-01",
+        "v": 35.321
+      },
+      {
+        "t": "2013-06-10",
+        "v": 38.647
+      },
+      {
+        "t": "2013-07-03",
+        "v": 40.571
+      }
+    ],
+    "support": {
+      "resolution_m": 100,
+      "since": 2013,
+      "revisit_days": 8
+    },
+    "coverage": {
+      "valid_pct": 93.9,
+      "n_dates": 150
+    },
+    "id": "r-s2-series",
+    "analysis": "20261114-002526-755810",
+    "step": "s2",
+    "fingerprint": "6b7e5d6907395fea1e1fe8184c1452b42f531ef5eeb4a28e92353cfe3d6214f8"
+  },
+  {
+    "type": "series",
+    "variable": "lst",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 160,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_198033_20130626_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "lst",
+        "area": "zone",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207",
+    "unit": "°C",
+    "series": [
+      {
+        "t": "2013-06-01",
+        "v": 34.244
+      },
+      {
+        "t": "2013-06-10",
+        "v": 38.134
+      },
+      {
+        "t": "2013-06-26",
+        "v": 35.636
+      }
+    ],
+    "support": {
+      "resolution_m": 100,
+      "since": 2013,
+      "revisit_days": 8
+    },
+    "coverage": {
+      "valid_pct": 99.6,
+      "n_dates": 160
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-002526-755810",
+    "step": "s1",
+    "fingerprint": "386dd2a678909f0d92c20ba651a069ee3f502104a2d46d0cdcdfd3949d26a279"
+  },
+  {
+    "type": "value",
+    "variable": "lst",
+    "data_class": "measured",
+    "unit": "°C",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 160,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_198033_20130626_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1"
+        ]
+      },
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 150,
+        "items": [
+          "LC08_L2SP_199032_20130601_02_T1",
+          "LC08_L2SP_198033_20130610_02_T1",
+          "LC08_L2SP_199032_20130703_02_T1",
+          "LC08_L2SP_198033_20130712_02_T1",
+          "LC08_L2SP_199032_20130719_02_T1"
+        ]
+      }
+    ],
+    "method": {
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "min_dates": 3,
+        "confidence": 0.95,
+        "resamples": 2000,
+        "alpha": 0.05,
+        "variable": "lst",
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      }
+    },
+    "support": {
+      "resolution_m": 100,
+      "since": 2013,
+      "revisit_days": 8
+    },
+    "limits": [],
+    "evidence_level": "E2",
+    "period": {
+      "start": "2013-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "zone": "drawn-zone-osm-way-1180219207",
+    "diagnostics": {
+      "n_dates": 133,
+      "pre_trend_control": false,
+      "interval_crosses_zero": false
+    },
+    "interval": {
+      "level": 0.95,
+      "low": 0.3789999999999978,
+      "high": 0.8980500000000029,
+      "method": "Paired-date bootstrap"
+    },
+    "direction_assertable": true,
+    "value": 0.6629999999999932,
+    "id": "r-s3-contrast",
+    "analysis": "20261114-002526-755810",
+    "step": "s3",
+    "fingerprint": "2602539e1d9dbffab54c9af0e6a3895dd6ebb285c97de9e028c733cbfe190478"
+  }
+]

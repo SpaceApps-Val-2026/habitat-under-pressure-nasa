@@ -1,0 +1,87 @@
+# chains: one entry per item. Shape: docs/contratos/catalog.schema.json, property "chains".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: greenness_heat
+  name:
+    en: Less vegetation, hotter surface
+    es: Menos verde, superficie más caliente
+  links:
+  - from: ndvi
+    to: lst
+    sign: '-'
+    lag_years:
+    - 0
+    - 0
+    # Checked by Nadia against the PDF (pp. 7-8): July slope of -5.70 °C per NDVI unit, surface temperature from
+    # Landsat 8, 100 m cells, Valencia. The paper itself says the relation does not hold on an annual basis.
+    # Guillem, 15 Nov 2026: the chain stays not_testable with its reason (the Alzira ring lacks summers 2020 and
+    # 2021; the Sagunt ring has no useful scenes). No rule is relaxed to obtain a number. The paper supports sites
+    # within one summer, not years at one place; comparing cells within a summer would be a new method, after the demo.
+    ref: "Prades-Gil et al. 2024, Energy Conversion and Management: X 24, 100706, doi:10.1016/j.ecmx.2024.100706, pp. 7-8 (LST, 100 m cells, Valencia)"
+- id: sealing_heat
+  name:
+    en: Industrial soil sealing and surface heat
+    es: Sellado industrial y calor de superficie
+  links:
+  - from: built_up_fraction
+    to: ndvi
+    sign: '-'
+    lag_years: [0, 1]
+    # Guillem, 15 Nov 2026: the link stays without a reference and is not evaluated. Copernicus Imperviousness,
+    # the natural source of sealing, is derived from the NDVI (DAT-14-en: automatic derivation based on calibrated
+    # NDVI), so correlating it with the NDVI would hold by construction. And built_up_fraction (GHSL) has a single
+    # epoch (last observation 2018), so there is no series to pair.
+    ref: null
+  - from: ndvi
+    to: lst
+    sign: '-'
+    lag_years: [0, 0]
+    ref: >-
+      Prades-Gil et al. 2024, Energy Conversion and Management: X 24, 100706,
+      doi:10.1016/j.ecmx.2024.100706, pp. 7-8 (LST, 100 m cells, Valencia)
+  - from: lst
+    to: population_in_hot_cells
+    sign: '+'
+    lag_years: [0, 0]
+    # Guillem, 15 Nov 2026: the ratified method is the 95th percentile of summer surface temperature of all the
+    # cells of the zone together, base 2013-2020, fixed for every year, as a declared parameter. The references
+    # set the fixed-percentile method, not the magnitude: they use air temperature and days, adapted here to
+    # surface temperature and cells; the standard base is 30 years, here Landsat starts in 2013.
+    ref: >-
+      AEMET 2019, Olas de calor en España desde 1975, pp. 1-2 (percentil 95 de las máximas diarias de julio
+      y agosto de 1971-2000, fijo para todos los años); Ministerio de Sanidad 2025, Plan Nacional de
+      actuaciones preventivas de los efectos del exceso de temperatura sobre la salud, p. 21;
+      ETCCDI/Climdex TX90p (percentil sobre un periodo base fijo)
+- id: flood_exposure
+  name:
+    en: Flood extent and exposed population
+    es: Extensión inundada y población expuesta
+  links:
+  - from: pr_max_1day
+    to: flood_extent
+    sign: '+'
+    lag_years: [0, 0]
+    ref: "AEMET 2024, pp. 16, 29–31; SAIH-Júcar 2025, pp. 3–5"
+  - from: flood_extent
+    to: population_in_flood_area
+    sign: '+'
+    lag_years: [0, 0]
+    ref: >-
+      RD 903/2010, arts. 8.1 y 9.a, BOE núm. 171 de 15-07-2010, pp. 61959-61960;
+      Directiva 2007/60/CE, art. 6.3 y 6.5.a, DO L 288/30-31:
+      escenarios T100 y T500 y número indicativo de habitantes afectados
+- id: water_subsidence
+  name:
+    en: Water demand and land subsidence
+    es: Demanda hídrica y hundimiento
+  # Only the first link: subsidence and buildings_exposed are not variables of the catalog yet. The other two links
+  # are in .dev/notes/2026-11-14-referencias-eslabones-4-6-8.md, ready to paste when they exist.
+  links:
+  - from: water_demand
+    to: groundwater_level
+    sign: '-'
+    lag_years:
+    - 0
+    - 1
+    # Lag proposed by Nadia; the source gives none. Checked against the CHJ PDF (Anejo 12). Diagnostic, not causal:
+    # 080-128 is not in table 120 (piezometric decline). No pumping series pairs with the well's dates.
+    ref: "CHJ, Plan Hidrológico del Júcar 2022-2027, Anejo 12, tablas 122-124, pp. 177-185: 080-128 Plana de Sagunto, bombeo 22,6 hm3/año (2018), recurso disponible 21,5, K = 1,1, mal estado por índice de explotación"

@@ -1,0 +1,179 @@
+[
+  {
+    "id": "r-s4-change",
+    "analysis": "sagunt-impact-example",
+    "step": "s4",
+    "type": "value",
+    "variable": "ndvi",
+    "zone": "parc-sagunt-ii",
+    "period": {
+      "start": "2023-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "data_class": "measured",
+    "unit": "1",
+    "value": -0.32,
+    "interval": {
+      "level": 0.95,
+      "low": -0.33,
+      "high": -0.3,
+      "method": "bootstrap over clear dates"
+    },
+    "coverage": {
+      "n_dates": 151
+    },
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "n_items": 151,
+        "items": [
+          "LC08_L2SP_198033_20250830_02_T1"
+        ],
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain"
+      }
+    ],
+    "method": {
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      }
+    },
+    "limits": [
+      {
+        "en": "Coincides in time and place with the works; does not prove cause.",
+        "es": "Coincide en tiempo y lugar con la obra; no prueba la causa."
+      }
+    ],
+    "evidence_level": "E2",
+    "support": {
+      "resolution_m": 30
+    },
+    "diagnostics": {
+      "n_dates": 151,
+      "interval_crosses_zero": false
+    },
+    "fingerprint": "fdd147911f4101bca68bcfd6d049b77d0e2b7602b7d208a8cceaf2942c93a05e"
+  },
+  {
+    "id": "r-s5-change",
+    "analysis": "sagunt-impact-example",
+    "step": "s5",
+    "type": "value",
+    "variable": "lst",
+    "zone": "parc-sagunt-ii",
+    "period": {
+      "start": "2023-06-01",
+      "end": "2025-09-30",
+      "months": [
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    "data_class": "measured",
+    "unit": "°C",
+    "value": 1.1,
+    "interval": {
+      "level": 0.95,
+      "low": 0.8,
+      "high": 1.4,
+      "method": "bootstrap over clear dates"
+    },
+    "coverage": {
+      "n_dates": 151
+    },
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "n_items": 151,
+        "items": [
+          "LC08_L2SP_198033_20250830_02_T1"
+        ],
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain"
+      }
+    ],
+    "method": {
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "before": [
+          2013,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      }
+    },
+    "limits": [
+      {
+        "en": "Coincides in time and place with the works; does not prove cause.",
+        "es": "Coincide en tiempo y lugar con la obra; no prueba la causa."
+      },
+      {
+        "en": "Surface temperature, not air temperature.",
+        "es": "Temperatura de superficie, no del aire."
+      }
+    ],
+    "evidence_level": "E2",
+    "support": {
+      "resolution_m": 100
+    },
+    "diagnostics": {
+      "n_dates": 151,
+      "interval_crosses_zero": false
+    },
+    "fingerprint": "bda0a2967b59ad68ba9434b9c76e9ff9c7680505b3ee0a14fcd90b55aee53859"
+  },
+  {
+    "id": "r-s3-series",
+    "analysis": "sagunt-impact-example",
+    "step": "s3",
+    "type": "series",
+    "variable": "soil_moisture",
+    "zone": "parc-sagunt-ii",
+    "data_class": "measured",
+    "absence": {
+      "reason": "needs_package",
+      "detail": {
+        "en": "SMAP has not been downloaded for this area.",
+        "es": "SMAP no está descargado para esta zona."
+      }
+    },
+    "sources": [
+      {
+        "source": "smap-l3",
+        "product": "SPL3SMP_E",
+        "url": "https://nsidc.org/data/spl3smp_e"
+      }
+    ],
+    "method": {
+      "operation": "read_series",
+      "version": "1.0"
+    }
+  }
+]

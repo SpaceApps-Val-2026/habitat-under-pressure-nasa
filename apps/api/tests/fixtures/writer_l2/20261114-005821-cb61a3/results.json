@@ -1,0 +1,114 @@
+[
+  {
+    "coverage": {
+      "n_dates": 27,
+      "valid_pct": 100.0
+    },
+    "data_class": "measured",
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "params": {
+        "aggregate": "year",
+        "area": "zone",
+        "min_count": 12,
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ],
+        "statistic": "sum",
+        "variable": "precipitation"
+      },
+      "version": "1.0"
+    },
+    "period": {
+      "end": "2024-12-31",
+      "start": "1998-01-01"
+    },
+    "series": [
+      {
+        "t": "1998",
+        "v": 452.928022778593
+      },
+      {
+        "t": "1999",
+        "v": 438.54001755081117
+      }
+    ],
+    "sources": [
+      {
+        "n_items": 324,
+        "product": "GPM_3IMERGM",
+        "source": "imerg-monthly",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "version": "07"
+      }
+    ],
+    "support": {
+      "cells": 3.581,
+      "resolution_m": 11100,
+      "since": 1998
+    },
+    "type": "series",
+    "unit": "mm/month",
+    "variable": "precipitation",
+    "zone": "osm-relation-348833",
+    "id": "r-s1-series",
+    "analysis": "20261114-005821-cb61a3",
+    "step": "s1",
+    "fingerprint": "d5a179d34157abfa1dc9430b4b4e33d832978def6ced1e1ed1093f3fb11cdafe"
+  },
+  {
+    "type": "value",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "unit": "mm/month/year",
+    "sources": [
+      {
+        "n_items": 324,
+        "product": "GPM_3IMERGM",
+        "source": "imerg-monthly",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "version": "07"
+      }
+    ],
+    "method": {
+      "operation": "trend",
+      "version": "1.0",
+      "params": {
+        "min_years": 30,
+        "alpha": 0.05
+      }
+    },
+    "support": {
+      "cells": 3.581,
+      "resolution_m": 11100,
+      "since": 1998
+    },
+    "limits": [],
+    "evidence_level": "E1",
+    "period": {
+      "start": "1998-01-01",
+      "end": "2025-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "diagnostics": {
+      "n_years": 27,
+      "correction": "Hamed-Rao",
+      "autocorrelation_lag1": "unavailable",
+      "interval_crosses_zero": "unavailable"
+    },
+    "absence": {
+      "reason": "insufficient_qa",
+      "detail": {
+        "en": "A contiguous series of complete years is required."
+      }
+    },
+    "id": "r-s2-trend",
+    "analysis": "20261114-005821-cb61a3",
+    "step": "s2",
+    "fingerprint": "53421034e19e6b38b740b6f6c826c62a6e2717f126dece523d7950a1855b9fa8"
+  }
+]

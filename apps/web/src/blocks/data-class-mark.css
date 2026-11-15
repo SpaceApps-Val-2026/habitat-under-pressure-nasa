@@ -1,0 +1,109 @@
+/* The data-class asterisk: as tall as the capitals of the figure it follows, coloured like the dashed tag
+   it replaces (signal for modelled and approximated data, amber for an illustrative value). */
+/* Inline, like a footnote mark: it stays on the value's line, right after the number or its unit. The
+   glyph is about the figure's cap height and raised a little; the padding widens the hit area to 24 px or
+   more and the negative margin gives that room back, so the line does not move. */
+.data-mark {
+  position: relative;
+  display: inline;
+  white-space: nowrap;
+}
+
+.data-mark-button {
+  position: relative;
+  display: inline-block;
+  min-width: 24px;
+  padding: 8px 7px;
+  margin: -8px -7px -8px -3px;
+  border: 0;
+  background: none;
+  color: var(--signal);
+  font: 700 0.8em/1 var(--font-display);
+  text-align: center;
+  vertical-align: 0.4em;
+  cursor: help;
+}
+
+.data-mark[data-class="illustrative"] .data-mark-button,
+.data-mark-glyph[data-class="illustrative"] {
+  color: var(--amber);
+}
+
+/* The same glyph, small, in the legend line. */
+.data-mark-glyph {
+  color: var(--signal);
+  font: 700 1.25em/1 var(--font-display);
+  vertical-align: -0.15em;
+}
+
+.data-mark-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+.data-mark-tip {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  left: 0;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  max-width: min(300px, calc(100vw - 16px));
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  box-shadow: var(--elevation-overlay);
+  color: var(--ink);
+  font: 400 13px/1.45 var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: baseline;
+  white-space: normal;
+}
+
+.data-mark-tip.above {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.data-mark-tip[hidden] {
+  display: none;
+}
+
+.data-mark-print {
+  display: none;
+}
+
+@media print {
+  .data-mark {
+    vertical-align: baseline;
+  }
+
+  .data-mark-button,
+  .data-mark-tip {
+    display: none !important;
+  }
+
+  .data-mark-print {
+    display: inline;
+    margin-left: 4px;
+    color: var(--muted);
+    font: 500 9pt var(--font-mono);
+    text-transform: uppercase;
+  }
+}
+
+.data-mark-legend {
+  margin: 0;
+  color: var(--muted);
+  font: 13px/1.5 var(--font-sans);
+}
+
+@media print {
+  .data-mark-hint {
+    display: none;
+  }
+}

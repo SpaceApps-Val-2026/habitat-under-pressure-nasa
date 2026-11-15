@@ -1,0 +1,128 @@
+# archetypes: one entry per item. Shape: docs/contratos/catalog.schema.json, property "archetypes".
+# Starting point copied from docs/contratos/examples/catalog.json; build with python -m hup_api.catalog build
+- id: household-water
+  name:
+    en: Household water use
+    es: Consumo doméstico de agua
+  resource: water
+  unit: L/day
+  per: people
+  low: 79
+  central: 128
+  high: 186
+  ref: >-
+    INE, Estadística sobre el Suministro y Saneamiento del Agua, año 2024, pp. 2 y 4:
+    media nacional 128, País Vasco 79 y Cantabria 186 L/habitante/día.
+    https://www.ine.es/dyngs/Prensa/es/ESSA2024.pdf
+  limits:
+  - en: Household water recorded and distributed in 2024, divided by the resident population.
+        The estimate excludes distribution losses and other uses.
+    es: Agua registrada y distribuida a hogares en 2024, dividida por la población residente.
+        La estimación excluye las pérdidas de distribución y otros usos.
+  - en: The range spans regional averages. Individual towns can fall outside it.
+    es: El rango abarca medias autonómicas. Un municipio concreto puede quedar fuera.
+  - en: The range is descriptive, with no probability level. It is household water, not the town's total demand
+        nor the abstraction from the aquifer.
+    es: El rango es descriptivo, sin nivel de probabilidad. Es agua de hogares, no la demanda total del municipio
+        ni la extracción del acuífero.
+
+- id: data-center-water
+  name:
+    en: Large data center water intake
+    es: Agua de entrada de un centro de datos grande
+  resource: water
+  unit: m3/year
+  per: MW IT
+  low: 1434
+  central: 2964
+  high: 6728
+  ref: >-
+    European Commission, Assessment of the energy performance and sustainability of data centres in EU,
+    First technical report (2025), https://doi.org/10.2833/3168794. Above 10 MW IT: WUE 0.705 m³/MWh IT
+    (EU, table 23, pp. 80–81); 0.341 (France) and 1.600 (Italy) in the same class (table 26, p. 85).
+    Rates multiplied by 8,760 hours and the modelled 48% load factor for Europe in 2024
+    (IEA, Energy and AI, 2025, table A.3, p. 259, https://www.iea.org/reports/energy-and-ai).
+  typical: &large_data_center_size
+    low: 10
+    central: 25
+    high: 100
+    ref: >-
+      IEA, Energy and AI (2025), p. 38, figure 1.12: 10–25 MW for a conventional data centre and
+      100 MW or more for an AI hyperscale facility. The figure uses 25 and 100 MW as examples
+      and leaves the power basis unspecified. https://www.iea.org/reports/energy-and-ai
+  limits:
+  - &data_center_reporting
+    en: Operators reported the data in the first EU reporting round in 2024. The 770 participants
+        represented about 36% of those required to report, and 70.1% of participating centres reported
+        figures the study deemed consistent (p. 30).
+    es: Datos declarados por operadores en la primera ronda de notificación de la UE, en 2024. Los 770
+        participantes representaban aproximadamente el 36 % de los obligados a informar. El estudio consideró
+        coherentes las cifras del 70,1 % de los centros participantes (p. 30).
+  - en: On-site water intake includes water later discharged. The estimate excludes water used off-site
+        to generate electricity.
+    es: El agua de entrada incluye el agua que después se vierte. La estimación excluye el agua utilizada
+        fuera del centro para generar electricidad.
+  - en: The European water indicator covers only centres that reported positive water intake. A dry-cooled
+        facility can use much less. Cooling technology and climate affect water needs.
+    es: El indicador europeo de agua solo incluye centros que declararon una entrada positiva. Un centro con
+        refrigeración seca puede necesitar mucha menos agua. La tecnología de refrigeración y el clima influyen.
+  - &data_center_size
+    en: The coefficients use installed IT power. The IEA examples give a scale of 10 to 100 MW, with 25 MW
+        as a reference case. They leave the power basis unspecified. If their figures refer to total facility
+        power, treating them as IT power overestimates demand. The 100 MW example is not a maximum.
+    es: Los coeficientes usan la potencia TI instalada. Los ejemplos de la AIE dan una escala de 10 a 100 MW,
+        con 25 MW como caso de referencia. La fuente no precisa la base de potencia. Si se refiere a la potencia
+        total, interpretarla como potencia TI sobreestima la demanda. Los 100 MW del ejemplo no son un máximo.
+  - &data_center_load
+    en: The 48% load factor is an IEA model estimate for Europe in 2024. It is held fixed across the range.
+        The range uses averages for the class above 10 MW IT and has no probability level.
+    es: El factor de carga del 48 % es una estimación modelada de la AIE para Europa en 2024 y se mantiene fijo
+        en todo el rango. El rango usa medias de la clase de más de 10 MW TI y carece de nivel de probabilidad.
+  - &data_center_spain
+    en: Spain has fewer than three reporting sites in the class above 10 MW IT, so the report suppresses its
+        average for this class. The reported averages for Spain across all sizes are PUE 1.66 and WUE 0.70 m³/MWh IT.
+    es: España tiene menos de tres centros declarantes en la clase de más de 10 MW TI, por lo que el informe no
+        publica su media para esta clase. Para todos los tamaños, España registra un PUE de 1,66 y un WUE de
+        0,70 m³/MWh TI.
+
+- id: data-center-energy
+  name:
+    en: Large data center electricity use
+    es: Consumo eléctrico de un centro de datos grande
+  resource: energy
+  unit: MWh/year
+  per: MW IT
+  low: 4793
+  central: 5088
+  high: 5803
+  ref: >-
+    European Commission, Assessment of the energy performance and sustainability of data centres in EU,
+    First technical report (2025), https://doi.org/10.2833/3168794. Above 10 MW IT: PUE 1.21 (EU,
+    table 23, pp. 80–81); 1.14 (Ireland) and 1.38 (Italy) in the same class (table 25, p. 84).
+    Ratios multiplied by 8,760 hours and the modelled 48% load factor for Europe in 2024
+    (IEA, Energy and AI, 2025, table A.3, p. 259, https://www.iea.org/reports/energy-and-ai).
+  typical: *large_data_center_size
+  limits:
+  - *data_center_reporting
+  - *data_center_size
+  - *data_center_load
+  - *data_center_spain
+
+- id: data-center-land
+  name:
+    en: Data center land use
+    es: Uso del suelo de centro de datos
+  resource: land
+  unit: m2
+  per: MW IT
+  low: null
+  central: null
+  high: null
+  ref: null
+  limits:
+  - en: There is no published comparable land coefficient. The La Puebla de Alfindén planning proposal,
+        volume II, book A, describes a 192,880 m² campus parcel and a 100 MW IT first phase. That parcel
+        includes room for expansion. https://www.aragon.es/documents/d/guest/tomo-ii-libro-a-documentacion-urbanistica-ordenacion-1
+    es: Falta un coeficiente de suelo publicado y comparable. La propuesta urbanística de La Puebla de Alfindén,
+        tomo II, libro A, describe una parcela de 192.880 m² y una primera fase de 100 MW TI. La parcela
+        incluye espacio para ampliar. https://www.aragon.es/documents/d/guest/tomo-ii-libro-a-documentacion-urbanistica-ordenacion-1

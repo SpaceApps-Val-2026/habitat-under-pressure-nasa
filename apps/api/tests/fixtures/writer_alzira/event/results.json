@@ -1,0 +1,173 @@
+[
+  {
+    "type": "series",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "precipitation",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "area": "zone",
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-345244",
+    "unit": "mm/month",
+    "series": [
+      {
+        "t": "2024-09-01",
+        "v": 53.280004262924194
+      },
+      {
+        "t": "2024-10-01",
+        "v": 104.9040093421936
+      }
+    ],
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 4.061
+    },
+    "coverage": {
+      "valid_pct": 100.0,
+      "n_dates": 322
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-024159-4b2a79",
+    "step": "s1",
+    "fingerprint": "f79d8d5c4456f7abe6556705480918dbe3d672472c1b373d5c829a85b633108b"
+  },
+  {
+    "type": "value",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "unit": "percentile",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "method": {
+      "operation": "rain_extreme",
+      "version": "1.0",
+      "params": {
+        "min_years": 20,
+        "year": 2024,
+        "months": [
+          10
+        ]
+      }
+    },
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 4.061
+    },
+    "limits": [
+      {
+        "en": "Empirical rank among equivalent prior windows. Equal totals share rank. Return period is unavailable."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-345244",
+    "diagnostics": {
+      "n_years": 27,
+      "rank": 5
+    },
+    "value": 84.61538461538461,
+    "id": "r-s2-extreme",
+    "analysis": "20261114-024159-4b2a79",
+    "step": "s2",
+    "fingerprint": "ae93cffe6da6ffcf1c3530288116a7c19a0db206eaaecd791274f96adda0a85f"
+  },
+  {
+    "type": "value",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "unit": "mm",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "method": {
+      "operation": "same_date_anomaly",
+      "version": "1.0",
+      "params": {
+        "min_years": 20,
+        "year": 2024,
+        "months": [
+          10
+        ]
+      }
+    },
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 4.061
+    },
+    "limits": [
+      {
+        "en": "The reference uses the same months from other complete years."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-345244",
+    "diagnostics": {
+      "n_years": 27
+    },
+    "value": 41.997852282741896,
+    "id": "r-s3-anomaly",
+    "analysis": "20261114-024159-4b2a79",
+    "step": "s3",
+    "fingerprint": "88763ff9f3db3bdab7a35fe5e7cd0f2e6509834bfd146e03fb05fd5914032485"
+  }
+]

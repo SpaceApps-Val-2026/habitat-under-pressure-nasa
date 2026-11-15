@@ -1,0 +1,374 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/catalog.schema.json",
+  "title": "Catalog: sources, variables and operations",
+  "description": "Everything that can be asked for. A versioned file: the assistant and the executor read the same one.",
+  "type": "object",
+  "required": ["version", "sources", "variables", "operations"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "type": "string" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "provider", "access", "license", "citation", "redistributable"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "type": "string" },
+          "provider": { "type": "string" },
+          "product": { "type": "string" },
+          "version": { "type": "string" },
+          "resolution": { "type": "string" },
+          "since": { "type": "string" },
+          "access": {
+            "type": "object",
+            "required": ["mode", "account", "coverage"],
+            "additionalProperties": false,
+            "properties": {
+              "mode": {
+                "description": "api: a subset is requested on the spot; package: the file must already be downloaded; manual: a person downloads it",
+                "enum": ["api", "package", "manual"]
+              },
+              "account": { "enum": ["none", "earthdata", "copernicus", "api_key", "registration"] },
+              "coverage": {
+                "description": "What our cache holds: the whole world, only the prepared cases, or whatever gets requested",
+                "enum": ["global", "cases", "on_demand"]
+              },
+              "url": { "type": "string", "format": "uri" }
+            }
+          },
+          "license": {
+            "description": "Licence and its conditions. A plain string, or text by language (en required). Shown as written.",
+            "anyOf": [{ "type": "string" }, { "$ref": "common.schema.json#/$defs/text" }]
+          },
+          "citation": {
+            "description": "Attribution line the licence asks for, shown next to the data. A plain string, or text by language (en required). Literal footers keep the holder's language in every version. Bracketed markers ([year], [date], [fecha], [AOI]...) are filled by the code that shows it.",
+            "anyOf": [{ "type": "string" }, { "$ref": "common.schema.json#/$defs/text" }]
+          },
+          "redistributable": { "description": "May we serve the data as is from our server?", "type": "boolean" }
+        }
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "unit", "sources"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "$ref": "common.schema.json#/$defs/text" },
+          "unit": { "type": "string" },
+          "data_class": { "description": "Class of the values this variable delivers. A reading whose operation says inherit copies it. Absent means measured.", "$ref": "common.schema.json#/$defs/data_class" },
+          "layer": { "enum": ["heat", "green", "water", "sea", "energy", "land", "population", "climate", "risk"] },
+          "sources": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/id" } },
+          "limit": { "description": "Shown to the person next to every result", "$ref": "common.schema.json#/$defs/text" },
+          "answers": { "description": "Everyday words this variable answers to; read by the assistant", "type": "array", "items": { "type": "string" } },
+          "not": { "description": "What this variable must not be used for; read by the assistant", "$ref": "common.schema.json#/$defs/text" },
+          "support": { "$ref": "common.schema.json#/$defs/support" },
+          "frame": { "$ref": "common.schema.json#/$defs/frame" },
+          "designs": { "description": "Study designs this variable supports", "type": "array", "items": { "$ref": "common.schema.json#/$defs/design" } },
+          "extent": {
+            "description": "Spatial and temporal coverage of the variable. kind global covers the world; bbox gives [west, south, east, north] in EPSG:4326; region is a label (e.g. ISO 3166-2 or basin id) when no bbox is known. since stays in support; until null means ongoing.",
+            "type": "object",
+            "required": ["kind"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": { "enum": ["global", "bbox", "region"] },
+              "bbox": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+              "region": { "type": "string" },
+              "until": { "type": ["integer", "null"] },
+              "verified": { "type": "boolean" },
+              "ref": { "type": "string" }
+            }
+          },
+          "baseline": {
+            "description": "For a projected variable: the observed variable that gives its reference period, and how its values combine into a year. Without it, a scenario shows the absence of an observed reference.",
+            "type": "object",
+            "required": ["variable"],
+            "additionalProperties": false,
+            "properties": {
+              "variable": { "$ref": "common.schema.json#/$defs/id" },
+              "statistic": { "enum": ["mean", "sum", "median"] }
+            }
+          },
+          "threshold": {
+            "description": "Fixed threshold declared for the variable, which the planner copies to its read step: a percentile of the values of a base period, and where the method comes from.",
+            "type": "object",
+            "required": ["percentile", "base_period", "ref"],
+            "additionalProperties": false,
+            "properties": {
+              "percentile": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 100 },
+              "base_period": { "$ref": "common.schema.json#/$defs/period" },
+              "ref": { "type": "string", "minLength": 1 }
+            }
+          },
+          "eurovoc": {
+            "description": "EuroVoc concept ids (http://eurovoc.europa.eu/<id>) this variable relates to; used to list related legislation from official APIs",
+            "type": "array",
+            "items": { "type": "string", "pattern": "^(c_)?[0-9a-f]+$" }
+          }
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "version", "type", "visual_type", "phrase", "params", "output"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "version": { "type": "string" },
+          "type": { "enum": ["ingest", "compute", "write", "review"] },
+          "visual_type": { "enum": ["zone", "satellite", "compute", "document"] },
+          "phrase": { "$ref": "common.schema.json#/$defs/text" },
+          "params": { "description": "JSON Schema of the step params", "type": "object" },
+          "output": {
+            "type": "object",
+            "required": ["type", "data_class"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["value", "series", "layer", "table", "document"] },
+              "data_class": {
+                "description": "A class, or inherit. A reading (ingest) inherits the class of its variable; any other operation inherits the least direct class of its inputs, in the order measured, reanalysis, extrapolated, approximated, illustrative.",
+                "anyOf": [{ "$ref": "common.schema.json#/$defs/data_class" }, { "const": "inherit" }]
+              },
+              "unit": { "type": "string" }
+            }
+          },
+          "limits": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/text" } },
+          "evidence_level": { "description": "Highest level a result of this operation can claim", "$ref": "common.schema.json#/$defs/evidence_level" },
+          "diagnostics": { "description": "Names of the diagnostics this operation writes into its results", "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "chains": {
+      "description": "Mechanisms declared before looking at the data. evaluate_chain checks each link.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "links"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "$ref": "common.schema.json#/$defs/text" },
+          "links": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["from", "to", "sign", "ref"],
+              "additionalProperties": false,
+              "properties": {
+                "from": { "$ref": "common.schema.json#/$defs/id" },
+                "to": { "$ref": "common.schema.json#/$defs/id" },
+                "sign": { "enum": ["+", "-"] },
+                "lag_years": { "description": "Shortest and longest expected lag", "type": "array", "items": { "type": "integer", "minimum": 0 }, "minItems": 2, "maxItems": 2 },
+                "ref": { "description": "Published reference for the link; null until it has one, and then the link is not evaluated", "type": ["string", "null"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "norms": {
+      "description": "Curated table of rules. The code inserts the literal quote; the LLM never rewrites it.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "applies_to", "clause", "reviewed_by"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "title": { "type": "string" },
+          "scope": {
+            "type": "object",
+            "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "enum": ["site", "municipality", "basin", "region", "country", "eu", "global"] },
+              "id": { "type": "string" }
+            }
+          },
+          "applies_to": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/id" } },
+          "clause": {
+            "type": "object",
+            "required": ["document", "quote"],
+            "additionalProperties": false,
+            "properties": {
+              "document": { "description": "Id of a catalog source", "$ref": "common.schema.json#/$defs/id" },
+              "article": { "type": "string" },
+              "page": { "type": "string" },
+              "quote": { "description": "Literal quote, in the language of the document; null until a person has copied it", "type": ["string", "null"] }
+            }
+          },
+          "threshold": {
+            "type": "object",
+            "required": ["kind"],
+            "additionalProperties": false,
+            "properties": {
+              "kind": { "enum": ["limit", "target", "requirement"] },
+              "value": { "type": ["number", "null"] },
+              "unit": { "type": "string" }
+            }
+          },
+          "reviewed_by": { "description": "Person who checked the quote against the document; null means not reviewed and not shown", "type": ["string", "null"] }
+        }
+      }
+    },
+    "archetypes": {
+      "description": "Unit consumptions with a range, for resource_estimate. A missing figure is null, never a guess.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "resource", "unit", "per", "low", "high", "ref"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "name": { "$ref": "common.schema.json#/$defs/text" },
+          "resource": { "enum": ["water", "energy", "land"] },
+          "unit": { "type": "string" },
+          "per": { "description": "What one unit refers to: inhabitant, GWh of capacity, hectare...", "type": "string" },
+          "low": { "type": ["number", "null"] },
+          "central": { "type": ["number", "null"] },
+          "high": { "type": ["number", "null"] },
+          "ref": { "description": "Published reference; null until it has one", "type": ["string", "null"] },
+          "limits": {
+            "description": "Limits of the coefficients and their use, carried into the estimate.",
+            "type": "array",
+            "items": { "$ref": "common.schema.json#/$defs/text" }
+          },
+          "typical": {
+            "description": "Optional. Typical size of one installation, counted in the `per` unit, with its own published reference. With it, whatif answers for a typical installation; without it, per unit of `per`. Never a figure the person types.",
+            "type": ["object", "null"],
+            "required": ["low", "high", "ref"],
+            "additionalProperties": false,
+            "properties": {
+              "low": { "type": ["number", "null"] },
+              "central": { "type": ["number", "null"] },
+              "high": { "type": ["number", "null"] },
+              "ref": { "description": "Published reference of the size; null until it has one", "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "blocks": {
+      "description": "Report blocks. The composer can only pick a block whose needs are met by existing results.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "needs", "styles"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "description": "Component name", "type": "string", "pattern": "^[A-Z][A-Za-z]+$" },
+          "needs": {
+            "description": "Empty means always available",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "result_types": { "type": "array", "items": { "enum": ["value", "series", "layer", "table", "document"] } },
+              "fields": { "description": "Result fields that must be present", "type": "array", "items": { "type": "string" } },
+              "operations": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+              "min_results": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "styles": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/report_style" } }
+        }
+      }
+    },
+    "legislation": {
+      "description": "Plain-language cards for EU acts, the citizen routes the law gives, the disclaimer, the visibility of acts without a card and the 'Coming soon' text. Written and reviewed by the legal front; the code shows it as written and never judges compliance.",
+      "type": "object",
+      "required": ["who_labels", "disclaimer", "acts", "general_options"],
+      "additionalProperties": false,
+      "properties": {
+        "who_labels": {
+          "description": "Label shown next to each route, by who can use it",
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/who" },
+          "additionalProperties": { "$ref": "#/$defs/bilingual" }
+        },
+        "disclaimer": { "description": "Shown once wherever legislation is shown", "$ref": "#/$defs/bilingual" },
+        "acts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["celex", "short_name", "plain", "in_spain", "citizen_options", "general", "sources", "reviewed_by"],
+            "additionalProperties": false,
+            "properties": {
+              "celex": { "$ref": "#/$defs/celex" },
+              "eurovoc": { "description": "EuroVoc concepts the card answers to: with them the card can be shown when the live list of acts cannot be fetched", "type": "array", "items": { "type": "string", "pattern": "^(c_)?[0-9a-z]+$" } },
+              "also_for": { "description": "Other CELEX that show this card (an amending act Cellar lists instead of the act); may repeat across cards", "type": "array", "items": { "$ref": "#/$defs/celex" } },
+              "short_name": { "$ref": "#/$defs/bilingual" },
+              "plain": { "description": "What the act says, in plain language", "$ref": "#/$defs/bilingual" },
+              "in_spain": { "description": "How it applies in Spain", "$ref": "#/$defs/bilingual" },
+              "citizen_options": { "type": "array", "items": { "$ref": "#/$defs/route", "unevaluatedProperties": false } },
+              "general": { "description": "Ids of general_options that also apply", "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+              "sources": { "type": "array", "items": { "$ref": "#/$defs/link" } },
+              "reviewed_by": { "description": "Person who checked the card against the official texts; null means not shown (the act falls back to its title)", "type": ["string", "null"] }
+            }
+          }
+        },
+        "general_options": {
+          "description": "Routes that apply to any law, shown once",
+          "type": "array",
+          "items": {
+            "allOf": [{ "$ref": "#/$defs/route" }],
+            "required": ["id"],
+            "properties": { "id": { "$ref": "common.schema.json#/$defs/id" } },
+            "unevaluatedProperties": false
+          }
+        },
+        "visibility": {
+          "description": "Acts Cellar lists that have no card. Anything not listed shows as title; a CELEX in also_for takes its card's visibility.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["celex"],
+                "additionalProperties": false,
+                "properties": {
+                  "celex": { "$ref": "#/$defs/celex" },
+                  "under": { "description": "Acts this title is listed under: a card, or another title", "type": "array", "items": { "$ref": "#/$defs/celex" } }
+                }
+              }
+            },
+            "hidden": { "type": "array", "items": { "$ref": "#/$defs/celex" } }
+          }
+        },
+        "coming_soon": { "description": "Text (Markdown) of the page about checking results against legal limits", "$ref": "#/$defs/bilingual" }
+      }
+    }
+  },
+  "$defs": {
+    "bilingual": {
+      "description": "Text in Spanish and English, both required; other languages optional",
+      "type": "object",
+      "required": ["es", "en"],
+      "additionalProperties": { "type": "string" }
+    },
+    "celex": { "type": "string", "pattern": "^[0-9][0-9]{4}[A-Z]{1,2}[0-9]{4}$" },
+    "link": { "type": "string", "pattern": "^(https://|http://publications\\.europa\\.eu/)" },
+    "who": { "enum": ["anyone", "interested", "affected", "ngo"] },
+    "route": {
+      "description": "Something a person can do under the law, who can do it and where",
+      "type": "object",
+      "required": ["action", "how", "who", "legal_basis", "url"],
+      "properties": {
+        "action": { "$ref": "#/$defs/bilingual" },
+        "how": { "$ref": "#/$defs/bilingual" },
+        "who": { "$ref": "#/$defs/who" },
+        "status": { "description": "Shown next to the route when it is not yet in force in Spain", "$ref": "#/$defs/bilingual" },
+        "legal_basis": { "type": "string" },
+        "url": { "$ref": "#/$defs/link" }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "show": [
+    { "key": "space-apps", "alt": "NASA Space Apps Challenge", "dark": "space-apps.dark.png" },
+    { "key": "nasa", "alt": "NASA", "file": "nasa.svg" },
+    { "key": "usgs", "alt": "USGS", "dark": "usgs.dark.png" },
+    { "key": "gpm", "alt": "GPM, Global Precipitation Measurement", "file": "gpm.png" },
+    { "key": "smap", "alt": "SMAP, Soil Moisture Active Passive", "dark": "smap.dark.png", "light": "smap.light.png" },
+    { "key": "esa", "alt": "ESA", "dark": "esa.dark.svg", "light": "esa.light.png" },
+    { "key": "copernicus", "alt": "Copernicus", "dark": "copernicus.dark.svg", "light": "copernicus.light.svg" },
+    { "key": "copernicus-ems", "alt": "Copernicus Emergency Management Service", "file": "copernicus-ems.png" },
+    { "key": "eox", "alt": "EOX", "light": "eox.light.svg" },
+    { "key": "ec", "alt": "European Commission", "dark": "ec.dark.svg", "light": "ec.light.svg" },
+    { "key": "eea", "alt": "European Environment Agency", "dark": "eea.dark.svg" },
+    { "key": "ine-es", "alt": "Instituto Nacional de Estadística", "light": "ine.light.svg" },
+    { "key": "chj", "alt": "Confederación Hidrográfica del Júcar", "light": "chj.light.png" },
+    { "key": "miteco", "alt": "Ministerio para la Transición Ecológica y el Reto Demográfico", "light": "miteco.light.svg" },
+    { "key": "boe", "alt": "Boletín Oficial del Estado", "dark": "boe.dark.png" },
+    { "key": "gva", "alt": "Generalitat Valenciana", "light": "gva.light.png" },
+    { "key": "icv", "alt": "Institut Cartogràfic Valencià", "light": "icv.light.png" }
+  ],
+  "held": []
+}

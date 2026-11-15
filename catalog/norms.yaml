@@ -1,0 +1,66 @@
+# norms: one entry per item. Shape: docs/contratos/catalog.schema.json, property "norms".
+# Quotes copied from the PDF of RD 35/2023 and checked by Sara: .dev/notes/2026-11-13-eurovoc-y-normas.md
+- id: es-rd-35-2023-jucar-sagunt-industria-asignacion
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), art. 19"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, art. 19.B.5"
+    page: "20856"
+    quote: "Se asigna a favor de la unidad de demanda industrias en Sagunto y su área de influencia 5,1 hm3/año, de los cuales 3,7 hm3/año proceden de recursos superficiales del Júcar, 0,3 hm3/año de recursos desalinizados en la IDAM de Sagunto y el resto de recursos subterráneos."
+  threshold: {kind: limit, value: 5.1, unit: "hm³/year"}
+  reviewed_by: "Sara"
+- id: es-rd-35-2023-jucar-sagunt-industria-reserva
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), art. 19"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, art. 19.C.2.a.II"
+    page: "20856"
+    quote: "Hasta 8,0 hm3/año para asegurar futuros crecimientos en la unidad de demanda industrias de Sagunto y su área de influencia."
+  reviewed_by: "Sara"
+- id: es-rd-35-2023-jucar-plana-sagunt-subterranea
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), art. 19"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, art. 19.B.6"
+    page: "20856"
+    quote: "El conjunto de asignaciones realizadas sobre recursos subterráneos de las masas Plana de Sagunto (24,9 hm3/año), Segorbe-Quart (12,0 hm3/año) y Cornacó-Estivella (12,7 hm3/año) no posibilita su explotación sostenible."
+  reviewed_by: "Sara"
+- id: es-rd-35-2023-jucar-poligono-industrial-dotacion
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), art. 30"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, art. 30.2"
+    page: "20879"
+    quote: "En el caso de nuevos polígonos industriales se aplicará, a falta de estudios específicos, una dotación máxima anual de 4.000 m3 por hectárea neta construida o prevista."
+  threshold: {kind: limit, value: 4000, unit: "m³/ha/year"}
+  reviewed_by: "Sara"
+- id: es-rd-35-2023-jucar-eficiencia-redes
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), art. 27"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, art. 27.7"
+    page: "20878"
+    quote: "En las nuevas concesiones, así como en las modificaciones o revisiones de las existentes, para abastecimiento urbano de poblaciones se promoverá, como objetivo, alcanzar una eficiencia mínima de 0,8 en las redes de distribución de abastecimiento urbano, calculada como el cociente entre el recurso suministrado al usuario final y el suministrado en alta."
+  threshold: {kind: target, value: 0.8, unit: "ratio"}
+  reviewed_by: "Sara"
+- id: es-rd-35-2023-jucar-dotacion-urbana-50000-100000
+  title: "Plan Hidrológico de la Demarcación Hidrográfica del Júcar 2022-2027 (RD 35/2023), apéndice 8.1, municipios de 50.000 a 100.000 habitantes"
+  scope: {type: basin, id: jucar}
+  applies_to: [water_demand]
+  clause:
+    document: boe-rd-35-2023
+    article: "Anexo XI, apéndice 8.1"
+    page: "21000"
+    quote: "De 50.000 a 100.000 180-570 259"
+  threshold: {kind: requirement, value: 259, unit: "l/hab/día"}
+  reviewed_by: "Sara"

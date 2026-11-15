@@ -1,0 +1,179 @@
+[
+  {
+    "type": "series",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "precipitation",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "area": "zone",
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-342678",
+    "unit": "mm/month",
+    "series": [
+      {
+        "t": "1998-01-01",
+        "v": 117.5520054101944
+      },
+      {
+        "t": "1998-02-01",
+        "v": 28.89600098133087
+      }
+    ],
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 0.058
+    },
+    "coverage": {
+      "valid_pct": 100.0,
+      "n_dates": 322
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-010116-69539a",
+    "step": "s1",
+    "fingerprint": "686d9ffccb5bfe40d7af37b751bb4267374e35beb2185c47b9bb60609476f166"
+  },
+  {
+    "type": "value",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "unit": "percentile",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "method": {
+      "operation": "rain_extreme",
+      "version": "1.0",
+      "params": {
+        "min_years": 20,
+        "year": 2024,
+        "months": [
+          10
+        ]
+      }
+    },
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 0.058
+    },
+    "limits": [
+      {
+        "en": "The grid cell is at least as large as the area."
+      },
+      {
+        "en": "Empirical rank among equivalent prior windows. Equal totals share rank. Return period is unavailable."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-342678",
+    "diagnostics": {
+      "n_years": 27,
+      "rank": 5
+    },
+    "value": 84.61538461538461,
+    "id": "r-s2-extreme",
+    "analysis": "20261114-010116-69539a",
+    "step": "s2",
+    "fingerprint": "bfebc8dc53ef7d8ae939c35915059a9d634c3dcafc58456bf16128e3d5e4bd2b"
+  },
+  {
+    "type": "value",
+    "variable": "precipitation",
+    "data_class": "measured",
+    "unit": "mm",
+    "sources": [
+      {
+        "source": "imerg-monthly",
+        "product": "GPM_3IMERGM",
+        "version": "07",
+        "url": "https://doi.org/10.5067/GPM/IMERG/3B-MONTH/07",
+        "n_items": 322
+      }
+    ],
+    "method": {
+      "operation": "same_date_anomaly",
+      "version": "1.0",
+      "params": {
+        "min_years": 20,
+        "year": 2024,
+        "months": [
+          10
+        ]
+      }
+    },
+    "support": {
+      "resolution_m": 11100,
+      "since": 1998,
+      "cells": 0.058
+    },
+    "limits": [
+      {
+        "en": "The grid cell is at least as large as the area."
+      },
+      {
+        "en": "The reference uses the same months from other complete years."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1998-01-01",
+      "end": "2024-10-31",
+      "months": [
+        10
+      ]
+    },
+    "zone": "osm-relation-342678",
+    "diagnostics": {
+      "n_years": 27
+    },
+    "value": 51.42184890606083,
+    "id": "r-s3-anomaly",
+    "analysis": "20261114-010116-69539a",
+    "step": "s3",
+    "fingerprint": "1b4731ea8da695b1ce0f05536f8e7d7ba4065ffc8b9e7790d5c0468122544178"
+  }
+]

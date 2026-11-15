@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/common.schema.json",
+  "title": "Pieces shared by every contract",
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_.-]*$" },
+    "data_class": {
+      "description": "Data class from the PRD (section 7). measured: observed by an instrument. reanalysis: output of a physical model fed with observations, with no projection into the future. extrapolated: an observed trend carried forward. approximated: estimated with archetypes or indirect indicators. illustrative: an example with no data value. The interface maps it to its label.",
+      "enum": ["measured", "reanalysis", "extrapolated", "approximated", "illustrative"]
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "evidence_level": {
+      "description": "Evidence ladder: E0 described, E1 trend, E2 coincidence in time and place, E3 association, E4 exceptional against placebos, E5 coherent chain. No level allows causal verbs.",
+      "enum": ["E0", "E1", "E2", "E3", "E4", "E5"]
+    },
+    "frame": {
+      "description": "Link of the frame that joins the sources: driver, pressure, state, exposure, response.",
+      "enum": ["driver", "pressure", "state", "exposure", "response"]
+    },
+    "design": {
+      "description": "whatif: what a catalog archetype would ask for of a resource at a quantity the person assumes, next to the state of the place (from 14 November).",
+      "enum": ["scan", "state", "trend", "impact", "event", "scenario", "exposure", "whatif"]
+    },
+    "report_style": {
+      "description": "The three report formats built from one analysis.",
+      "enum": ["journalistic", "institutional", "scientific"]
+    },
+    "support": {
+      "description": "Real size of what was measured. Grids are never mixed without resampling to the coarsest one.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resolution_m": { "type": "number", "exclusiveMinimum": 0 },
+        "since": { "description": "First year with data", "type": "integer" },
+        "until": { "description": "Last year with data; absent means ongoing", "type": ["integer", "null"] },
+        "revisit_days": { "type": "number", "exclusiveMinimum": 0 },
+        "cells": { "description": "Grid cells inside the zone; 1 or fewer means the cell is larger than the zone", "type": "number", "minimum": 0 }
+      }
+    },
+    "text": {
+      "description": "Text by language code. English is required; other languages are optional.",
+      "type": "object",
+      "required": ["en"],
+      "additionalProperties": { "type": "string" }
+    },
+    "period": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" },
+        "months": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 12 } }
+      }
+    },
+    "zone": {
+      "type": "object",
+      "required": ["name", "bbox"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name": { "type": "string" },
+        "bbox": {
+          "description": "west, south, east, north in EPSG:4326",
+          "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4
+        },
+        "geometry": { "description": "GeoJSON in EPSG:4326", "type": "object" },
+        "source": { "type": "string" }
+      }
+    },
+    "source_ref": {
+      "description": "Where a figure comes from, with what is needed to open it in one click.",
+      "type": "object",
+      "required": ["source", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "$ref": "#/$defs/id" },
+        "product": { "type": "string" },
+        "version": { "type": "string" },
+        "items": { "description": "Specific scenes, granules or documents", "type": "array", "items": { "type": "string" } },
+        "n_items": { "type": "integer", "minimum": 0 },
+        "page": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "license": { "type": "string" }
+      }
+    },
+    "absence": {
+      "description": "Missing data carries a reason. Never zero and never an invented value.",
+      "type": "object",
+      "required": ["reason"],
+      "additionalProperties": false,
+      "properties": {
+        "reason": { "enum": ["no_coverage", "insufficient_qa", "source_unreachable", "needs_package", "not_computed"] },
+        "detail": { "$ref": "#/$defs/text" }
+      }
+    }
+  }
+}

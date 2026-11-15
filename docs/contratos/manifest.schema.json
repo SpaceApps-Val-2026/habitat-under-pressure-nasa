@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://habitat-under-pressure/contracts/manifest.schema.json",
+  "title": "Cache manifest entry",
+  "description": "One line per cached file (.jsonl). Pre-download and on-demand ingest write it the same way.",
+  "type": "object",
+  "required": ["source", "item", "scope", "path", "mb", "sha256", "format", "ingest", "license"],
+  "additionalProperties": false,
+  "properties": {
+    "source": { "$ref": "common.schema.json#/$defs/id" },
+    "product": { "type": "string" },
+    "version": { "type": "string" },
+    "item": { "description": "Original id of the scene, granule, tile or document", "type": "string" },
+    "scope": { "description": "global, or the zone id", "type": "string" },
+    "bbox": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+    "period": { "$ref": "common.schema.json#/$defs/period" },
+    "path": { "description": "Relative to the data root", "type": "string" },
+    "mb": { "type": "number", "minimum": 0 },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "format": { "enum": ["cog", "netcdf", "hdf5", "zarr", "geoparquet", "geojson", "pmtiles", "sqlite", "png", "pdf", "csv", "zip"] },
+    "tier": {
+      "description": "Store tier: raw as downloaded; ready for analysis (cube, COG, GeoParquet); derived and addressed by fingerprint",
+      "enum": ["raw", "ready", "derived"]
+    },
+    "variables": { "description": "Catalog variables this file holds; feeds the coverage index", "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+    "ingest": {
+      "type": "object",
+      "required": ["date", "origin", "url"],
+      "additionalProperties": false,
+      "properties": {
+        "date": { "type": "string", "format": "date-time" },
+        "origin": { "enum": ["predownload", "on_demand"] },
+        "url": { "type": "string", "format": "uri" },
+        "by": { "type": "string" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cloud_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "valid_pct": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "license": { "type": "string" }
+  }
+}

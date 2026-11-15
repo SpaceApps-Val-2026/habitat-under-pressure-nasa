@@ -1,0 +1,35 @@
+/* Print layout for the report. Physical page sizes are print machinery, not interface tokens. */
+@page {
+  size: A4;
+  margin: 16mm;
+}
+
+@media print {
+  body {
+    background: var(--paper);
+    /* Keep the data-class borders and the charts' tones on paper. */
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .report-sheet {
+    max-width: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .report-sheet section,
+  .report-sheet figure,
+  .report-sheet table {
+    break-inside: avoid;
+  }
+
+  .report-sheet a[href^="http"] {
+    overflow-wrap: anywhere;
+  }
+
+  .report-sheet a[href^="http"]::after {
+    content: " (" attr(href) ")";
+  }
+}

@@ -1,0 +1,269 @@
+[
+  {
+    "type": "series",
+    "variable": "days_above_35c",
+    "data_class": "extrapolated",
+    "sources": [
+      {
+        "items": [
+          "ACCESS-CM2",
+          "EC-Earth3",
+          "MPI-ESM1-2-HR",
+          "MRI-ESM2-0",
+          "NorESM2-MM"
+        ],
+        "license": "CC0 1.0 since September 2022; cite Thrasher et al. (2022), https://doi.org/10.7917/OFSG3345",
+        "n_items": 2100,
+        "product": "yearly-indicators",
+        "source": "nex-gddp-cmip6",
+        "url": "https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6",
+        "version": "2.0"
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "days_above_35c",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "area": "zone",
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "1995-01-01",
+      "end": "2054-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "unit": "days",
+    "series": [
+      {
+        "t": "1995",
+        "v": 2.0,
+        "model": "ACCESS-CM2",
+        "scenario": "historical"
+      },
+      {
+        "t": "1996",
+        "v": 0.0,
+        "model": "ACCESS-CM2",
+        "scenario": "historical"
+      }
+    ],
+    "support": {
+      "cells": 0.573,
+      "resolution_m": 27830
+    },
+    "coverage": {
+      "valid_pct": 100.0,
+      "n_dates": 700
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-010129-d31ee4",
+    "step": "s1",
+    "fingerprint": "c079e17971309096f4073622df1ea85178bb6aa69190d83cf346f2e9f2b13a89"
+  },
+  {
+    "type": "series",
+    "variable": "days_above_35c",
+    "data_class": "extrapolated",
+    "unit": "days",
+    "sources": [
+      {
+        "items": [
+          "ACCESS-CM2",
+          "EC-Earth3",
+          "MPI-ESM1-2-HR",
+          "MRI-ESM2-0",
+          "NorESM2-MM"
+        ],
+        "license": "CC0 1.0 since September 2022; cite Thrasher et al. (2022), https://doi.org/10.7917/OFSG3345",
+        "n_items": 2100,
+        "product": "yearly-indicators",
+        "source": "nex-gddp-cmip6",
+        "url": "https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6",
+        "version": "2.0"
+      }
+    ],
+    "method": {
+      "operation": "climate_delta",
+      "version": "1.0",
+      "params": {
+        "reference": [
+          1995,
+          2014
+        ],
+        "windows": {
+          "2030": [
+            2025,
+            2034
+          ],
+          "2040": [
+            2030,
+            2049
+          ],
+          "2050": [
+            2045,
+            2054
+          ]
+        },
+        "scenario_pairs": {
+          "ssp1": "ssp126",
+          "ssp2": "ssp245",
+          "ssp3": "ssp370",
+          "ssp5": "ssp585"
+        },
+        "min_coverage": 1,
+        "confidence": 0.95
+      }
+    },
+    "support": {
+      "cells": 0.573,
+      "resolution_m": 27830
+    },
+    "limits": [
+      {
+        "en": "The grid cell is at least as large as the area."
+      },
+      {
+        "en": "The reference, horizon windows and scenario pairing are provisional pending method review."
+      },
+      {
+        "en": "The bounds describe model spread. Short horizon windows are sensitive to year-to-year variation."
+      },
+      {
+        "en": "The modeled change retains the climate grid support."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1995-01-01",
+      "end": "2054-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "diagnostics": {
+      "n_models": 0,
+      "models": ""
+    },
+    "absence": {
+      "reason": "insufficient_qa",
+      "detail": {
+        "en": "A comparable observed baseline and modeled reference and horizon are required."
+      }
+    },
+    "id": "r-s2-delta",
+    "analysis": "20261114-010129-d31ee4",
+    "step": "s2",
+    "fingerprint": "67040b614ed82d5bf8662799123f6b532ead465590219a02e9ba07c7febf298d"
+  },
+  {
+    "type": "table",
+    "variable": "days_above_35c",
+    "data_class": "extrapolated",
+    "unit": "days^2",
+    "sources": [
+      {
+        "items": [
+          "ACCESS-CM2",
+          "EC-Earth3",
+          "MPI-ESM1-2-HR",
+          "MRI-ESM2-0",
+          "NorESM2-MM"
+        ],
+        "license": "CC0 1.0 since September 2022; cite Thrasher et al. (2022), https://doi.org/10.7917/OFSG3345",
+        "n_items": 2100,
+        "product": "yearly-indicators",
+        "source": "nex-gddp-cmip6",
+        "url": "https://www.nccs.nasa.gov/services/data-collections/land-based-products/nex-gddp-cmip6",
+        "version": "2.0"
+      }
+    ],
+    "method": {
+      "operation": "uncertainty_split",
+      "version": "1.0",
+      "params": {
+        "reference": [
+          1995,
+          2014
+        ],
+        "windows": {
+          "2030": [
+            2025,
+            2034
+          ],
+          "2040": [
+            2030,
+            2049
+          ],
+          "2050": [
+            2045,
+            2054
+          ]
+        },
+        "scenario_pairs": {
+          "ssp1": "ssp126",
+          "ssp2": "ssp245",
+          "ssp3": "ssp370",
+          "ssp5": "ssp585"
+        },
+        "min_coverage": 1,
+        "confidence": 0.95
+      }
+    },
+    "support": {
+      "cells": 0.573,
+      "resolution_m": 27830
+    },
+    "limits": [
+      {
+        "en": "The grid cell is at least as large as the area."
+      },
+      {
+        "en": "The reference, horizon windows and scenario pairing are provisional pending method review."
+      },
+      {
+        "en": "The bounds describe model spread. Short horizon windows are sensitive to year-to-year variation."
+      },
+      {
+        "en": "The modeled change retains the climate grid support."
+      },
+      {
+        "en": "The grid cell is at least as large as the area."
+      },
+      {
+        "en": "The reference, horizon windows and scenario pairing are provisional pending method review."
+      },
+      {
+        "en": "Equal weighting over a common model set per horizon. Small ensembles provide indicative estimates."
+      }
+    ],
+    "evidence_level": "E0",
+    "period": {
+      "start": "1995-01-01",
+      "end": "2054-12-31"
+    },
+    "zone": "osm-relation-348833",
+    "diagnostics": {
+      "n_models": 0,
+      "models": ""
+    },
+    "absence": {
+      "reason": "not_computed",
+      "detail": {
+        "en": "At least two common models and two scenarios are required."
+      }
+    },
+    "id": "r-s3-uncertainty",
+    "analysis": "20261114-010129-d31ee4",
+    "step": "s3",
+    "fingerprint": "659753125fd2d3f706084642e2cc5f111540c6bc3d3d6ec8ec4fe644c566f9ee"
+  }
+]

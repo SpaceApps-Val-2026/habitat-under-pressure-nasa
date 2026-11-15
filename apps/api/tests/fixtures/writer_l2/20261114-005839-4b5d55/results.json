@@ -1,0 +1,230 @@
+[
+  {
+    "type": "series",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 246,
+        "items": [
+          "LC08_L2SP_199033_20190602_02_T1",
+          "LC08_L2SP_198033_20190611_02_T1",
+          "LC08_L2SP_199033_20190618_02_T1",
+          "LC08_L2SP_199033_20190704_02_T1",
+          "LC08_L2SP_198033_20190713_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "area": "reference",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2019-06-01",
+      "end": "2025-09-30"
+    },
+    "zone": "osm-relation-342678-reference-3km",
+    "unit": "1",
+    "series": [
+      {
+        "t": "2019-06-02",
+        "v": 0.27501
+      },
+      {
+        "t": "2019-06-11",
+        "v": 0.24981
+      }
+    ],
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 59356.0
+    },
+    "coverage": {
+      "valid_pct": 98.2,
+      "n_dates": 246
+    },
+    "id": "r-s2-series",
+    "analysis": "20261114-005839-4b5d55",
+    "step": "s2",
+    "fingerprint": "e316b1357464e6ded041b57761e9086728551b8cadd99ab56492e7874ce3ddcd"
+  },
+  {
+    "type": "series",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 252,
+        "items": [
+          "LC08_L2SP_199033_20190602_02_T1",
+          "LC08_L2SP_198033_20190611_02_T1",
+          "LC08_L2SP_199033_20190618_02_T1",
+          "LC08_L2SP_198033_20190627_02_T1",
+          "LC08_L2SP_199033_20190704_02_T1"
+        ]
+      }
+    ],
+    "evidence_level": "E0",
+    "method": {
+      "operation": "read_series",
+      "version": "1.0",
+      "params": {
+        "variable": "ndvi",
+        "area": "zone",
+        "aggregate": "none",
+        "statistic": "mean",
+        "min_count": 1,
+        "reference_km": 3,
+        "ring_km": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "period": {
+      "start": "2019-06-01",
+      "end": "2025-09-30"
+    },
+    "zone": "osm-relation-342678",
+    "unit": "1",
+    "series": [
+      {
+        "t": "2019-06-02",
+        "v": 0.22155
+      },
+      {
+        "t": "2019-06-11",
+        "v": 0.21207
+      }
+    ],
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 4573.0
+    },
+    "coverage": {
+      "valid_pct": 99.2,
+      "n_dates": 252
+    },
+    "id": "r-s1-series",
+    "analysis": "20261114-005839-4b5d55",
+    "step": "s1",
+    "fingerprint": "dc836eb9fa6691eb54591c0fa21c35ca7eec0cd925260eb8bf1c219ea256e532"
+  },
+  {
+    "type": "value",
+    "variable": "ndvi",
+    "data_class": "measured",
+    "unit": "1",
+    "sources": [
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 252,
+        "items": [
+          "LC08_L2SP_199033_20190602_02_T1",
+          "LC08_L2SP_198033_20190611_02_T1",
+          "LC08_L2SP_199033_20190618_02_T1",
+          "LC08_L2SP_198033_20190627_02_T1",
+          "LC08_L2SP_199033_20190704_02_T1"
+        ]
+      },
+      {
+        "source": "landsat-c2-l2",
+        "product": "landsat-c2-l2",
+        "version": "02",
+        "url": "https://planetarycomputer.microsoft.com/api/stac/v1/collections/landsat-c2-l2",
+        "license": "Public domain; courtesy of the U.S. Geological Survey",
+        "n_items": 246,
+        "items": [
+          "LC08_L2SP_199033_20190602_02_T1",
+          "LC08_L2SP_198033_20190611_02_T1",
+          "LC08_L2SP_199033_20190618_02_T1",
+          "LC08_L2SP_199033_20190704_02_T1",
+          "LC08_L2SP_198033_20190713_02_T1"
+        ]
+      }
+    ],
+    "method": {
+      "operation": "baci_contrast",
+      "version": "1.0",
+      "params": {
+        "min_dates": 3,
+        "confidence": 0.95,
+        "resamples": 2000,
+        "alpha": 0.05,
+        "variable": "ndvi",
+        "before": [
+          2019,
+          2021
+        ],
+        "after": [
+          2023,
+          2025
+        ],
+        "reference_km": 3
+      }
+    },
+    "support": {
+      "resolution_m": 30,
+      "since": 2013,
+      "revisit_days": 8,
+      "cells": 4573.0
+    },
+    "limits": [],
+    "evidence_level": "E2",
+    "period": {
+      "start": "2019-06-01",
+      "end": "2025-09-30"
+    },
+    "zone": "osm-relation-342678",
+    "diagnostics": {
+      "n_dates": 194,
+      "pre_trend_control": false,
+      "interval_crosses_zero": false
+    },
+    "interval": {
+      "level": 0.95,
+      "low": -0.017185374999999992,
+      "high": -0.0044345000000000105,
+      "method": "Paired-date bootstrap"
+    },
+    "direction_assertable": true,
+    "value": -0.010534999999999989,
+    "id": "r-s3-contrast",
+    "analysis": "20261114-005839-4b5d55",
+    "step": "s3",
+    "fingerprint": "cae8b838258bc278959986ba4130a27a846da1269703550057dcfba71c1bfc3e"
+  }
+]
