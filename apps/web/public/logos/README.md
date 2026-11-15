@@ -7,8 +7,11 @@ each file are in [SOURCES.md](SOURCES.md).
 
 These logos belong to their owners and are not covered by the project's Apache 2.0 licence.
 
-**Team decision, 15 November 2026: all are shown in the footer; any is withdrawn if its owner asks.** That is
-why `held` is empty. Withdrawing one means moving its entry from `show` to `held`.
+**In this public repository** the logos whose owner asks for permission are under `held`, and their files are
+not distributed here: the footer writes those names as text. `show` keeps the Space Apps logo and the three
+whose rule is unclear (EOX, Generalitat Valenciana, ICV); any is withdrawn if its owner asks. To show a held
+logo, obtain the permission its owner requires (column “Usage rule” of SOURCES.md), add its file to this folder
+and move its entry from `held` to `show`.
 
 ## `logos.json`
 

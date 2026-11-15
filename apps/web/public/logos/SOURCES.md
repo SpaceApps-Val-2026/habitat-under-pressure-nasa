@@ -1,6 +1,8 @@
 # Origin and usage rules of the logos
 
-**Team decision, 15 November 2026: all are shown in the footer; any is withdrawn if its owner asks.**
+**In this public repository, only the files marked “Yes” or “Unclear” below are distributed and shown.** Those
+marked “Needs permission” are listed under `held` in `logos.json`, their files are not included, and the footer
+writes their names as text. The table keeps every row as the record of what was read.
 
 Downloaded on **2026-11-15** with plain GET requests and a generic user agent; no registration, form or
 acceptance of terms. “Can it be shown?” is a reading of the owner's rule, not a permission. The logos belong

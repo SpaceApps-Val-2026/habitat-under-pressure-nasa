@@ -10,6 +10,9 @@ from, and every sentence says how far its evidence reaches.
 
 Live demo: <https://hup-711350491618.europe-west1.run.app>
 
+Promo video (30 seconds) and pitch deck (PDF, English and Spanish):
+<https://drive.google.com/drive/folders/1nKLaXppCkk0NtVHP1669h_HefCfB-Acg>
+
 ![The cover of the application: a question box next to a globe with reference places](docs/img/cover.png)
 
 ## What it does
