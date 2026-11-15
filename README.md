@@ -36,6 +36,12 @@ Promo video (30 seconds) and pitch deck (PDF, English and Spanish):
 temperature for Morella, 1981 to 2025. Satellite view: Sentinel-2 cloudless by EOX (contains modified
 Copernicus Sentinel data 2016).*
 
+![A before/after contrast against a control area: land surface temperature and vegetation greenness, each with its interval, data class and evidence level](docs/img/article-contrast.png)
+
+*A before/after contrast against a control area, asked in Spanish about a construction site in Sagunt. Each
+figure carries its interval, its class (measured) and its evidence level: a coincidence in time and place,
+which the answer does not present as a cause.*
+
 ## The rules the code enforces
 
 - **The language model writes no figures.** It is the voice that phrases the answer. Every number comes from
