@@ -6,7 +6,7 @@ Habitat Under Pressure was built by a team of five in València for the NASA Spa
 | Person | Background | Main work |
 | --- | --- | --- |
 | Iban Borràs Serret | Product, web and presentation | Product and architecture; coordination; the web app and its design system; the engine (assistant and executor); presentation |
-| Sara Fernández Ouanit | Law; specialising in space agencies and the regulations around them | Data sources and the source catalogue; licences and attributions; pre-download and readers of the sources; legal norms and their quotes |
+| Sara Fernández Ouanit | Law, specialising in space regulation and Earth observation data | Data sources and the source catalogue; pre-download and the data readers (satellite, population, water, land); measuring the claims on real data; QA of readers and catalogue; licences, legal norms and their quotes |
 | Nadezhda Kuznetsova | Bioindustrial engineering; specialising in environmental monitoring and control | Ecological relationships; evidence chains and their references; resource-use coefficients |
 | Guillem Reverter Falcó | Mathematics | Statistical methods: trends, scenarios and uncertainty; analysis operations; the openings of the reports; deployment on Google Cloud Run |
 | Lara Ruiz Casado | Artificial intelligence, statistics and in-depth data analysis | Team owner. Review of the exchange contracts and test questions for the assistant; reviewer rules; fixes in the API and the web app; QA suites |
