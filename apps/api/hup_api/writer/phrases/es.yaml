@@ -81,6 +81,116 @@
     "institutional": "Valor obtenido: {value}. Intervalo: {interval}.",
     "scientific": "Estimación: {value}. Intervalo declarado: {interval}."
   },
+  "state_answer": {
+    "population_in_hot_cells": {
+      "headline": "Personas que viven en celdas calientes en {place}",
+      "lead": "Unas {latest} personas en {place} vivían en celdas calientes en {latest_year}, el último verano observado; entre {first_year} y {last_year} la media fue de {mean} y el máximo de {peak} ({peak_year}).",
+      "meaning": "La cifra cuenta a las personas que viven en píxeles de satélite cuya temperatura de superficie en verano alcanza {threshold} °C. Es una aproximación: la temperatura se mide desde satélite y la población se estima celda a celda.",
+      "meaning_no_threshold": "La cifra cuenta a las personas que viven en píxeles de satélite con una temperatura de superficie alta en verano. Es una aproximación: la temperatura se mide desde satélite y la población se estima celda a celda.",
+      "limit": "La cifra varía mucho de un verano a otro, de {low} ({low_year}) a {high} ({high_year}); no es una tendencia."
+    }
+  },
+  "answer": {
+    "and": "y",
+    "reasons": {
+      "no_coverage": "las fuentes del catálogo no cubren este lugar o este periodo",
+      "insufficient_qa": "no hay suficientes datos comparables y de calidad para calcularlo",
+      "source_unreachable": "no se pudo leer la fuente en este momento",
+      "needs_package": "los datos de esta fuente todavía no están preparados para este lugar",
+      "not_computed": "el cálculo no se pudo completar con los datos disponibles"
+    },
+    "whatif": {
+      "assumed": "{label} en {place}: unos {value} {unit} con el tamaño supuesto en la pregunta ({quantity} {per}), dentro de un rango de {low} a {high} {range_unit}.",
+      "typical": "{label} en {place}: unos {value} {unit} para un tamaño de ejemplo publicado ({quantity} {per}), dentro de un rango de {low} a {high} {range_unit}.",
+      "input": "{label} en {place}: unos {value} {unit} para la cantidad calculada en este análisis ({quantity} {per}), dentro de un rango de {low} a {high} {range_unit}.",
+      "per_unit": "{label} en {place}: unos {value} {unit} por cada {per}, dentro de un rango de {low} a {high} {range_unit}.",
+      "more": "{label}: unos {value} {unit}, de {low} a {high} {range_unit}.",
+      "absent": "{label}: no se ha calculado; {reason}.",
+      "limit": "Son estimaciones con coeficientes publicados para instalaciones parecidas, no medidas en el lugar."
+    },
+    "state": {
+      "one": "{label} en {place}, {when}: {value} {unit}.",
+      "series": "{label} en {place}, {period}: {series}.",
+      "series_no_period": "{label} en {place}: {series}.",
+      "latest": "Última lectura ({when}): {value} {unit}.",
+      "limit": "Es una lectura del periodo consultado: no dice cómo seguirá ni qué la explica."
+    },
+    "trend": {
+      "detected": "{label} en {place}: {verb} a un ritmo de {value} {unit} ({interval}), {period}.",
+      "unclear": "{label} en {place}, {period}: los datos no permiten afirmar una dirección; el ritmo estimado es de {value} {unit} ({interval}), un intervalo que incluye el cero.",
+      "estimate": "{label} en {place}, {period}: el ritmo estimado es de {value} {unit} ({interval}).",
+      "statistic": "Prueba de dirección: {statistic}.",
+      "limit": "El ritmo es la media de todo el periodo: no dice qué lo explica ni si seguirá igual.",
+      "limit_unclear": "Que no se pueda afirmar una dirección no significa que la variable no haya cambiado."
+    },
+    "event": {
+      "usual_day": "En {place}, el día más lluvioso del episodio, el {day}, dejó {event_value} mm de media en la zona; un día así es el máximo de un año, de media, una vez cada {value} años ({interval}), según los {record} años anteriores.",
+      "rare_day": "En {place}, el día más lluvioso del episodio, el {day}, dejó {event_value} mm de media en la zona: es más raro de lo que permiten estimar {record} años de registro, así que no se le asigna un periodo de retorno.",
+      "usual_year": "En {place}, un año como {year} se espera, de media, una vez cada {value} años ({interval}), según los {record} años anteriores.",
+      "rare_year": "En {place}, {year} es más raro de lo que permiten estimar {record} años de registro, así que no se le asigna un periodo de retorno.",
+      "percentile": "En {place}, la lluvia de {window} quedó en el percentil {value} de las ventanas comparables del registro.",
+      "anomaly": "La diferencia frente a ventanas equivalentes es de {anomaly} {unit}.",
+      "limit": "La comparación es con el propio registro del lugar: no dice cuándo se repetirá."
+    },
+    "scenario": {
+      "level_range": "Hacia {horizon} ({window}), la mediana de los modelos sitúa {label} en {place} entre {low_v} {unit} ({low_s}) y {high_v} {unit} ({high_s}), según el escenario; entre modelos, de {low} a {high} {unit}.",
+      "level_one": "Hacia {horizon} ({window}), la mediana de los modelos sitúa {label} en {place} en {low_v} {unit} con {low_s}; entre modelos, de {low} a {high} {unit}.",
+      "change_range": "Hacia {horizon} ({window}), los modelos dan para {label} en {place} un cambio de {low_v} {unit} ({low_s}) a {high_v} {unit} ({high_s}) respecto a {reference}, según el escenario (mediana entre modelos); entre modelos, de {low} a {high} {unit}.",
+      "change_one": "Hacia {horizon} ({window}), los modelos dan para {label} en {place} un cambio de {low_v} {unit} con {low_s} respecto a {reference} (mediana entre modelos); entre modelos, de {low} a {high} {unit}.",
+      "limit": "Es una proyección de modelos para un periodo, no una predicción de un año concreto."
+    },
+    "impact": {
+      "detected": "En {place}, el cambio de {label} es {verb} que en su entorno, de {value} {unit} ({interval}), al comparar {method}.",
+      "unclear": "En {place}, la diferencia entre el cambio de {label} y el de su entorno es de {value} {unit} ({interval}), al comparar {method}; el intervalo es compatible con un cambio parecido en los dos."
+    },
+    "exposure": {
+      "first": "En {place}, {label}: se estiman {value} {unit}.",
+      "more": "Además, {label}: {value} {unit}.",
+      "limit": "La cifra cruza la población estimada con la zona cartografiada en un episodio; no dice cuántas personas sufrieron daños."
+    },
+    "missing": {
+      "lead": "Delfos no ha podido obtener {what} en {place}: {reason}.",
+      "what": {
+        "whatif": "la estimación de {label}",
+        "state": "{label}",
+        "trend": "el ritmo de cambio de {label}",
+        "event": "la comparación del episodio con el registro de {label}",
+        "scenario": "la proyección de {label}",
+        "impact": "el contraste de {label} con su entorno",
+        "exposure": "la población expuesta",
+        "scan": "la revisión de indicadores",
+        "other": "{label}"
+      },
+      "item": "{label} ({period})",
+      "shown": "El informe sí muestra {items}.",
+      "nothing": "El informe recoge qué fuentes se consultaron y dónde termina la evidencia.",
+      "limit": "Que falte un dato no significa que su valor sea cero ni que no haya pasado nada."
+    },
+    "headline": {
+      "whatif": "{label} en {place}, según coeficientes publicados",
+      "state": "{label} en {place}",
+      "trend": "{label} en {place}: ritmo de cambio",
+      "event": "El episodio de {place} frente a su registro",
+      "scenario": "{label} en {place}, según los modelos",
+      "impact": "{label} en {place} frente a su entorno",
+      "exposure": "Población expuesta en {place}",
+      "scan": "Indicadores de {place}",
+      "missing": "Falta el dato principal para responder sobre {place}",
+      "other": "Lo que muestran los datos de {place}"
+    },
+    "meaning": {
+      "whatif": "La cifra multiplica un tamaño por coeficientes unitarios publicados; el rango recoge la dispersión de esos coeficientes.",
+      "state": "Las cifras salen de la serie leída para el lugar y el periodo; el gráfico muestra cada valor.",
+      "trend": "El ritmo resume el cambio medio a lo largo del periodo, con su intervalo.",
+      "event": "El episodio se compara con los años anteriores del mismo lugar.",
+      "scenario": "La mediana y el rango entre modelos muestran qué dan las proyecciones en cada escenario.",
+      "impact": "La estimación compara el cambio en la zona con el de su entorno en las mismas ventanas.",
+      "exposure": "La cifra cuenta a la población estimada dentro de la zona cartografiada.",
+      "scan": "La matriz muestra qué indicadores tienen una dirección respaldada y cuáles no.",
+      "missing": "El informe deja constancia del dato que falta y de su motivo, junto con lo que sí se pudo leer.",
+      "other": "El periodo, la resolución y las fuentes delimitan el alcance del resultado."
+    }
+  },
   "design_opening": {
     "scan_detected": {
       "headline": "El escaneo detecta cambios con una dirección clara",

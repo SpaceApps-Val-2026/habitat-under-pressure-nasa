@@ -37,7 +37,14 @@ export function useAsk({
 } = {}) {
   const { t, language } = useI18n();
   const navigate = useNavigate();
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [phase, setPhaseState] = useState<Phase>("idle");
+  // One question at a time: Enter in the box, or a second click, while Delfos reads is ignored. A ref, because
+  // two key presses can arrive before the re-render that would disable anything.
+  const busy = useRef(false);
+  const setPhase = (next: Phase) => {
+    busy.current = next !== "idle";
+    setPhaseState(next);
+  };
   const [clarification, setClarification] = useState<Clarification | null>(null);
   const [notPossible, setNotPossible] = useState<NotPossible | null>(null);
   const [failureText, setFailureText] = useState<string | null>(null);
@@ -49,7 +56,7 @@ export function useAsk({
   // A question goes all the way: plan, then the run (or the report that already answers it). It stops only
   // when Delfos asks which place (here, in the page), cannot answer, or answers with an article.
   async function send(text: string, chosen?: PlanCandidate | string) {
-    if (!text) return;
+    if (!text || busy.current) return;
     setPhase("planning");
     setFailureText(null);
     setNotPossible(null);

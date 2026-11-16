@@ -328,6 +328,13 @@
       "name": "Descrito",
       "note": "La pregunta y el plan están descritos; no se ha medido nada."
     },
+    "E0series": {
+      "name": "Valores de la serie",
+      "note": "Los valores se leen de su fuente, sin que se establezca tendencia, comparación ni causa."
+    },
+    "E0approximated": {
+      "note": "Los valores combinan mediciones por satélite con población estimada: una aproximación, no un recuento. No se establece tendencia, comparación ni causa."
+    },
     "E1": {
       "name": "Tendencia",
       "note": "Un cambio en el tiempo, sin un área de comparación."

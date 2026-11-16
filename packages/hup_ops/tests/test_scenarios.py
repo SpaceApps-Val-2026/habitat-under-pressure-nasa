@@ -28,6 +28,25 @@ def test_delta_and_variance():
     assert split["absence"]["reason"] == "not_computed"
 
 
+def test_models_above_the_ipcc_likely_sensitivity_are_named():
+    # Guillem, 14 and 15 Nov (T5 of A8): by equilibrium sensitivity they are two, and the fan says which entered
+    def run(models):
+        cube = {"series": [
+            row for model in models
+            for row in ({"t": "2000", "v": 100, "model": model, "scenario": "historical"},
+                        {"t": "2030", "v": 101, "model": model, "scenario": "ssp245"})
+        ]}
+        delta = REGISTRY["climate_delta"].fn(PARAMS, {"read": [cube, {"series": [{"t": "2000", "v": 10}]}]}, CTX)
+        return [limit for limit in delta["delta"]["limits"] if "IPCC" in limit["en"]]
+
+    assert run(["MPI-ESM1-2-HR", "NorESM2-MM"]) == []
+    (limit,) = run(["ACCESS-CM2", "EC-Earth3", "MPI-ESM1-2-HR", "MRI-ESM2-0", "NorESM2-MM"])
+    assert limit["en"].startswith("2 of the 5 models (ACCESS-CM2 and EC-Earth3)")
+    assert limit["es"].startswith("2 de los 5 modelos (ACCESS-CM2 y EC-Earth3)")
+    (limit,) = run(["EC-Earth3", "MRI-ESM2-0"])
+    assert limit["en"].startswith("1 of the 2 models (EC-Earth3)")
+
+
 def test_delta_bounds_are_the_lowest_and_highest_model():
     # Guillem, 14 Nov (T1 of A8): the fan goes from the lowest to the highest model, not between quantiles
     changes = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 10}

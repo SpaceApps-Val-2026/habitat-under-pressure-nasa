@@ -81,6 +81,116 @@
     "institutional": "Reported value: {value}. Interval: {interval}.",
     "scientific": "Estimate: {value}. Reported interval: {interval}."
   },
+  "state_answer": {
+    "population_in_hot_cells": {
+      "headline": "People living in hot cells in {place}",
+      "lead": "About {latest} people in {place} lived in hot cells in {latest_year}, the latest summer observed; over {first_year}–{last_year} the average was {mean} and the peak {peak} ({peak_year}).",
+      "meaning": "The figure counts the people who live in satellite pixels whose summer surface temperature reaches {threshold} °C. It is an approximation: the temperature is measured from satellite, the population is estimated cell by cell.",
+      "meaning_no_threshold": "The figure counts the people who live in satellite pixels with a hot summer surface temperature. It is an approximation: the temperature is measured from satellite, the population is estimated cell by cell.",
+      "limit": "The figure varies a lot from summer to summer, from {low} ({low_year}) to {high} ({high_year}); it is not a trend."
+    }
+  },
+  "answer": {
+    "and": "and",
+    "reasons": {
+      "no_coverage": "the catalogue sources do not cover this place or period",
+      "insufficient_qa": "there are not enough comparable, quality-checked data to compute it",
+      "source_unreachable": "the source could not be read at this time",
+      "needs_package": "the data from this source are not yet prepared for this place",
+      "not_computed": "the calculation could not be completed with the available data"
+    },
+    "whatif": {
+      "assumed": "{label} in {place}: about {value} {unit} with the size assumed in the question ({quantity} {per}), within a range of {low} to {high} {range_unit}.",
+      "typical": "{label} in {place}: about {value} {unit} for a published example size ({quantity} {per}), within a range of {low} to {high} {range_unit}.",
+      "input": "{label} in {place}: about {value} {unit} for the quantity computed in this analysis ({quantity} {per}), within a range of {low} to {high} {range_unit}.",
+      "per_unit": "{label} in {place}: about {value} {unit} for each {per}, within a range of {low} to {high} {range_unit}.",
+      "more": "{label}: about {value} {unit}, from {low} to {high} {range_unit}.",
+      "absent": "{label}: not computed; {reason}.",
+      "limit": "These are estimates from published coefficients for similar facilities, not measurements at the site."
+    },
+    "state": {
+      "one": "{label} in {place}, {when}: {value} {unit}.",
+      "series": "{label} in {place}, {period}: {series}.",
+      "series_no_period": "{label} in {place}: {series}.",
+      "latest": "Latest reading ({when}): {value} {unit}.",
+      "limit": "It is a reading of the period asked about: it does not say how it will go on or what explains it."
+    },
+    "trend": {
+      "detected": "{label} in {place}: it {verb} at a rate of {value} {unit} ({interval}), {period}.",
+      "unclear": "{label} in {place}, {period}: the data do not support a direction; the estimated rate is {value} {unit} ({interval}), an interval that includes zero.",
+      "estimate": "{label} in {place}, {period}: the estimated rate is {value} {unit} ({interval}).",
+      "statistic": "Direction test: {statistic}.",
+      "limit": "The rate is the average over the whole period: it does not say what explains it or whether it will continue.",
+      "limit_unclear": "Not being able to state a direction does not mean the variable stayed the same."
+    },
+    "event": {
+      "usual_day": "In {place}, the wettest day of the episode, {day}, brought {event_value} mm on average over the area; a day like that is the maximum of a year, on average, once every {value} years ({interval}), going by the {record} years before it.",
+      "rare_day": "In {place}, the wettest day of the episode, {day}, brought {event_value} mm on average over the area: it is rarer than {record} years of record can estimate, so no return period is given.",
+      "usual_year": "In {place}, a year like {year} is expected, on average, once every {value} years ({interval}), going by the {record} years before it.",
+      "rare_year": "In {place}, {year} is rarer than {record} years of record can estimate, so no return period is given.",
+      "percentile": "In {place}, rainfall in {window} ranked at the {value} percentile of comparable windows in the record.",
+      "anomaly": "The difference from equivalent windows is {anomaly} {unit}.",
+      "limit": "The comparison is with the record of the place itself: it does not say when it will happen again."
+    },
+    "scenario": {
+      "level_range": "By {horizon} ({window}), the model median puts {label} in {place} between {low_v} {unit} ({low_s}) and {high_v} {unit} ({high_s}), depending on the scenario; across models, from {low} to {high} {unit}.",
+      "level_one": "By {horizon} ({window}), the model median puts {label} in {place} at {low_v} {unit} under {low_s}; across models, from {low} to {high} {unit}.",
+      "change_range": "By {horizon} ({window}), the models give {label} in {place} a change of {low_v} {unit} ({low_s}) to {high_v} {unit} ({high_s}) relative to {reference}, depending on the scenario (model median); across models, from {low} to {high} {unit}.",
+      "change_one": "By {horizon} ({window}), the models give {label} in {place} a change of {low_v} {unit} under {low_s} relative to {reference} (model median); across models, from {low} to {high} {unit}.",
+      "limit": "It is a model projection for a period, not a forecast for a given year."
+    },
+    "impact": {
+      "detected": "In {place}, the change in {label} is {verb} than in its surroundings by {value} {unit} ({interval}), comparing {method}.",
+      "unclear": "In {place}, the difference between the change in {label} and in its surroundings is {value} {unit} ({interval}), comparing {method}; the interval is compatible with a similar change in both."
+    },
+    "exposure": {
+      "first": "In {place}, {label}: an estimated {value} {unit}.",
+      "more": "Also, {label}: {value} {unit}.",
+      "limit": "The figure overlays the estimated population on the area mapped for one episode; it does not say how many people suffered damage."
+    },
+    "missing": {
+      "lead": "Delfos could not obtain {what} for {place}: {reason}.",
+      "what": {
+        "whatif": "the estimate of {label}",
+        "state": "{label}",
+        "trend": "the rate of change of {label}",
+        "event": "the comparison of the episode with the record of {label}",
+        "scenario": "the projection of {label}",
+        "impact": "the contrast of {label} with its surroundings",
+        "exposure": "the exposed population",
+        "scan": "the indicator review",
+        "other": "{label}"
+      },
+      "item": "{label} ({period})",
+      "shown": "The report does show {items}.",
+      "nothing": "The report records which sources were consulted and where the evidence ends.",
+      "limit": "A missing figure does not mean its value is zero or that nothing happened."
+    },
+    "headline": {
+      "whatif": "{label} in {place}, from published coefficients",
+      "state": "{label} in {place}",
+      "trend": "{label} in {place}: rate of change",
+      "event": "The episode in {place} against its record",
+      "scenario": "{label} in {place}, according to the models",
+      "impact": "{label} in {place} against its surroundings",
+      "exposure": "Exposed population in {place}",
+      "scan": "Indicators for {place}",
+      "missing": "The main figure to answer about {place} is missing",
+      "other": "What the data show for {place}"
+    },
+    "meaning": {
+      "whatif": "The figure multiplies a size by published unit coefficients; the range reflects the spread of those coefficients.",
+      "state": "The figures come from the series read for the place and period; the chart shows each value.",
+      "trend": "The rate summarises the average change over the period, with its interval.",
+      "event": "The episode is compared with earlier years at the same place.",
+      "scenario": "The median and the range across models show what the projections give under each scenario.",
+      "impact": "The estimate compares the change in the area with the change in its surroundings over the same windows.",
+      "exposure": "The figure counts the estimated population inside the mapped area.",
+      "scan": "The matrix shows which indicators have a supported direction and which do not.",
+      "missing": "The report records the missing figure and its reason, together with what could be read.",
+      "other": "The period, resolution and sources describe where the result applies."
+    }
+  },
   "design_opening": {
     "scan_detected": {
       "headline": "The scan detects a clear direction in the data",

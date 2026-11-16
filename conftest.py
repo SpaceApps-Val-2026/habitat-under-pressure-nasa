@@ -7,7 +7,9 @@ needs a provider sets it itself and uses a stand-in instead of the network.
 import pytest
 
 BLANK = ("OPENAI_API_KEY", "ANTHROPIC_API_KEY", "TYPESAFE_API_KEY", "DISCORD_WEBHOOK_AGENTE",
-         "HUP_LLM_MODEL_PLAN", "HUP_LLM_MODEL_TEXT", "HUP_LLM_MODEL_SMALL")
+         "HUP_LLM_MODEL_PLAN", "HUP_LLM_MODEL_TEXT", "HUP_LLM_MODEL_SMALL",
+         # The limits of a public URL: a .env that sets them would answer 429 to the tests.
+         "HUP_RATE_LIMIT_PER_MINUTE", "HUP_MAX_RUNNING_ANALYSES", "HUP_LLM_DAILY_BUDGET_USD")
 
 
 @pytest.fixture(autouse=True)

@@ -328,6 +328,13 @@
       "name": "Described",
       "note": "The question and the plan are described; nothing has been measured."
     },
+    "E0series": {
+      "name": "Series values",
+      "note": "The values are read from their source, with no trend, comparison or cause established."
+    },
+    "E0approximated": {
+      "note": "The values combine satellite measurements with estimated population: an approximation, not a count. No trend, comparison or cause is established."
+    },
     "E1": {
       "name": "Trend",
       "note": "A change over time, without a comparison area."

@@ -1,7 +1,7 @@
 """Evidence-based journalistic openings when the provider supplies no approved piece."""
 
-from . import CONTRAST_LIMIT, REPORT_END, _phrases, finding_text, place_label, pretrend_limit
-from .render import MONTHS, number, state_points
+from . import CONTRAST_LIMIT, REPORT_END, SLOT, _phrases, finding_text, place_label, pretrend_limit
+from .render import MONTHS, number, resource_row, state_points
 
 _MILESTONE_VARIABLES = {
     "precipitation": {"en": "monthly rainfall", "es": "lluvia mensual"},
@@ -373,3 +373,457 @@ def fallback(plan, results, findings, catalog, eligible):
     if any(r["id"] == primary["id"] for r in eligible.get("ScanMatrix", ())):
         piece["featured"] = primary["id"]
     return {"journalistic": piece}
+
+
+def state_answer(plan, results, piece):
+    """Answer the question in the first sentence for the population living in hot cells: the latest summer, the
+    average and the peak with its year, all read from the series, plus its range as a limit (not a trend, no cause).
+    Returns a copy of the journalistic `piece` with its lead, meaning and limits replaced, or None when it does not
+    apply (another variable or design, an absence, or fewer than two yearly values)."""
+    if plan.get("design") != "state":
+        return None
+    result = next((r for r in sorted(results, key=lambda r: r["id"])
+                   if r.get("variable") == "population_in_hot_cells" and r["method"]["operation"] == "read_series"
+                   and r.get("sources") and "absence" not in r), None)
+    points = state_points(result) if result else []
+    if len(points) < 2:
+        return None
+    from statistics import fmean
+
+    peak_year, peak = max(points, key=lambda point: (point[1], -int(point[0][:4])))
+    low_year, low = min(points, key=lambda point: (point[1], int(point[0][:4])))
+    values = {"latest_year": points[-1][0][:4], "first_year": points[0][0][:4], "last_year": points[-1][0][:4],
+              "peak_year": peak_year[:4], "high_year": peak_year[:4], "low_year": low_year[:4],
+              "place": place_label(plan["zone"])}
+    threshold = (result.get("diagnostics") or {}).get("threshold_c")
+    answered = dict(piece, results=[result["id"], *(rid for rid in piece.get("results", []) if rid != result["id"])])
+    for field in ("lead", "meaning", "cannot_say"):
+        answered[field] = dict(piece.get(field) or {})
+    for lang in ("en", "es"):
+        phrases = _phrases(lang)["state_answer"]["population_in_hot_cells"]
+        figures = {"latest": number(points[-1][1], lang), "mean": number(fmean(v for _, v in points), lang),
+                   "peak": number(peak, lang), "low": number(low, lang), "high": number(peak, lang)}
+        slots = {**values, **figures, "threshold": number(threshold, lang, 2) if type(threshold) in (int, float)
+                 else None}
+        answered["lead"][lang] = phrases["lead"].format(**slots)
+        answered["meaning"][lang] = phrases["meaning" if slots["threshold"] else "meaning_no_threshold"].format(**slots)
+        limit = phrases["limit"].format(**slots)
+        kept = (piece.get("cannot_say") or {}).get(lang, "")
+        answered["cannot_say"][lang] = f"{kept} {limit}".strip()
+    return answered
+
+
+# The opening answers the question in its first sentence, for every design (phase 1). Each design reads its main
+# result; if it is absent, the opening says what is missing, why, and what the report does show. Wording comes
+# from `answer` in the phrase files. A figure that is a result field goes in as a placeholder; a figure the
+# contract has no placeholder for (a point of a series, a model median, the range of an estimate) is written as
+# `state_answer` does, read from the result, and left out of the copy that `validate_text` checks.
+
+_PRIMARY = {
+    "whatif": {"resource_estimate"}, "state": {"read_series"}, "trend": {"trend"},
+    "event": {"return_level", "rain_extreme", "same_date_anomaly"}, "scenario": {"climate_delta"},
+    "impact": {"baci_contrast"}, "exposure": {"exposure"}, "scan": {"scan_trends"},
+}
+_GENERIC = {  # what _general() says when it has nothing to say: the answer replaces it
+    "headline": ("What the data show about", "Qué dicen los datos sobre", "The available data leave this question",
+                 "Los datos disponibles dejan abierta", "The data show no clear direction",
+                 "Los datos no muestran una dirección clara"),
+    "lead": ("The report brings together the evidence", "El informe reúne la evidencia",
+             "The analysis yielded no result", "El análisis no produjo un resultado",
+             "The range of plausible trends includes", "El intervalo de tendencias plausibles incluye"),
+    "meaning": ("The period, resolution and sources describe", "El periodo, la resolución y las fuentes delimitan",
+                "The report records where the evidence", "El informe indica dónde termina",
+                "The available series can still be examined", "La serie disponible se puede consultar"),
+}
+
+
+def _generic(field, text):
+    return not text or text.startswith(_GENERIC[field])
+
+
+def _present(result):
+    return bool(result.get("sources")) and "absence" not in result
+
+
+def _slot(result, field):
+    return "{" + result["id"] + "." + field + "}"
+
+
+def _lower(label):
+    word = label.split(" ", 1)[0]
+    return label if len(word) > 1 and word.isupper() else label[:1].lower() + label[1:]
+
+
+def _capital(text):
+    return text[:1].upper() + text[1:]
+
+
+def _label(result, names, lang):
+    phrases = _phrases(lang)
+    params = result.get("method", {}).get("params", {})
+    if result["method"]["operation"] == "exposure" and params.get("category") in phrases["exposure_labels"]:
+        return _lower(phrases["exposure_labels"][params["category"]])
+    if result["method"]["operation"] == "resource_estimate" and (params.get("archetype") or {}).get("name"):
+        return _lower(params["archetype"]["name"].get(lang, params["archetype"]["name"].get("en", "")))
+    if result.get("variable") in phrases["labels"]:
+        return phrases["labels"][result["variable"]]
+    name = names.get(result.get("variable"), {})
+    return _lower(name.get(lang, name.get("en", ""))) or phrases["formats"]["indicator"].lower()
+
+
+def _unit(unit, lang):
+    return _phrases(lang)["units"].get(unit, unit or "")
+
+
+def _when(t, lang, *, yearly=False, monthly=False):
+    """A date of a series as a reader says it: the year, the month or the day."""
+    parts = [int(x) for x in t[:10].split("-")]
+    year, month, day = parts[0], (parts[1:2] or [1])[0], (parts[2:3] or [1])[0]
+    if yearly:
+        return str(year)
+    if monthly:
+        return f"{MONTHS[lang][month - 1]} de {year}" if lang == "es" else f"{MONTHS[lang][month - 1]} {year}"
+    name = MONTHS[lang][month - 1]
+    return f"{day} de {name} de {year}" if lang == "es" else f"{day} {name} {year}"
+
+
+def _say(lang, key, slots=(), **values):
+    """One sentence of `answer.<key>`. Values named in `slots` are result placeholders and stay in the checked copy;
+    the rest (place, labels, figures read from a result) are left out of it."""
+    template = _phrases(lang)["answer"]
+    for part in key.split("."):
+        template = template[part]
+    check = template.format(**{name: value if name in slots else "" for name, value in values.items()})
+    return template.format(**values), check
+
+
+def _by_order(results, operations):
+    from . import reading_order
+
+    return [r for r in sorted(results, key=reading_order) if r["method"]["operation"] in operations]
+
+
+def _whatif(plan, results, names, place):
+    estimates = sorted((r for r in _by_order(results, {"resource_estimate"}) if r.get("sources")),
+                       key=lambda r: not _present(r))  # what was estimated first, what was not after
+    first = next((r for r in estimates if _present(r) and resource_row(r) and "value" in r), None)
+    if first is None:
+        return None
+    lead = {}
+    for lang in ("en", "es"):
+        lines = []
+        for result in estimates:
+            label = _label(result, names, lang)
+            if not _present(result):
+                lines.append(_say(lang, "whatif.absent", label=_capital(label), reason=_reason(result, lang)))
+                continue
+            row = resource_row(result)
+            if not row or "value" not in result:
+                continue
+            unit = _unit(result["unit"], lang)
+            values = {"label": _capital(label), "place": place, "value": _slot(result, "value"),
+                      "unit": _slot(result, "unit"),
+                      "low": number(row["low"], lang), "high": number(row["high"], lang), "range_unit": unit,
+                      "quantity": number(row["quantity"], lang), "per": _unit(row["per"], lang)}
+            key = f"whatif.{row['basis']}" if result is first else "whatif.more"
+            lines.append(_say(lang, key, ("value", "unit"), **values))
+        lead[lang] = lines
+    ids = [r["id"] for r in estimates]
+    return {"ids": ids, "level": first.get("evidence_level", "E0"), "lead": lead, "subject": first}
+
+
+def _state(plan, results, names, place):
+    wanted = (plan.get("variables") or [None])[0]
+    series = [r for r in _by_order(results, {"read_series"}) if _present(r) and state_points(r) and r.get("unit")]
+    result = next((r for r in series if r["variable"] == wanted), None) or next(iter(series), None)
+    if result is None:
+        return None
+    points = state_points(result)
+    params = result["method"].get("params", {})
+    monthly = result["unit"].endswith("/month") or params.get("aggregate") == "month"
+    yearly = params.get("aggregate") == "year" or (len(points) > 1 and all(t[5:10] == "01-01" for t, _ in points))
+    lead = {}
+    for lang in ("en", "es"):
+        label = _capital(_label(result, names, lang))
+        t, v = points[-1]
+        latest = {"when": _when(t, lang, yearly=yearly, monthly=monthly), "value": number(v, lang),
+                  "unit": _unit(result["unit"].removesuffix("/month") if monthly else result["unit"], lang)}
+        if len(points) == 1:
+            lead[lang] = [_say(lang, "state.one", place=place, label=label, **latest)]
+            continue
+        key = "state.series" if "period" in result else "state.series_no_period"
+        lead[lang] = [_say(lang, key, ("series", "period"), place=place, label=label, series=_slot(result, "series"),
+                           period=_slot(result, "period") if "period" in result else ""),
+                      _say(lang, "state.latest", **latest)]
+    return {"ids": [result["id"]], "level": result.get("evidence_level", "E0"), "lead": lead, "subject": result}
+
+
+def _trend(plan, results, names, place):
+    result = next((r for r in _by_order(results, {"trend"}) if _present(r) and {"value", "interval"} <= r.keys()), None)
+    if result is None:
+        return None
+    level = result.get("evidence_level", "E0")
+    detected = result.get("direction_assertable") is True and level >= "E1" and result["value"] != 0
+    crosses = (result.get("diagnostics") or {}).get("interval_crosses_zero") is True or (
+        result["interval"]["low"] <= 0 <= result["interval"]["high"])
+    key = "trend.detected" if detected else ("trend.unclear" if crosses else "trend.estimate")
+    slots = ("value", "unit", "interval", "period", "statistic")
+    lead = {}
+    for lang in ("en", "es"):
+        values = {"place": place, "label": _capital(_label(result, names, lang)), "value": _slot(result, "value"),
+                  "unit": _slot(result, "unit"), "interval": _slot(result, "interval"),
+                  "period": _slot(result, "period") if "period" in result else "",
+                  "verb": _phrases(lang)["tendency"]["up" if result["value"] > 0 else "down"]}
+        lines = [_say(lang, key, slots, **values)]
+        if result.get("statistic") and detected:
+            lines.append(_say(lang, "trend.statistic", slots, statistic=_slot(result, "statistic")))
+        lead[lang] = lines
+    return {"ids": [result["id"]], "level": level, "lead": lead, "subject": result, "variant": key}
+
+
+def _event(plan, results, names, place):
+    from . import episode_day, rare_event
+
+    slots = ("value", "interval", "record", "event_value", "window", "anomaly", "unit")
+    episode = next((r for r in _by_order(results, {"return_level"}) if r.get("sources")
+                    and "event_year" in (r.get("diagnostics") or {})
+                    and "return_period_years" not in r["diagnostics"]), None)
+    lead, ids, subject = {"en": [], "es": []}, [], None
+    if episode is not None:
+        diagnostics, rare, day = episode["diagnostics"], rare_event(episode), episode_day(episode)
+        complete = rare or (_present(episode) and {"value", "interval"} <= episode.keys()
+                            and type(diagnostics.get("n_years")) is int)
+        if complete:
+            key = "event." + ("rare" if rare else "usual") + ("_day" if day else "_year")
+            for lang in lead:
+                values = {"place": place, "year": str(diagnostics["event_year"]), "record": _slot(episode, "record"),
+                          "day": _when(diagnostics["event_day"], lang) if day else "",
+                          "event_value": _slot(episode, "event_value") if day else ""}
+                if not rare:
+                    values.update(value=_slot(episode, "value"), interval=_slot(episode, "interval"))
+                lead[lang].append(_say(lang, key, slots, **values))
+            ids, subject = [episode["id"]], episode
+    extreme = next((r for r in _by_order(results, {"rain_extreme"}) if _present(r) and "value" in r), None)
+    if subject is None and extreme is not None:
+        params = extreme["method"].get("params", {})
+        window = _slot(extreme, "method") if params.get("months") and "year" in params else (
+            _slot(extreme, "period") if "period" in extreme else "")
+        anomaly = next((r for r in _by_order(results, {"same_date_anomaly"}) if _present(r) and "value" in r
+                        and r.get("unit")), None)
+        for lang in lead:
+            lead[lang].append(_say(lang, "event.percentile", slots, place=place, window=window,
+                                   value=_slot(extreme, "value")))
+            if anomaly:
+                lead[lang].append(_say(lang, "event.anomaly", slots, anomaly=_slot(anomaly, "value"),
+                                       unit=_slot(anomaly, "unit")))
+        ids, subject = [extreme["id"], *([anomaly["id"]] if anomaly else [])], extreme
+    if subject is None:
+        return None
+    return {"ids": ids, "level": subject.get("evidence_level", "E0"), "lead": lead, "subject": subject}
+
+
+def _ssp(name):
+    import re
+
+    found = re.fullmatch(r"ssp(\d)(\d)(\d)", name)
+    return f"SSP{found[1]}-{found[2]}.{found[3]}" if found else name
+
+
+def _scenario(plan, results, names, place):
+    from .render import _window, scenario_series
+
+    result = next((r for r in _by_order(results, {"climate_delta"}) if _present(r) and scenario_series(r)
+                   and r.get("unit")), None)
+    if result is None:
+        return None
+    points = scenario_series(result)
+    horizon = max({p["t"] for p in points}, key=lambda t: (len(t), t))
+    at = sorted((p for p in points if p["t"] == horizon), key=lambda p: p["v"])
+    params = result["method"].get("params", {})
+    change = params.get("output") == "change"
+    window = params.get("windows", {}).get(horizon)
+    reference = params.get("reference", [1995, 2014])
+    lead = {}
+    for lang in ("en", "es"):
+        def figure(value, lang=lang):
+            rendered = number(value, lang)
+            return "+" + rendered if change and value > 0 else rendered
+
+        values = {"place": place, "label": _label(result, names, lang), "horizon": horizon,
+                  "window": _window(window, lang) if window else horizon, "unit": _unit(result["unit"], lang),
+                  "low": figure(min(p["low"] for p in at)), "high": figure(max(p["high"] for p in at)),
+                  "low_v": figure(at[0]["v"]), "high_v": figure(at[-1]["v"]),
+                  "low_s": _ssp(at[0]["scenario"]), "high_s": _ssp(at[-1]["scenario"]),
+                  "reference": f"{reference[0]}–{reference[1]}"}
+        key = "scenario." + ("change" if change else "level") + ("_one" if len(at) == 1 else "_range")
+        lead[lang] = [_say(lang, key, **values)]
+    return {"ids": [result["id"]], "level": result.get("evidence_level", "E0"), "lead": lead, "subject": result,
+            "horizon": horizon}
+
+
+def _impact_answer(plan, results, names, place):
+    contrasts = [r for r in _by_order(results, {"baci_contrast"}) if _present(r) and {"value", "interval"} <= r.keys()]
+    result = next((r for r in contrasts if r.get("direction_assertable") is True), None)
+    key = "impact.detected"
+    if result is None:
+        result, key = next(iter(contrasts), None), "impact.unclear"
+    if result is None:
+        return None
+    params = result["method"].get("params", {})
+    windows = {"before", "after"} <= params.keys()
+    slots = ("value", "unit", "interval", "method")
+    lead = {}
+    for lang in ("en", "es"):
+        values = {"place": place, "label": _label(result, names, lang), "value": _slot(result, "value"),
+                  "unit": _slot(result, "unit"), "interval": _slot(result, "interval"),
+                  "method": _slot(result, "method") if windows else _slot(result, "period"),
+                  "verb": _phrases(lang)["impact"]["up" if result["value"] >= 0 else "down"]}
+        lead[lang] = [_say(lang, key, slots, **values)]
+    return {"ids": [result["id"]], "level": result.get("evidence_level", "E0"), "lead": lead, "subject": result}
+
+
+def _exposure(plan, results, names, place):
+    counted = [r for r in _by_order(results, {"exposure"}) if _present(r) and "value" in r and r.get("unit")]
+    if not counted:
+        return None
+    lead = {}
+    for lang in ("en", "es"):
+        lead[lang] = [_say(lang, "exposure.first" if result is counted[0] else "exposure.more", ("value", "unit"),
+                           place=place, label=_label(result, names, lang), value=_slot(result, "value"),
+                           unit=_slot(result, "unit")) for result in counted]
+    return {"ids": [r["id"] for r in counted], "level": min(r.get("evidence_level", "E0") for r in counted),
+            "lead": lead, "subject": counted[0]}
+
+
+def _scan_answer(plan, results, names, place, catalog):
+    made = scan_opening(plan, results, catalog, {})
+    if made is None:
+        return None
+    piece = made[0]
+    lead = {lang: [(piece["lead"][lang], piece["lead"][lang])] for lang in ("en", "es")}
+    table = next(r for r in results if r["id"] == piece["results"][0])
+    return {"ids": piece["results"], "level": table.get("evidence_level", "E0"), "lead": lead, "subject": table,
+            "limit": {lang: _phrases(lang)["design_opening"]["scan_limit"] for lang in ("en", "es")}}
+
+
+def _reason(result, lang):
+    absence = result.get("absence") or {}
+    detail = absence.get("detail")
+    text = detail.get(lang) if isinstance(detail, dict) else None
+    text = text or _phrases(lang)["answer"]["reasons"].get(absence.get("reason"), _phrases(lang)["answer"]["reasons"]
+                                                           ["not_computed"])
+    return _lower(text.strip().rstrip("."))
+
+
+def _missing(plan, results, names, place):
+    """The main result is absent: say what is missing, why, and what the report does show."""
+    from .render import _window
+
+    design = plan.get("design")
+    operations = _PRIMARY.get(design, set())
+    absent = [r for r in _by_order(results, operations) if "absence" in r] or [
+        r for r in _by_order(results, {r["method"]["operation"] for r in results}) if "absence" in r]
+    if not absent:
+        return None
+    gap = absent[0]
+    shown = [r for r in _by_order(results, {"read_series"}) if _present(r) and state_points(r) and r.get("unit")
+             and r["method"]["operation"] not in operations][:2]
+    if design == "state":
+        shown = [r for r in shown if r["variable"] != gap.get("variable")]
+    lead = {}
+    for lang in ("en", "es"):
+        what = _say(lang, f"missing.what.{design}" if design in _phrases(lang)["answer"]["missing"]["what"]
+                    else "missing.what.other", label=_label(gap, names, lang))[0]
+        lines = [_say(lang, "missing.lead", place=place, what=what, reason=_reason(gap, lang))]
+        if shown:
+            items = [_say(lang, "missing.item", label=_label(r, names, lang), period=_window(
+                (state_points(r)[0][0][:4], state_points(r)[-1][0][:4]), lang)) for r in shown]
+            joined = [(" " + _phrases(lang)["answer"]["and"] + " ").join(item[i] for item in items) for i in (0, 1)]
+            lines.append((_say(lang, "missing.shown", ("items",), items=joined[0])[0],
+                          _say(lang, "missing.shown", ("items",), items=joined[1])[1]))
+        else:
+            lines.append(_say(lang, "missing.nothing"))
+        lead[lang] = lines
+    return {"ids": [gap["id"], *(r["id"] for r in shown)], "level": "E0", "lead": lead, "subject": gap,
+            "variant": "missing"}
+
+
+_ANSWERS = {"whatif": _whatif, "state": _state, "trend": _trend, "event": _event, "scenario": _scenario,
+            "impact": _impact_answer, "exposure": _exposure}
+
+
+def _limit(design, made, lang):
+    from . import CONTRAST_LIMIT, rain_limit, scenario_limit
+
+    subject = made["subject"]
+    phrases = _phrases(lang)["answer"]
+    if made.get("variant") == "missing":
+        return phrases["missing"]["limit"]
+    if "limit" in made:
+        return made["limit"][lang]
+    if design == "event":
+        return rain_limit(subject, lang) or phrases["event"]["limit"]
+    if design == "scenario":
+        return " ".join(filter(None, (phrases["scenario"]["limit"], scenario_limit(subject, lang))))
+    if design == "impact":
+        return " ".join(filter(None, (pretrend_limit(subject, lang), CONTRAST_LIMIT[lang])))
+    if design == "trend":
+        return phrases["trend"]["limit" if made.get("variant") == "trend.detected" else "limit_unclear"]
+    return phrases.get(design, {}).get("limit", "")
+
+
+def answer(plan, results, piece, catalog):
+    """The opening's first sentence answers the question, in every design: the main figure with its place, period
+    and unit read from the results, or what is missing and why. Builds on `state_answer` (population in hot cells),
+    which goes first. Returns a copy of `piece` with its lead and limits (and a generic headline or meaning)
+    replaced, or None when the wording does not pass `validate_text` or there is nothing to answer with."""
+    from hup_api.reviewer.text import validate_text
+
+    if "zone" not in plan:
+        return None  # nothing to say "where" with
+    if answered := state_answer(plan, results, piece):
+        for lang in ("en", "es"):  # state_answer keeps the headline; a generic one names the subject instead
+            if _generic("headline", answered.get("headline", {}).get(lang, "")):
+                label = _phrases(lang)["state_answer"]["population_in_hot_cells"]["headline"]
+                answered["headline"] = {**answered["headline"], lang: label.format(place=place_label(plan["zone"]))}
+        return answered
+    decided = {item.get("field") for item in plan.get("answer", {}).get("decided", [])}
+    from hup_api.assistant import milestone as context
+
+    if "recurrence" in decided or context.FIELD in context.decisions_of(plan) or plan.get("design") == "scan":
+        return None  # recurrence(), milestone() and scan_opening() already answer with their own figures
+    design = plan.get("design")
+    names = {v["id"]: v["name"] for v in catalog.get("variables", [])}
+    place = milestone_place(plan).partition(",")[0].strip()
+    if design == "scan":
+        made = _scan_answer(plan, results, names, place, catalog)
+    else:
+        made = _ANSWERS[design](plan, results, names, place) if design in _ANSWERS else None
+    made = made or _missing(plan, results, names, place)
+    if made is None:
+        return None
+    phrases = {lang: _phrases(lang)["answer"] for lang in ("en", "es")}
+    limit = {lang: _limit(design, made, lang) for lang in ("en", "es")}
+    checked = {lang: " ".join([*(check for _, check in made["lead"][lang]), limit[lang]]) for lang in ("en", "es")}
+    if validate_text({"text": checked, "evidence_level": made["level"]}, results):
+        return None
+    answered = dict(piece)
+    for field in ("headline", "lead", "meaning", "cannot_say"):
+        answered[field] = dict(piece.get(field) or {})
+    ids = set(made["ids"])
+    for lang in ("en", "es"):
+        old = (piece.get("lead") or {}).get(lang, "")
+        cited = {match[1] for match in SLOT.finditer(old)}
+        kept = "" if _generic("lead", old) or cited & ids else old
+        answered["lead"][lang] = " ".join(filter(None, (*(text for text, _ in made["lead"][lang]), kept)))
+        if _generic("headline", answered["headline"].get(lang, "")):
+            key = "missing" if made.get("variant") == "missing" else design
+            answered["headline"][lang] = phrases[lang]["headline"].get(key, phrases[lang]["headline"]["other"]).format(
+                place=place, label=_capital(_label(made["subject"], names, lang)))
+        if _generic("meaning", answered["meaning"].get(lang, "")):
+            answered["meaning"][lang] = phrases[lang]["meaning"].get(design, phrases[lang]["meaning"]["other"])
+        before = answered["cannot_say"].get(lang, "")
+        if limit[lang] and limit[lang] not in before:
+            answered["cannot_say"][lang] = f"{before} {limit[lang]}".strip()
+    answered["results"] = list(dict.fromkeys([*made["ids"], *piece.get("results", [])]))
+    return answered

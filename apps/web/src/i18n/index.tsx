@@ -13,9 +13,9 @@ function storedLanguage(): Language | null {
   }
 }
 
+// English is the base (docs/decisiones.md, 2026-11-09); Spanish only when the person chose it.
 function initialLanguage(): Language {
-  if (storedLanguage()) return storedLanguage() as Language;
-  return navigator.language.toLowerCase().startsWith("es") ? "es" : "en";
+  return storedLanguage() ?? "en";
 }
 
 function text(source: unknown, key: string): string {

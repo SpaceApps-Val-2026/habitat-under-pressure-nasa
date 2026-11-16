@@ -162,7 +162,13 @@ def _scenario_result(name, kind, settings, entries, ctx):
     return result
 
 
-@operation("climate_delta", version="1.3")
+# Equilibrium climate sensitivity above the IPCC AR6 likely range of 2.5–4 °C: ACCESS-CM2 4.72 °C and EC-Earth3
+# 4.26–4.3 °C (Zelinka et al. 2020; Meehl et al. 2020). Counted by ECS, Guillem's decision of 14 November 2026;
+# sources in .dev/notes/2026-11-14-sensibilidad-modelos-a8.md.
+HIGH_SENSITIVITY = ("ACCESS-CM2", "EC-Earth3")
+
+
+@operation("climate_delta", version="1.4")
 def climate_delta(params: dict, inputs: dict[str, list[dict]], ctx: Context) -> dict[str, dict]:
     settings = {**DEFAULTS, **params}
     change_only = settings.get("output") == "change"
@@ -244,6 +250,21 @@ def climate_delta(params: dict, inputs: dict[str, list[dict]], ctx: Context) -> 
             "this can give unreliable values.",
             "es": "El cambio de lluvia de cada modelo se suma en milímetros al valor observado; en zonas secas "
             "puede dar valores poco fiables.",
+        })
+    models = sorted({row[2] for row in rows})
+    warm = [model for model in models if model in HIGH_SENSITIVITY]
+    if warm:
+        # 1.4 (Guillem, 14 and 15 Nov; figures verified by Nadia): said whenever one of them enters the fan.
+        names = {"en": " and ".join(warm), "es": " y ".join(warm)}
+        result["limits"].append({
+            "en": f"{len(warm)} of the {len(models)} models ({names['en']}) warm more for the same CO2 than the "
+                  "range the IPCC considers likely (an equilibrium climate sensitivity above the 2.5–4 °C range). "
+                  "They count like the others in the median and the bounds. This is a project criterion based on "
+                  "that IPCC threshold, not an official IPCC category.",
+            "es": f"{len(warm)} de los {len(models)} modelos ({names['es']}) calientan más, con el mismo CO2, que "
+                  "el rango que el IPCC considera probable (una sensibilidad climática de equilibrio por encima del "
+                  "rango de 2,5 a 4 °C). Cuentan como los demás en la mediana y en la banda. Es un criterio del "
+                  "proyecto basado en ese umbral del IPCC, no una categoría oficial del IPCC.",
         })
     grouped = defaultdict(list)
     for horizon, scenario, _, delta in rows:

@@ -5,11 +5,11 @@ import {
   createAnalysis,
   createPlan,
   getAnalysis,
-  getCatalog,
   listAnalyses,
   resolvePlace,
   type AnalysisSummary,
 } from "../api/client";
+import { SUGGESTIONS } from "../content/suggestions";
 import type { plan } from "../contracts";
 import { DESIGN } from "../design";
 import type { GlobePlace } from "../globe/Globe";
@@ -29,7 +29,6 @@ const Globe = lazy(() => import("../globe/Globe").then((module) => ({ default: m
 
 type Load = typeof listAnalyses;
 type Read = (id: string) => Promise<{ plan?: plan.AnalysisPlan | null }>;
-type Names = () => Promise<{ variables: { id: string; name: { [language: string]: string | undefined } }[] }>;
 
 const THEME_TEXT: Record<GlobePlace["theme"], string> = {
   change: "text-theme-climate",
@@ -163,14 +162,12 @@ export function Home({
   load = listAnalyses,
   start = createAnalysis,
   read = getAnalysis,
-  names = getCatalog,
   resolve = resolvePlace,
 }: {
   create?: Create;
   load?: Load;
   start?: Start;
   read?: Read;
-  names?: Names;
   resolve?: Resolve;
 }) {
   const { t, language } = useI18n();
@@ -186,7 +183,6 @@ export function Home({
   const [reports, setReports] = useState<AnalysisSummary[] | null>(null);
   const [reportsFailed, setReportsFailed] = useState(false);
   const [asked, setAsked] = useState<Record<string, Asked>>({});
-  const [templates, setTemplates] = useState<string[]>([]);
   const [place, setPlace] = useState<GlobePlace | null>(null);
   const answerBox = useRef<HTMLDivElement>(null);
 
@@ -197,7 +193,7 @@ export function Home({
       .then(({ items }) => {
         if (!live) return;
         setReports(items);
-        // The examples and the readable titles come from the questions people really asked.
+        // The readable titles come from the questions people really asked.
         stop = readAsked(items, read, (id, found) => setAsked((current) => ({ ...current, [id]: found })));
       })
       .catch(() => {
@@ -209,47 +205,8 @@ export function Home({
     };
   }, [load, read]);
 
-  // Real questions make the examples; short ones first, and none so long it cannot be read on a chip.
-  const questions = [...new Set(Object.values(asked).map((entry) => entry.text).filter(Boolean))]
-    .filter((text) => text.length <= 140)
-    .sort((a, b) => Number(a.length > 60) - Number(b.length > 60))
-    .slice(0, 3);
-  const needTemplates = Object.keys(asked).length > 0 && questions.length < 2;
-
-  // Only when too few real questions exist: «{variable} in {place}: what has changed?», with the catalogue's
-  // name of a variable and the place of an analysis that really ran.
-  useEffect(() => {
-    if (!needTemplates) return;
-    let live = true;
-    names()
-      .then((catalog) => {
-        if (!live) return;
-        const seen = new Set<string>();
-        const built: string[] = [];
-        for (const entry of Object.values(asked)) {
-          if (entry.text || !entry.variable || !entry.place) continue;
-          const variable = catalog.variables.find((item) => item.id === entry.variable);
-          const name = variable ? (variable.name[language] ?? variable.name.en) : null;
-          if (!name) continue;
-          const text = t("home.exampleTemplate")
-            .replace("{variable}", name)
-            .replace("{place}", entry.place);
-          if (!seen.has(text)) {
-            seen.add(text);
-            built.push(text);
-          }
-        }
-        setTemplates(built.slice(0, 3 - questions.length));
-      })
-      .catch(() => {});
-    return () => {
-      live = false;
-    };
-    // questions.length is derived from asked; asked, language and needTemplates are the real inputs.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asked, language, needTemplates, names]);
-
-  const examples = [...questions, ...(needTemplates ? templates : [])];
+  // Three questions we know Delfos answers well, in the language of the page (content/suggestions.ts).
+  const examples = SUGGESTIONS[language];
 
   useEffect(() => {
     if (!notPossible) return;
@@ -347,11 +304,10 @@ export function Home({
             <h1 className="display text-balance max-[600px]:text-4xl!">
               <span className="block font-normal">{t("home.headlineLead")}</span> {t("home.headline")}
             </h1>
-            <p className="body hidden max-w-[44ch] text-orbit-muted @min-[600px]:block">{t("home.lead")}</p>
-
             <form
               onSubmit={ask}
               role="search"
+              aria-busy={sending}
               className="flex max-w-[560px] gap-8 rounded-xl border border-line-strong bg-paper p-6 shadow-lg transition-colors focus-within:border-focus"
             >
               <label className="sr-only" htmlFor="home-q">
@@ -362,6 +318,9 @@ export function Home({
                 type="search"
                 className="min-w-0 flex-1 bg-transparent px-8 py-6 text-base text-ink outline-none! focus-visible:outline-none!"
                 value={question}
+                // Read-only, not disabled, while Delfos reads: the text and the caret stay, and a phone keeps its
+                // keyboard; it cannot be changed or sent again until the answer arrives.
+                readOnly={sending}
                 onChange={(event) => setQuestion(event.target.value)}
                 placeholder={t("home.askPlaceholder")}
               />
@@ -435,8 +394,6 @@ export function Home({
                 </ul>
               </div>
             )}
-
-            <p className="caption text-orbit-muted">{t("home.check")}</p>
 
             <ul
               aria-label={t("home.themes.label")}

@@ -322,7 +322,7 @@ def eligible_blocks(plan, results, catalog):
 
 def compose_fallback(plan: dict, results: list[dict], catalog: dict, *, notice: dict[str, str] | None = None) -> dict:
     """Publish validated results without reusing drafts, cached prose, or an editorial provider."""
-    from .opening import fallback, milestone, recurrence
+    from .opening import answer, fallback, milestone, recurrence
     from .weather import blocks_for, is_weather_result
 
     hypotheses = blocks_for(results, catalog)
@@ -344,6 +344,8 @@ def compose_fallback(plan: dict, results: list[dict], catalog: dict, *, notice: 
     eligible = selections["journalistic"]
     pieces = (recurrence(plan, results, eligible) or milestone(plan, results, [], catalog, eligible)
               or fallback(plan, results, [], catalog, eligible))
+    if "journalistic" in pieces and (answered := answer(plan, results, pieces["journalistic"], catalog)):
+        pieces["journalistic"] = answered
     for piece in pieces.values():
         piece.pop("blocks", None)
         if notice:
@@ -358,7 +360,7 @@ def compose_fallback(plan: dict, results: list[dict], catalog: dict, *, notice: 
 def opening_for_style(analysis: dict, results: list[dict], catalog: dict, style: str) -> dict | None:
     """Compose one opening on demand for an already finished report."""
     from .llm import short_opening
-    from .opening import fallback, milestone, recurrence
+    from .opening import answer, fallback, milestone, recurrence
     from .weather import is_weather_result
 
     plan = analysis["plan"]
@@ -369,6 +371,7 @@ def opening_for_style(analysis: dict, results: list[dict], catalog: dict, style:
              or fallback(plan, results, findings, catalog, eligible)).get("journalistic")
     if not basis:
         return None
+    basis = (answer(plan, results, basis, catalog) if style == "journalistic" else None) or basis
     place = place_label(plan["zone"])
     piece = short_opening(plan, results, catalog, eligible, style, basis=basis)
     if piece is None:
@@ -385,7 +388,7 @@ def compose(plan: dict, results: list[dict], findings: list[dict], catalog: dict
     from hup_api import contracts
 
     from .llm import cached_story
-    from .opening import fallback, milestone, recurrence
+    from .opening import answer, fallback, milestone, recurrence
     from .weather import blocks_for, is_weather_result
 
     hypotheses = blocks_for(results, catalog)
@@ -406,6 +409,8 @@ def compose(plan: dict, results: list[dict], findings: list[dict], catalog: dict
         editorial = recurrence(plan, results, eligible) or editorial or contextual
         if not editorial:
             editorial = fallback(plan, results, findings, catalog, selections["journalistic"])
+        if "journalistic" in editorial and (answered := answer(plan, results, editorial["journalistic"], catalog)):
+            editorial = {**editorial, "journalistic": answered}
     blocks = {block["id"]: block for block in catalog.get("blocks", [])}
     links = {
         rid: f["id"]

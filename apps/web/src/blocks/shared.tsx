@@ -63,6 +63,13 @@ export function evidenceOf(
     item !== undefined &&
     (CONTROL_OPERATIONS.has(item.method?.operation ?? "") || item.diagnostics?.pre_trend_control === true);
   if (level === "E1" && controlled) return { name: "evidence.E1control.name", note: "evidence.E1control.note" };
+  // A series read from its source at E0 was not "only described": its values come from a source. The note says
+  // what they are (an approximation when the class is approximated) and that no trend or cause is established.
+  if (level === "E0" && item?.method?.operation === "read_series" && !item.absence && (item.series?.length ?? 0) > 0) {
+    return item.data_class === "approximated"
+      ? { name: "evidence.E0series.name", note: "evidence.E0approximated.note" }
+      : { name: "evidence.E0series.name", note: "evidence.E0series.note" };
+  }
   return EVIDENCE[level];
 }
 

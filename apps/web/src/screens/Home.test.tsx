@@ -3,6 +3,7 @@ import { MemoryRouter, Route, Routes, useParams } from "react-router-dom";
 import { beforeEach, expect, test, vi } from "vitest";
 
 import { ApiError, type AnalysisSummary, type PlaceAnswer, type PlanCandidate, type PlanReply } from "../api/client";
+import { SUGGESTIONS } from "../content/suggestions";
 import type { plan } from "../contracts";
 import { I18nProvider } from "../i18n";
 import { UnitsProvider } from "../units";
@@ -63,14 +64,12 @@ function renderHome({
   load = vi.fn(async () => ({ items })),
   start = vi.fn(async () => ({ analysis_id: "run-1" })),
   read = vi.fn(async () => ({ plan: { ...example, request: { text: "Has the land warmed in Alzira?", language: "en" } } })),
-  names = vi.fn(async () => ({ variables: [] })),
   resolve = vi.fn(async (): Promise<PlaceAnswer> => ({ status: "not_found" })),
 }: {
   create?: Create;
   load?: Load;
   start?: (candidate: AnalysisPlan) => Promise<{ analysis_id: string }>;
   read?: (id: string) => Promise<{ plan?: AnalysisPlan | null }>;
-  names?: () => Promise<{ variables: { id: string; name: Record<string, string> }[] }>;
   resolve?: Resolve;
 } = {}) {
   return render(
@@ -79,8 +78,7 @@ function renderHome({
         <UnitsProvider>
           <Routes>
             <Route path="/" element={
-              <Home create={create} load={load} start={start} read={read}
-                names={names} resolve={resolve} />
+              <Home create={create} load={load} start={start} read={read} resolve={resolve} />
             } />
             <Route path="/run/:analysisId" element={<RunProbe />} />
             <Route path="/a/:analysisId/report/journalistic" element={<ReportProbe />} />
@@ -131,7 +129,6 @@ test("the cover names Delfos, shows the question box and the latest reports titl
   renderHome();
 
   expect(screen.getByRole("heading", { name: /One method\. Any place on Earth\./ })).toBeInTheDocument();
-  expect(screen.getByText(/Ask Delfos/)).toBeInTheDocument();
   expect(screen.getByRole("searchbox", { name: "Your question" })).toBeInTheDocument();
   expect(await screen.findByRole("link", { name: /Has the land warmed in Alzira\?/ })).toHaveAttribute(
     "href",
@@ -140,29 +137,24 @@ test("the cover names Delfos, shows the question box and the latest reports titl
   expect(screen.getByRole("link", { name: "All reports" })).toHaveAttribute("href", "/library");
 });
 
-test("the examples are the questions of real analyses and one click asks it", async () => {
+test("the examples are the checked suggestions, not the questions of the library, and one click asks it", async () => {
   const create = vi.fn(async () => planReply());
   renderHome({ create });
 
-  fireEvent.click(await screen.findByRole("button", { name: "Has the land warmed in Alzira?" }));
+  await screen.findByRole("link", { name: /Has the land warmed in Alzira\?/ });
+  expect(screen.queryByRole("button", { name: "Has the land warmed in Alzira?" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: SUGGESTIONS.en[0] }));
 
   await screen.findByText("RUN run-1");
-  expect(create).toHaveBeenCalledWith("Has the land warmed in Alzira?", "en", undefined);
+  expect(create).toHaveBeenCalledWith(SUGGESTIONS.en[0], "en", undefined);
 });
 
-test("without asked questions the examples are built from catalogue names and real places", async () => {
-  const read = vi.fn(async () => ({
-    plan: {
-      ...example,
-      request: { text: "", language: "en" },
-      variables: ["t2m"] as unknown as AnalysisPlan["variables"],
-      zone: { ...example.zone, name: "Alzira, La Ribera Alta, Spain" },
-    },
-  }));
-  const names = vi.fn(async () => ({ variables: [{ id: "t2m", name: { en: "Air temperature" } }] }));
-  renderHome({ read, names });
+test("the suggestions read in the language of the page", () => {
+  localStorage.setItem("hup-lang", "es");
+  renderHome();
 
-  expect(await screen.findByRole("button", { name: "Air temperature in Alzira: what has changed?" })).toBeInTheDocument();
+  for (const text of SUGGESTIONS.es) expect(screen.getByRole("button", { name: text })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: SUGGESTIONS.en[0] })).not.toBeInTheDocument();
 });
 
 test("the resting place of the globe feeds the reading card, metric even with imperial units", async () => {
@@ -211,6 +203,26 @@ test("while the plan is on its way the bar is already there", async () => {
   // A request in flight: the bar moves without a count, never sits empty.
   expect(document.querySelector(".run-stage-fill.is-indeterminate")).not.toBeNull();
   expect(document.querySelector(".run-spinner")).not.toBeNull();
+  resolve(planReply());
+  await screen.findByText("RUN run-1");
+});
+
+test("while Delfos reads, the question cannot be changed or sent again", async () => {
+  let resolve: (reply: PlanReply) => void = () => {};
+  const create = vi.fn(() => new Promise<PlanReply>((done) => (resolve = done)));
+  renderHome({ create });
+
+  ask("What changed around Sagunt?");
+  await screen.findByText("Delfos is reading your question…");
+
+  const box = screen.getByRole("searchbox", { name: "Your question" });
+  expect(box).toHaveAttribute("readonly");
+  expect(screen.getByRole("button", { name: "Ask" })).toBeDisabled();
+  // Enter submits the form even with the button disabled: the second question must not leave.
+  fireEvent.submit(box.closest("form")!);
+  fireEvent.submit(box.closest("form")!);
+  expect(create).toHaveBeenCalledTimes(1);
+
   resolve(planReply());
   await screen.findByText("RUN run-1");
 });
@@ -404,7 +416,7 @@ test("back from a run the person stopped waiting for, the question is in the box
           <Routes>
             <Route
               path="/"
-              element={<Home create={vi.fn()} load={vi.fn(async () => ({ items: [] }))} read={vi.fn()} names={vi.fn()} />}
+              element={<Home create={vi.fn()} load={vi.fn(async () => ({ items: [] }))} read={vi.fn()} />}
             />
           </Routes>
         </UnitsProvider>
@@ -416,19 +428,12 @@ test("back from a run the person stopped waiting for, the question is in the box
   expect(screen.getByText(/You stopped waiting; the analysis is still being computed/)).toBeInTheDocument();
 });
 
-test("long example questions sit on one line with their full text in a tooltip; short ones come first", async () => {
-  const long = "prepara el radio de afectacion a nivel de consumo de energia de un centro de datos standard contruido en calig";
-  const tooLong = "x".repeat(150);
-  const texts: Record<string, string> = { a: long, b: "Is Alzira warmer?", c: tooLong };
-  const read = vi.fn(async (id: string) => ({ plan: { ...example, request: { text: texts[id], language: "en" } } }));
-  const load = vi.fn(async () => ({ items: ["a", "b", "c"].map((id) => ({ ...items[0], id })) }));
-  renderHome({ read, load });
+test("an example sits on one line, with its full text in a tooltip if it does not fit", () => {
+  localStorage.setItem("hup-lang", "es");
+  const long = SUGGESTIONS.es[0];
+  renderHome();
 
-  const short = await screen.findByRole("button", { name: "Is Alzira warmer?" });
-  const chip = await screen.findByRole("button", { name: long });
-  const chips = screen.getAllByRole("button").filter((button) => button === short || button === chip);
-  expect(chips[0]).toBe(short);
-  expect(screen.queryByRole("button", { name: tooLong })).not.toBeInTheDocument();
+  const chip = screen.getByRole("button", { name: long });
   expect(chip.className).toContain("truncate");
   expect(chip).toHaveAttribute("title", long);
 

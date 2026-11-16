@@ -36,6 +36,11 @@ CATALOG = {
 }
 
 
+# The openings the code writes when it does not publish the model's (hup_api.writer.opening).
+TREND_HEADLINE = "La temperatura media del aire en Torrent: ritmo de cambio"
+MISSING_HEADLINE = "Falta el dato principal para responder sobre Torrent"
+
+
 def recorded_answer():
     text = {
         "en": "Air temperature rises {r-trend.value} {r-trend.unit}, {r-trend.period} ({r-trend.interval}).",
@@ -201,7 +206,7 @@ def test_editorial_receives_question_and_reuses_reviewed_piece(monkeypatch):
     assert "blocks" not in story["editorial"]["journalistic"]
     assert [b["block"] for b in story["journalistic"]] == ["EvidenceBadge", "KeyFigure", "LimitsBox", "SourcesTable"]
     assert fill(story["editorial"]["journalistic"]["lead"]["es"], [RESULT], "es").startswith(
-        "La temperatura del aire aumenta 0,27 °C por década"
+        "La temperatura media del aire en Torrent, de 1981 a 2025: el ritmo estimado es de 0,27 °C por década"
     )
     assert not contracts.errors("analysis", {
         **json.loads(ANALYSIS_EXAMPLE.read_text(encoding="utf8")), "story": story,
@@ -290,7 +295,7 @@ def test_invalid_editorial_preserves_the_full_fallback(monkeypatch, field, bad, 
     story = compose(PLAN, [RESULT], findings, CATALOG)
     assert requests[1]["retry_reason"] == reason
     assert findings[0]["id"] == "f-r-trend"
-    assert story["editorial"]["journalistic"]["headline"]["es"] == "Qué dicen los datos sobre esta pregunta"
+    assert story["editorial"]["journalistic"]["headline"]["es"] == TREND_HEADLINE
     assert [b["block"] for b in story["journalistic"]] == ["KeyFigure", "EvidenceBadge", "LimitsBox", "SourcesTable"]
 
 
@@ -301,7 +306,7 @@ def test_review_changes_prevent_editorial_publication(monkeypatch):
     assert "editorial" in compose(PLAN, [RESULT], approved, CATALOG)
     approved[0]["text"] = {lang: line + " " for lang, line in approved[0]["text"].items()}
     story = compose(PLAN, [RESULT], approved, CATALOG)
-    assert story["editorial"]["journalistic"]["headline"]["es"] == "Qué dicen los datos sobre esta pregunta"
+    assert story["editorial"]["journalistic"]["headline"]["es"] == TREND_HEADLINE
 
 
 @pytest.mark.parametrize("meaning", [
@@ -342,8 +347,8 @@ def test_only_absences_fill_source_coverage_dates_without_any_findings(monkeypat
         story = compose(PLAN, [missing], [], CATALOG)
         piece = story["editorial"]["journalistic"]
         assert piece["headline"]["es"] == "Faltan datos de este periodo."
-        assert piece["cannot_say"]["es"].endswith("20 de enero de 2020.")
-        assert piece["cannot_say"]["en"].endswith("January 20, 2020.")
+        assert "termina el 20 de enero de 2020." in piece["cannot_say"]["es"]
+        assert "January 20, 2020." in piece["cannot_say"]["en"]
         assert "2020" not in piece["meaning"]["en"]
         if "once" in meaning:
             assert piece["meaning"]["en"] == meaning
@@ -391,7 +396,7 @@ def test_inconclusive_trend_can_publish_without_claiming_a_direction_or_figure(m
     assert after[0]["evidence_level"] == "E0"
     story = compose(PLAN, after, [], CATALOG)
     if failure == "direction":
-        assert story["editorial"]["journalistic"]["headline"]["es"] == "Los datos no muestran una dirección clara"
+        assert story["editorial"]["journalistic"]["headline"]["es"] == MISSING_HEADLINE
     if failure == "figure":
         assert "twenty" not in story["editorial"]["journalistic"]["lead"]["en"]
     assert len(calls) == (2 if failure == "direction" else 1)
@@ -420,7 +425,7 @@ def test_absence_can_repeat_only_the_single_year_requested_in_the_plan(monkeypat
     monkeypatch.setattr(adapter, "complete", complete)
     assert write_findings(plan, [missing], CATALOG) == []
     published = compose(plan, [missing], [], CATALOG)["editorial"]["journalistic"]["headline"]["es"]
-    assert published == (spanish if publishes else "Los datos disponibles dejan abierta la pregunta")
+    assert published == (spanish if publishes else MISSING_HEADLINE)
 
 
 def test_whatif_repairs_long_headline_and_keeps_estimate_figure_without_retry(monkeypatch):

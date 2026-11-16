@@ -509,7 +509,7 @@
   - n_false_events
 
 - id: climate_delta
-  version: '1.3'
+  version: '1.4'
   type: compute
   visual_type: compute
   phrase:
