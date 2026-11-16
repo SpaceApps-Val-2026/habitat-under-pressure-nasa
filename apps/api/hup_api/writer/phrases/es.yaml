@@ -118,6 +118,7 @@
     "trend": {
       "detected": "{label} en {place}: {verb} a un ritmo de {value} {unit} ({interval}), {period}.",
       "unclear": "{label} en {place}, {period}: los datos no permiten afirmar una dirección; el ritmo estimado es de {value} {unit} ({interval}), un intervalo que incluye el cero.",
+      "unclear_no_value": "{label} en {place}: los datos se han analizado y no muestran una dirección clara; el intervalo de ritmos plausibles incluye el cero, así que el informe no da una cifra del cambio.",
       "estimate": "{label} en {place}, {period}: el ritmo estimado es de {value} {unit} ({interval}).",
       "statistic": "Prueba de dirección: {statistic}.",
       "limit": "El ritmo es la media de todo el periodo: no dice qué lo explica ni si seguirá igual.",
@@ -175,6 +176,7 @@
       "impact": "{label} en {place} frente a su entorno",
       "exposure": "Población expuesta en {place}",
       "scan": "Indicadores de {place}",
+      "trend_unclear": "{label} en {place}: los datos no muestran una dirección clara",
       "missing": "Falta el dato principal para responder sobre {place}",
       "other": "Lo que muestran los datos de {place}"
     },

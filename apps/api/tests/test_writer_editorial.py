@@ -39,6 +39,7 @@ CATALOG = {
 # The openings the code writes when it does not publish the model's (hup_api.writer.opening).
 TREND_HEADLINE = "La temperatura media del aire en Torrent: ritmo de cambio"
 MISSING_HEADLINE = "Falta el dato principal para responder sobre Torrent"
+UNCLEAR_HEADLINE = "La temperatura media del aire en Torrent: los datos no muestran una dirección clara"
 
 
 def recorded_answer():
@@ -396,7 +397,11 @@ def test_inconclusive_trend_can_publish_without_claiming_a_direction_or_figure(m
     assert after[0]["evidence_level"] == "E0"
     story = compose(PLAN, after, [], CATALOG)
     if failure == "direction":
-        assert story["editorial"]["journalistic"]["headline"]["es"] == MISSING_HEADLINE
+        # The trend was computed and is inconclusive: that is "no clear direction", not "the figure is missing".
+        journalistic = story["editorial"]["journalistic"]
+        assert journalistic["headline"]["es"] == UNCLEAR_HEADLINE
+        assert "no muestran una dirección clara" in journalistic["lead"]["es"]
+        assert "no ha podido obtener" not in journalistic["lead"]["es"]
     if failure == "figure":
         assert "twenty" not in story["editorial"]["journalistic"]["lead"]["en"]
     assert len(calls) == (2 if failure == "direction" else 1)

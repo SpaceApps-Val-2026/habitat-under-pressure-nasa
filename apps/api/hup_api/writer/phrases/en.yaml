@@ -118,6 +118,7 @@
     "trend": {
       "detected": "{label} in {place}: it {verb} at a rate of {value} {unit} ({interval}), {period}.",
       "unclear": "{label} in {place}, {period}: the data do not support a direction; the estimated rate is {value} {unit} ({interval}), an interval that includes zero.",
+      "unclear_no_value": "{label} in {place}: the data were analysed and show no clear direction; the range of plausible rates includes zero, so the report gives no figure for the change.",
       "estimate": "{label} in {place}, {period}: the estimated rate is {value} {unit} ({interval}).",
       "statistic": "Direction test: {statistic}.",
       "limit": "The rate is the average over the whole period: it does not say what explains it or whether it will continue.",
@@ -175,6 +176,7 @@
       "impact": "{label} in {place} against its surroundings",
       "exposure": "Exposed population in {place}",
       "scan": "Indicators for {place}",
+      "trend_unclear": "{label} in {place}: the data show no clear direction",
       "missing": "The main figure to answer about {place} is missing",
       "other": "What the data show for {place}"
     },

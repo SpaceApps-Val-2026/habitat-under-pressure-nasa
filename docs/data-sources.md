@@ -1,6 +1,6 @@
 # Data sources, licences and attributions
 
-Generated from `catalog/sources.yaml` (catalogue version 0.2.0, working commit `b71ad77`). Do not edit by hand: change the catalogue.
+Generated from `catalog/sources.yaml` (catalogue version 0.2.0, working commit `0cd85cd`). Do not edit by hand: change the catalogue.
 
 Every source keeps its own terms. The application shows the licence and the citation of each source next to
 the figures that come from it. The project's own code and materials are under Apache 2.0 (see `LICENSE`).

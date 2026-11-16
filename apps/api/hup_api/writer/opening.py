@@ -561,7 +561,7 @@ def _state(plan, results, names, place):
 def _trend(plan, results, names, place):
     result = next((r for r in _by_order(results, {"trend"}) if _present(r) and {"value", "interval"} <= r.keys()), None)
     if result is None:
-        return None
+        return _trend_unclear(results, names, place)
     level = result.get("evidence_level", "E0")
     detected = result.get("direction_assertable") is True and level >= "E1" and result["value"] != 0
     crosses = (result.get("diagnostics") or {}).get("interval_crosses_zero") is True or (
@@ -579,6 +579,23 @@ def _trend(plan, results, names, place):
             lines.append(_say(lang, "trend.statistic", slots, statistic=_slot(result, "statistic")))
         lead[lang] = lines
     return {"ids": [result["id"]], "level": level, "lead": lead, "subject": result, "variant": key}
+
+
+def _trend_unclear(results, names, place):
+    """The trend was computed but its interval includes zero, so it arrives without a value: the data are there and
+    give no direction. Says that, without a figure, instead of the "missing" opening (which means no data)."""
+    def crosses(r):
+        interval = r.get("interval") or {}
+        return (r.get("diagnostics") or {}).get("interval_crosses_zero") is True or (
+            {"low", "high"} <= interval.keys() and interval["low"] <= 0 <= interval["high"])
+
+    result = next((r for r in _by_order(results, {"trend"}) if "absence" in r and crosses(r)), None)
+    if result is None:
+        return None
+    lead = {lang: [_say(lang, "trend.unclear_no_value", place=place, label=_capital(_label(result, names, lang)))]
+            for lang in ("en", "es")}
+    return {"ids": [result["id"]], "level": "E0", "lead": lead, "subject": result, "variant": "trend.unclear",
+            "headline": "trend_unclear"}
 
 
 def _event(plan, results, names, place):
@@ -817,7 +834,7 @@ def answer(plan, results, piece, catalog):
         kept = "" if _generic("lead", old) or cited & ids else old
         answered["lead"][lang] = " ".join(filter(None, (*(text for text, _ in made["lead"][lang]), kept)))
         if _generic("headline", answered["headline"].get(lang, "")):
-            key = "missing" if made.get("variant") == "missing" else design
+            key = "missing" if made.get("variant") == "missing" else made.get("headline", design)
             answered["headline"][lang] = phrases[lang]["headline"].get(key, phrases[lang]["headline"]["other"]).format(
                 place=place, label=_capital(_label(made["subject"], names, lang)))
         if _generic("meaning", answered["meaning"].get(lang, "")):
