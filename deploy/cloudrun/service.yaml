@@ -74,11 +74,15 @@ spec:
                 secretKeyRef:
                   name: hup-llm-api-key
                   key: latest
-            # - name: TYPESAFE_API_KEY
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: hup-typesafe-api-key
-            #       key: latest
+            # Jev (TypeSafe): the fast typed reading of the question. With this key the assistant reads a question in
+            # tenths of a second and plans most of them without the planning model; without it, it reads by words.
+            # Create the secret hup-typesafe-api-key first: a missing secret fails the deploy. Without Jev, delete
+            # these five lines from the rendered copy.
+            - name: TYPESAFE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hup-typesafe-api-key
+                  key: latest
           volumeMounts:
             - name: data
               mountPath: /data

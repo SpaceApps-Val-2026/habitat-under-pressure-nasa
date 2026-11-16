@@ -13,3 +13,8 @@ the image.
 
 Secrets are set as environment variables of the service by a person; they never go into the image or the
 repository. The variables are described in [`.env.example`](../.env.example).
+
+`cloudrun/service.yaml` reads two secrets from Secret Manager and fails to start if one is missing:
+`hup-llm-api-key` (the language model provider's key) and `hup-typesafe-api-key` (the key of Jev, the optional
+fast typed reading of the question). Create both before deploying, or delete from your rendered copy the block
+of the one you do not use.
