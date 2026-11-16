@@ -134,6 +134,12 @@ No data is stored in this repository. The catalogue describes each source and ho
 Each source keeps its own licence and citation, listed in [docs/data-sources.md](docs/data-sources.md) and
 shown in the application next to the figures that come from it.
 
+## Team
+
+Iban Borràs Serret, Sara Fernández Ouanit, Nadezhda Kuznetsova, Guillem Reverter Falcó and Lara Ruiz Casado:
+[team page](https://www.spaceappschallenge.org/2026/find-a-team/under-pressure1/?tab=members). Who did what is in
+[AUTHORS.md](AUTHORS.md).
+
 ## About this repository
 
 This is the clean, English export of the product code. The team built it in a working repository, in Spanish,
